@@ -2,4 +2,4 @@
 .clang-format
 *.o
 *.exe
-test.c
+test.*

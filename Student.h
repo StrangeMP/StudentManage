@@ -4,9 +4,14 @@
 struct Course;
 struct Student {
     wchar_t name[10];
-    int studID;                // e.g. 20230501
+    int id;                    // e.g. 20230501
     int institute_grade_class; // e.g. 212305
     Enroll *courses;
+};
+
+struct StuNode {
+    Student stu;
+    Student *next;
 };
 
 // 课程信息
@@ -38,3 +43,8 @@ struct Enroll {
 
     Enroll *next;
 };
+
+extern Student *idIndex[];
+void buildIDIndex(Student *);
+void buildNameIndex(Student *);
+Student *findStu_by_name(const wchar_t *);
