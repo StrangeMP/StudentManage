@@ -1,17 +1,19 @@
 #pragma once
 #include "Instit.h"
+#include <stdbool.h>
 
+struct Enroll;
 struct Course;
 struct Student {
     wchar_t name[10];
     int id;                    // e.g. 20230501
     int institute_grade_class; // e.g. 212305
-    Enroll *courses;
+    struct Enroll *courses;
 };
 
 struct StuNode {
-    Student stu;
-    Student *next;
+    struct Student stu;
+    struct Student *next;
 };
 
 // 课程信息
@@ -41,10 +43,10 @@ struct Enroll {
     bool passed;        // 是否及格
     bool effective;     // 是否有效
 
-    Enroll *next;
+    struct Enroll *next;
 };
 
-extern Student *idIndex[];
-void buildIDIndex(Student *);
-void buildNameIndex(Student *);
-Student *findStu_by_name(const wchar_t *);
+extern struct Student *idIndex[90][4][30][30];
+void buildIDIndex(struct Student *);
+void buildNameIndex(struct Student *);
+struct Student *findStu_by_name(const wchar_t *);
