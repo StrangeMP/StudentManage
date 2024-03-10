@@ -1,0 +1,3 @@
+Do not define variables within headers.
+Do not commit and push before successful local test and compilation.
+All test files to be reserved at local should be named starting with "test", therefore excluding them in commit and push.
