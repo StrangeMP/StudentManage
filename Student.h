@@ -3,24 +3,23 @@
 #include <stdbool.h>
 
 struct Enroll;
-struct Course;
-struct Student {
+typedef struct {
     wchar_t name[10];
     int id;                    // e.g. 20230501
     int institute_grade_class; // e.g. 212305
-    struct Enroll *courses;
-};
+    Enroll *courses;
+}Student;
 
-struct StuNode {
-    struct Student stu;
-    struct Student *next;
-};
+typedef struct {
+    Student stu;
+    Student *next;
+}StuNode;
 
 // 课程信息
-struct Course {
+typedef struct {
     // 学年学期 e.g. 202301 stands for 2023-2024 学年第一学期
     int semester;
-    wchar_t name[15];
+    wchar_t name[15];   // 课程名 e.g.大学物理B
     char id[13];        // 课程号 e.g. ae22931102
     int pub_category;   // 校公选课类别
     int type;           // 课程类别 e.g. 通识基础课
@@ -31,10 +30,12 @@ struct Course {
     char grade_type;    // 1百分制/ 2五级制
     char exam_type;     // 1考试 /2考察
     int instit;         // 开课单位
-};
+
+    Course *next;
+}Course;
 
 // 学生选课信息
-struct Enroll {
+typedef struct {
     char course_id[13]; // 课程号 e.g. ae22931102
     double grade;       // 总成绩
     char retake;        // 1初修/ 2重修/ 3重考
@@ -43,10 +44,10 @@ struct Enroll {
     bool passed;        // 是否及格
     bool effective;     // 是否有效
 
-    struct Enroll *next;
-};
+    Enroll *next;
+}Enroll;
 
-extern struct Student *idIndex[90][4][30][30];
-void buildIDIndex(struct Student *);
-void buildNameIndex(struct Student *);
-struct Student *findStu_by_name(const wchar_t *);
+extern Student *idIndex[];
+void buildIDIndex(Student *);
+void buildNameIndex(Student *);
+Student* findStu_by_name(const wchar_t *);
