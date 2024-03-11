@@ -7,7 +7,7 @@ void buildIDIndex(Student *pStu) {
     idIndex[id / 1000000][id / 10000 % 100][id / 100 % 100][id % 100] = pStu;
 }
 
-size_t Get16BitHash(const wchar_t str[]) {
+size_t Get16bitHash(const wchar_t str[]) {
     int hash = 0;
     int len = 0;
     for (; str[len] != L'\0'; len++)
@@ -20,11 +20,11 @@ size_t Get16BitHash(const wchar_t str[]) {
 }
 
 int nameIndex[65536];
-void buildNameIndex(Student *pStu) { nameIndex[Get16BitHash(pStu->name)] = pStu->id; }
+void buildNameIndex(Student *pStu) { nameIndex[Get16bitHash(pStu->name)] = pStu->id; }
 Student *findStu_by_ID(const int id) {
     return idIndex[id / 1000000][id / 10000 % 100][id / 100 % 100][id % 100];
 }
 Student *findStu_by_name(const wchar_t name[]) {
-    int id = nameIndex[Get16BitHash(name)];
+    int id = nameIndex[Get16bitHash(name)];
     return findStu_by_ID(id);
 }

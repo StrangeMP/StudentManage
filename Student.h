@@ -79,6 +79,7 @@ wchar_t *courseType[] = {
 
 extern Student *idIndex[90][4][30][30];
 extern int nameIndex[65536];
+
 void buildIDIndex(Student *);
 size_t Get16BitHash(const wchar_t str[]);
 void buildNameIndex(Student *);
