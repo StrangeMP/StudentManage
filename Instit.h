@@ -1,3 +1,3 @@
 #pragma once
 #include <wchar.h>
-extern const wchar_t *Instit[];// Institutions
+extern const char *Instit[]; // Institutions
