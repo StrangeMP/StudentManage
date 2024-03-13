@@ -141,9 +141,9 @@ static char *courseType[] = {
     "拓展课",
 };
 
-static Student *idIndex[90][4][30][30] = {NULL};           // 学号-学生内存地址索引
-static Student_IdNode *nameIndex[65536] = {NULL};          // 名字-学号索引
-static Student_List gradeIndex[90][4] = {{0, NULL, NULL}}; // 学院年级-学号索引
+static Student *idIndex[90][4][30][30] = {NULL};            // 学号-学生内存地址索引
+static Student_List *nameIndex[65536] = {NULL};             // 名字-学号索引
+static Student_List *gradeIndex[90][4] = {{0, NULL, NULL}}; // 学院年级-学号索引
 
 struct {
     Student_Node *pStudentHead;
@@ -214,30 +214,40 @@ static Student_IdNode *Student_IdNode_Add(Student_IdNode *Head, int id) {
     return idNode;
 }
 
+static Student_List *Student_List_AddStudentID(Student_List *stu_list, int id) {
+    if (stu_list == NULL) {
+        stu_list = (Student_List *)malloc(sizeof(Student_List));
+        stu_list->end = stu_list->first = Student_IdNode_Add(NULL, id);
+        stu_list->student_count = 1;
+        return stu_list;
+    } else if (stu_list->student_count == 0 || stu_list->first == NULL) {
+        stu_list->end = stu_list->first = Student_IdNode_Add(NULL, id);
+        stu_list->student_count = 1;
+        return stu_list;
+    } else if (Student_IdNode_Add(stu_list->first, id) != NULL) {
+        stu_list->student_count++;
+        return stu_list;
+    } else
+        return NULL;
+}
+
 static void Build_Name_Index(Student *pStu) {
     // try fetch the name from index
-    Student_IdNode *idNode = nameIndex[Get_16bit_Hash(pStu->name)];
-    // check if the name already exists
-    if (idNode != NULL) {
-        // name exists, try appending
-        if (Student_IdNode_Add(idNode, pStu->id) == NULL)
-            printf("Build_Name_Index Error: %s exists but appending %d failed\n", pStu->name,
-                   pStu->id);
-    } else {
-        // name doesn't exist, initialize an idNode under the name
-        nameIndex[Get_16bit_Hash(pStu->name)] = Student_IdNode_Add(NULL, pStu->id);
-    }
+    Student_List *stu_list = nameIndex[Get_16bit_Hash(pStu->name)];
+    if (stu_list == NULL) {
+        nameIndex[Get_16bit_Hash(pStu->name)] = Student_List_AddStudentID(stu_list, pStu->id);
+    } else
+        Student_List_AddStudentID(stu_list, pStu->id);
 }
 
 static void Build_Grade_Index(Student *pStu) {
     int institute = pStu->institute_grade / 100;
     int grade = YEAR - pStu->institute_grade % 100 - 1;
-    Student_List *pList = &gradeIndex[institute][grade];
-    Student_IdNode *node = pList->first;
-    if (Student_IdNode_Add(node, pStu->id) != NULL) {
-        pList->end = node;
-        pList->student_count++;
-    }
+    Student_List *stu_list = gradeIndex[institute][grade];
+    if (stu_list == NULL)
+        gradeIndex[institute][grade] = Student_List_AddStudentID(NULL, pStu->id);
+    else
+        Student_List_AddStudentID(stu_list, pStu->id);
 }
 
 static void Build_Student_Index(Student *pStu) {
@@ -252,13 +262,17 @@ Student *Get_Student_by_id(const int id) {
     return idIndex[id / 1000000][id / 10000 % 100][id / 100 % 100][id % 100];
 }
 
-Student_IdNode *Get_Students_by_name(const char name[]) {
-    Student_IdNode *id_List = nameIndex[Get_16bit_Hash(name)];
+const Student_List *Get_StudentList_by_name(const char name[]) {
+    Student_List *id_List = nameIndex[Get_16bit_Hash(name)];
     return id_List;
 }
 
-const Student_List Get_StudentList_by_grade(int institute_and_grade) {
+const Student_List *Get_StudentList_by_grade(int institute_and_grade) {
     return gradeIndex[institute_and_grade / 100][institute_and_grade % 100];
+}
+
+const Student_List *Get_StudentList_by_CourseID(const char *course_id) {
+    return Get_Course(course_id)->followed;
 }
 
 Course *Get_Course(const char *course_id) {
@@ -336,13 +350,16 @@ static Enroll *Enroll_Append(Student *dest, cJSON *cjson_enrolled) {
     Course *crs_dest = Get_Course(item->course_id); //
     if (crs_dest) {
         // course_id found in Course List
-        Student_IdNode *idnode = crs_dest->followed;
+        Student_List *stu_list = crs_dest->followed;
+        Student_IdNode *idnode = stu_list->first;
         if (idnode == NULL) { // crs_dest followed-list empty, initialize a new node.
-            crs_dest->followed = Student_IdNode_Add(NULL, dest->id);
+            stu_list->first = Student_IdNode_Add(NULL, dest->id);
+            stu_list->student_count++;
         } else
             // Try add dest->id to crs_dest->followed
             // crs_dest->followed is guaranteed not to be empty at this point
-            Student_IdNode_Add(crs_dest->followed, dest->id);
+            if (Student_IdNode_Add(idnode, dest->id))
+                stu_list->student_count++;
     } else
         // course_id not found in Course List, no such Course, error.
         printf("Enroll_Append Error: Course %s not found when appending for %s:%d", item->course_id,
@@ -430,8 +447,8 @@ Course *Course_Insert(const cJSON *cjson_course) {
             Enroll *enroll_node = follower->enrolled;
             if (enroll_node == NULL || Enroll_Find(follower, currCourse->id) == NULL)
                 return currCourse;
-            else
-                Student_IdNode_Add(currCourse->followed, crt_follower_id);
+            else if (Student_IdNode_Add(currCourse->followed->first, crt_follower_id))
+                currCourse->followed->student_count++;
         }
     }
 }

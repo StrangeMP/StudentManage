@@ -6,24 +6,31 @@ typedef struct Student_IdNode {
     int id;
     struct Student_IdNode *next;
 } Student_IdNode;
+
+typedef struct {
+    int student_count;
+    Student_IdNode *first;
+    Student_IdNode *end;
+} Student_List;
+
 // 课程信息
 typedef struct Course {
     // 学年学期 e.g. 202301 stands for 2023-2024 学年第一学期
     int semester;
-    char name[50];            // 课程名 e.g.大学物理B
-    char id[13];              // 课程号 e.g. ae22931102
-    char num;                 // 同一课程不同老师用此区分
-    char teacher[32];         // 任课教师
-    int pub_category;         // 校公选课类别
-    int type;                 // 课程类别 e.g. 通识基础课
-    char nature;              // 课程性质 1必修/ 2选修/ 3限选
-    double credit;            // 学分
-    int hours;                // 学时
-    char exam_date[11];       // 考试日期 e.g. "2023-06-26"
-    char grade_type;          // 1百分制/ 2五级制
-    char exam_type;           // 1考试 /2考察
-    int institute;            // 开课单位
-    Student_IdNode *followed; // 选这门课的学生的学号的链表
+    char name[50];          // 课程名 e.g.大学物理B
+    char id[13];            // 课程号 e.g. ae22931102
+    char num;               // 同一课程不同老师用此区分
+    char teacher[32];       // 任课教师
+    int pub_category;       // 校公选课类别
+    int type;               // 课程类别 e.g. 通识基础课
+    char nature;            // 课程性质 1必修/ 2选修/ 3限选
+    double credit;          // 学分
+    int hours;              // 学时
+    char exam_date[11];     // 考试日期 e.g. "2023-06-26"
+    char grade_type;        // 1百分制/ 2五级制
+    char exam_type;         // 1考试 /2考察
+    int institute;          // 开课单位
+    Student_List *followed; // 选这门课的学生的学号的链表
 
     struct Course *next;
 } Course;
@@ -61,19 +68,13 @@ typedef struct Student_Node {
     struct Student_Node *next;
 } Student_Node;
 
-typedef struct {
-    int student_count;
-    Student_IdNode *first;
-    Student_IdNode *end;
-} Student_List;
-
 // Load data from a binary file.
 void LoadData(const char *fileDir);
 
 Student *Get_Student_by_id(const int id);
-Student_IdNode *Get_Students_by_name(const char name[]);
-const Student_List Get_StudentList_by_grade(int institute_and_grade);
-const Student_List Get_StudentList_by_CourseID(const char *course_id);
+const Student_List *Get_StudentList_by_name(const char name[]);
+const Student_List *Get_StudentList_by_grade(int institute_and_grade);
+const Student_List *Get_StudentList_by_CourseID(const char *course_id);
 Course *Get_Course(const char *course_id);
 
 void ImportData(const char *fileDir);
