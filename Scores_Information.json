@@ -1,26 +1,40 @@
 {
-    "Stu_name": "张辰",
-    "Stu_id": 21230522,
-    "institute_grade_class": 212305,
-    "courses": {
-        "teacher": "郭亮",
-        "semester": 202301,
-        "name": "西方美术作品欣赏",
-        "id": "gx50983009",
-        "grade": "优秀",
-        "pub_category": 9,
-        "type": 1,
-        "nature": 2,
-        "credit": 2,
-        "hours": 32,
-        "retake": 1,
-        "exam_data": "2024-01-01",
-        "exam_type": 2,
-        "major": true,
-        "gpa": 4.0,
-        "grade_type": 2,
-        "passed": true,
-        "effective": true,
-        "instit": 98
-    }
+    "Students": [
+        {
+            "name": "张辰",
+            "id": 21230522,
+            "institute_grade": 2123,
+            "enrolled": [
+                {
+                    "course_id": "gx50983009",
+                    "level": 1,
+                    "retake": 1,
+                    "major": true,
+                    "gpa": 4.0,
+                    "passed": true,
+                    "effective": true
+                }
+            ]
+        }
+    ],
+    "Courses": [
+        {
+            "teacher": "郭亮",
+            "semester": 202301,
+            "name": "西方美术作品欣赏",
+            "id": "gx50983009",
+            "pub_category": 9,
+            "type": 1,
+            "nature": 2,
+            "credit": 2,
+            "hours": 32,
+            "exam_date": "2024-01-01",
+            "exam_type": 2,
+            "grade_type": 2,
+            "institute": 98,
+            "followed": [
+                21230522
+            ]
+        }
+    ]
 }
