@@ -1,12 +1,11 @@
 #pragma once
-#include "Instit.h"
 #include <stdbool.h>
+#define NULL 0LL
 
 typedef struct Student_IdNode {
     int id;
     struct Student_IdNode *next;
 } Student_IdNode;
-
 // 课程信息
 typedef struct Course {
     // 学年学期 e.g. 202301 stands for 2023-2024 学年第一学期
@@ -23,7 +22,7 @@ typedef struct Course {
     char exam_date[11];       // 考试日期 e.g. "2023-06-26"
     char grade_type;          // 1百分制/ 2五级制
     char exam_type;           // 1考试 /2考察
-    int institute;               // 开课单位
+    int institute;            // 开课单位
     Student_IdNode *followed; // 选这门课的学生的学号的链表
 
     struct Course *next;
@@ -62,58 +61,19 @@ typedef struct Student_Node {
     struct Student_Node *next;
 } Student_Node;
 
-// Global pointers to loaded data
-// Globally used.
-struct {
-    Student_Node *pStudentHead;
-    Student_Node *pStudentFoot;
-    Course_Node *pCourseHead;
-    Course_Node *pCourseFoot;
-} data_address = {NULL, NULL, NULL, NULL};
-
-// 校公选课类别
-const char *pubCourseCategory[] = {"", // 非校公选课
-                                   "限选大学生心理健康",
-                                   "哲学智慧与品判思维(I)",
-                                   "大学生职业发展与就业创业指导",
-                                   "文化理解与历史传承(II)",
-                                   "经济与社会发展类(III)",
-                                   "当代中国与公民责任(III)",
-                                   "管理与行为科学类(IV)",
-                                   "全球视野与文明交流(IV)",
-                                   "艺术鉴赏与审美体验(V)",
-                                   "工程人文卓越课程类(VII)",
-                                   "科学精神与创新创造(VI)",
-                                   "科学与技术类(V)",
-                                   "生态环境与生命关怀(VII)",
-                                   "人际沟通与合作精神(VIII)",
-                                   "文学与艺术类(I)",
-                                   "创新与创业类(VI)",
-                                   "历史与文化类(II)",
-                                   "医学人文卓越课程类(VII)",
-                                   "慕课"};
-
-char *courseType[] = {
-    "通识教育课",
-    "学科基础课",
-    "专业教育课",
-    "拓展课",
-};
-
-// Load data from a binary file.
-// Data to load and build includes:
-//      1) Student, Course and Awards
-//      2) nameIndex and idIndex
-void LoadData(const char *fileDir);
-
 typedef struct {
     int student_count;
     Student_IdNode *first;
     Student_IdNode *end;
 } Student_List;
-void Build_Student_Index(Student *pStu);
+
+// Load data from a binary file.
+void LoadData(const char *fileDir);
 
 Student *Get_Student_by_id(const int id);
 Student_IdNode *Get_Students_by_name(const char name[]);
 const Student_List Get_StudentList_by_grade(int institute_and_grade);
+const Student_List Get_StudentList_by_CourseID(const char *course_id);
 Course *Get_Course(const char *course_id);
+
+void ImportData(const char *fileDir);
