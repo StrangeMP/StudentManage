@@ -4,6 +4,7 @@
 
 typedef struct Student_IdNode {
     int id;
+    struct Student_IdNode *prev;
     struct Student_IdNode *next;
 } Student_IdNode;
 
@@ -32,11 +33,13 @@ typedef struct Course {
     int institute;          // 开课单位
     Student_List *followed; // 选这门课的学生的学号的链表
 
+    struct Course *prev;
     struct Course *next;
 } Course;
 
 typedef struct Course_Node {
     Course crs;
+    struct Course_Node *prev;
     struct Course_Node *next;
 } Course_Node;
 
@@ -53,6 +56,7 @@ typedef struct Enroll {
     bool passed;    // 是否及格
     bool effective; // 是否有效
 
+    struct Enroll *prev;
     struct Enroll *next;
 } Enroll;
 
@@ -65,6 +69,7 @@ typedef struct {
 
 typedef struct Student_Node {
     Student stu;
+    struct Student_Node *prev;
     struct Student_Node *next;
 } Student_Node;
 
