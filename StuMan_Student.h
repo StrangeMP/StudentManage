@@ -73,14 +73,14 @@ typedef struct Student_Node {
     struct Student_Node *next;
 } Student_Node;
 
-// Load data from a binary file.
-void LoadData(const char *fileDir);
+struct STUMAN_DataAddress {
+    Student_Node *pStudentHead;
+    Student_Node *pStudentFoot;
+    Course_Node *pCourseHead;
+    Course_Node *pCourseFoot;
+};
+extern struct STUMAN_DataAddress data_address;
 
-Student *Get_Student_by_id(const int id);
-Student_IdNode *Get_Student_IdNode_by_id(const int id);
-const Student_List *Get_StudentList_by_name(const char name[]);
-const Student_List *Get_StudentList_by_grade(int institute_and_grade);
-const Student_List *Get_StudentList_by_CourseID(const char *course_id);
-Course *Get_Course(const char *course_id);
-
-void ImportData(const char *fileDir);
+extern Student *idIndex[90][4][30][30];
+extern Student_List *nameIndex[65536];
+extern Student_List *gradeIndex[90][4];
