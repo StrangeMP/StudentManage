@@ -77,6 +77,7 @@ typedef struct Student_Node {
 void LoadData(const char *fileDir);
 
 Student *Get_Student_by_id(const int id);
+Student_IdNode *Get_Student_IdNode_by_id(const int id);
 const Student_List *Get_StudentList_by_name(const char name[]);
 const Student_List *Get_StudentList_by_grade(int institute_and_grade);
 const Student_List *Get_StudentList_by_CourseID(const char *course_id);
