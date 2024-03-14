@@ -79,6 +79,8 @@ Student_IdNode *Student_IdNode_Add(Student_IdNode *Head, int id) {
     return idNode;
 }
 
+// Add a Student_IdNode to stu_list, if stu_list empty, initialize it with id.
+// Returns stu_list if added or initialized, NULL if id already exists.
 Student_List *Student_List_AddStudentID(Student_List *stu_list, int id) {
     if (stu_list == NULL) {
         stu_list = (Student_List *)malloc(sizeof(Student_List));
