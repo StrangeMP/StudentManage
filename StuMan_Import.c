@@ -15,6 +15,8 @@ static Course *Course_Insert(const cJSON *cjson_course);
 void ImportData(const char *fileDir);
 
 static int getNounIndex(const char **nounArr, int arrLen, const char *content) {
+    if (content == NULL)
+        return 0;
     for (int i = 1; i < arrLen; i++) {
         if (strcmp(nounArr[i], content) == 0)
             return i;

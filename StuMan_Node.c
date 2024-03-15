@@ -91,7 +91,7 @@ Student_List *Student_List_AddStudentID(Student_List *stu_list, int id) {
         stu_list->end = stu_list->first = Student_IdNode_Add(NULL, id);
         stu_list->student_count = 1;
         return stu_list;
-    } else if (Student_IdNode_Add(stu_list->first, id) != NULL) {
+    } else if (Student_IdNode_Add(stu_list->end, id) != NULL) {
         stu_list->student_count++;
         stu_list->end = stu_list->end->next;
         return stu_list;
