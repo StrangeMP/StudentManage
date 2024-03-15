@@ -16,8 +16,6 @@ typedef struct {
 
 // 课程信息
 typedef struct Course {
-    // 学年学期 e.g. 202301 stands for 2023-2024 学年第一学期
-    int semester;
     char name[50];          // 课程名 e.g.大学物理B
     char id[13];            // 课程号 e.g. ae22931102
     char num;               // 同一课程不同老师用此区分
@@ -33,8 +31,8 @@ typedef struct Course {
     int institute;          // 开课单位
     Student_List *followed; // 选这门课的学生的学号的链表
 
-    struct Course *prev;
-    struct Course *next;
+    // struct Course *prev;
+    // struct Course *next;
 } Course;
 
 typedef struct Course_Node {
@@ -48,13 +46,14 @@ typedef struct Enroll {
     char course_id[13]; // 课程号 e.g. ae22931102
     union {
         double grade; // 百分制 总成绩
-        char level;   // 五级制成绩 1优秀/ 2良好/ 3及格/ 4不及格
+        char level;   // 五级制成绩 1优秀/ 2良好/ 3中等/ 4及格/ 5不及格
     };
-    char retake;    // 1初修/ 2重修/ 3重考
-    bool major;     // 是否主修
-    double gpa;     // 绩点
-    bool passed;    // 是否及格
-    bool effective; // 是否有效
+    char retake;      // 1初修/ 2重修/ 3重考
+    int semester; // 学年学期 231 for 2023-2024学年第1学期
+    bool major;       // 是否主修
+    double gpa;       // 绩点
+    bool passed;      // 是否及格
+    bool effective;   // 是否有效
 
     struct Enroll *prev;
     struct Enroll *next;

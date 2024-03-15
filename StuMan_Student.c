@@ -1,4 +1,5 @@
 #include "StuMan_Student.h"
+#include "StuMan_Search.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

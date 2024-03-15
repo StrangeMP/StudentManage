@@ -67,7 +67,7 @@ Student_IdNode *Student_IdNode_Add(Student_IdNode *Head, int id) {
             return NULL;
         else
             // id doesn't exist, add
-            Student_IdNode_InsertAfter(Head, id);
+            idNode = Student_IdNode_InsertAfter(Head, id);
     }
     // Head == NULL
     else { // Construct a new Student_IdNode with the given id
@@ -79,7 +79,7 @@ Student_IdNode *Student_IdNode_Add(Student_IdNode *Head, int id) {
     return idNode;
 }
 
-// Add a Student_IdNode to stu_list, if stu_list empty, initialize it with id.
+// Add a Student_IdNode to stu_list, if stu_list == NULL, initialize it with id.
 // Returns stu_list if added or initialized, NULL if id already exists.
 Student_List *Student_List_AddStudentID(Student_List *stu_list, int id) {
     if (stu_list == NULL) {
@@ -93,6 +93,7 @@ Student_List *Student_List_AddStudentID(Student_List *stu_list, int id) {
         return stu_list;
     } else if (Student_IdNode_Add(stu_list->first, id) != NULL) {
         stu_list->student_count++;
+        stu_list->end = stu_list->end->next;
         return stu_list;
     } else
         return NULL;

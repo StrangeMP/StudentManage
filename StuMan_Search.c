@@ -30,10 +30,11 @@ const Student_List *Get_StudentList_by_CourseID(const char *course_id) {
     return Get_Course(course_id)->followed;
 }
 
+// Returns address of the Course with course_id, NULL if not found.
 Course *Get_Course(const char *course_id) {
-    Course_Node *crs_node = data_address.pCourseHead;
-    if (crs_node == NULL)
+    if (data_address.pCourseHead == NULL)
         return NULL;
+    Course_Node *crs_node = data_address.pCourseHead;
     while (true) {
         if (strcmp(crs_node->crs.id, course_id) == 0)
             return &crs_node->crs;
