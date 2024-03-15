@@ -34,7 +34,7 @@ static int parse_Institute_grade(const cJSON *item) {
 static Enroll *Enroll_Construct(const cJSON *item) {
     if (item == NULL)
         return NULL;
-    Enroll *newEnr = (Enroll *)malloc(sizeof(Enroll));
+    Enroll *newEnr = (Enroll *)MALLOC(sizeof(Enroll));
     strcpy(newEnr->course_id, cJSON_GetObjectItem(item, "课程号")->valuestring);
     if (cJSON_IsNumber(cJSON_GetObjectItem(item, "总成绩")))
         newEnr->grade = cJSON_GetObjectItem(item, "总成绩")->valuedouble;
@@ -104,7 +104,7 @@ static Student_Node *Student_Node_Add(Student_Node *Head, int id) {
     if (Get_Student_by_id(id) != NULL)
         return NULL;
     else {
-        Student_Node *newNode = (Student_Node *)malloc(sizeof(Student_Node));
+        Student_Node *newNode = (Student_Node *)MALLOC(sizeof(Student_Node));
         newNode->stu.id = id;
         if (Head == NULL) {
             newNode->prev = newNode->next = NULL;
@@ -154,7 +154,7 @@ static Course_Node *Course_Node_Add(Course_Node *Head, const char *course_id) {
     if (Get_Course(course_id) != NULL)
         return NULL;
     else {
-        Course_Node *newNode = (Course_Node *)malloc(sizeof(Course_Node));
+        Course_Node *newNode = (Course_Node *)MALLOC(sizeof(Course_Node));
         strcpy(newNode->crs.id, course_id);
         if (Head == NULL) {
             newNode->prev = newNode->next = NULL;
@@ -225,7 +225,7 @@ void ImportData(const char *fileDir) {
     fseek(pf, 0, SEEK_END);
     long fsize = ftell(pf);
     fseek(pf, 0, SEEK_SET);
-    char *rawData = (char *)malloc(fsize + 1);
+    char *rawData = (char *)MALLOC(fsize + 1);
     fread(rawData, fsize, 1, pf);
     rawData[fsize] = '\0';
     fclose(pf);
@@ -293,11 +293,11 @@ static void Student_Node_Free(Student_Node *res) {
         while (crtEnroll) {
             lastEnroll = crtEnroll;
             crtEnroll = crtEnroll->next;
-            free(lastEnroll);
+            FREE(lastEnroll);
         }
         crt = crt->next;
 
-        free(last);
+        FREE(last);
     }
 }
 
@@ -309,9 +309,9 @@ static void Student_List_Free(Student_List *stu_list) {
     while (crt_node) {
         last_node = crt_node;
         crt_node = crt_node->next;
-        free(last_node);
+        FREE(last_node);
     }
-    free(stu_list);
+    FREE(stu_list);
 }
 
 static void Course_Node_Free(Course_Node *res) {
@@ -320,7 +320,7 @@ static void Course_Node_Free(Course_Node *res) {
         last = crt;
         Student_List_Free(crt->crs.followed);
         crt = crt->next;
-        free(last);
+        FREE(last);
     }
 }
 

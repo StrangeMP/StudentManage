@@ -2,6 +2,22 @@
 #include <stdbool.h>
 #define NULL 0LL
 
+#ifdef DEBUG
+#include <stddef.h>
+#define MALLOC my_alloc
+#define FREE my_free
+typedef struct {
+    int cnt;
+    void *table[2048];
+} MemoryRecord;
+extern MemoryRecord memRec;
+void *my_alloc(size_t _Size);
+void my_free(void *_Memory);
+#else
+#define MALLOC malloc
+#define FREE free
+#endif
+
 typedef struct Student_IdNode {
     int id;
     struct Student_IdNode *prev;
@@ -48,12 +64,12 @@ typedef struct Enroll {
         double grade; // 百分制 总成绩
         char level;   // 五级制成绩 1优秀/ 2良好/ 3中等/ 4及格/ 5不及格
     };
-    char retake;      // 1初修/ 2重修/ 3重考
-    int semester; // 学年学期 231 for 2023-2024学年第1学期
-    bool major;       // 是否主修
-    double gpa;       // 绩点
-    bool passed;      // 是否及格
-    bool effective;   // 是否有效
+    char retake;    // 1初修/ 2重修/ 3重考
+    int semester;   // 学年学期 231 for 2023-2024学年第1学期
+    bool major;     // 是否主修
+    double gpa;     // 绩点
+    bool passed;    // 是否及格
+    bool effective; // 是否有效
 
     struct Enroll *prev;
     struct Enroll *next;
@@ -80,6 +96,6 @@ struct STUMAN_DataAddress {
 };
 extern struct STUMAN_DataAddress data_address;
 
-extern Student *idIndex[90][4][30][30];
+extern Student *idIndex[90][4][32][32];
 extern Student_List *nameIndex[65536];
 extern Student_List *gradeIndex[90][4];

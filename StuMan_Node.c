@@ -21,7 +21,7 @@ Student_IdNode *Student_IdNode_Find(Student_IdNode *Head, int id) {
 static Student_IdNode *Student_IdNode_InsertBefore(Student_IdNode *target, int stu_id) {
     if (target == NULL)
         return NULL;
-    Student_IdNode *item = (Student_IdNode *)malloc(sizeof(Student_IdNode));
+    Student_IdNode *item = (Student_IdNode *)MALLOC(sizeof(Student_IdNode));
     item->id = stu_id;
     Student_IdNode *first = target->prev, *second = item, *third = target;
     second->next = third;
@@ -40,7 +40,7 @@ static Student_IdNode *Student_IdNode_InsertBefore(Student_IdNode *target, int s
 static Student_IdNode *Student_IdNode_InsertAfter(Student_IdNode *target, int stu_id) {
     if (target == NULL)
         return NULL;
-    Student_IdNode *item = (Student_IdNode *)malloc(sizeof(Student_IdNode));
+    Student_IdNode *item = (Student_IdNode *)MALLOC(sizeof(Student_IdNode));
     item->id = stu_id;
     Student_IdNode *first = target, *second = item, *third = target->next;
     first->next = second;
@@ -71,7 +71,7 @@ Student_IdNode *Student_IdNode_Add(Student_IdNode *Head, int id) {
     }
     // Head == NULL
     else { // Construct a new Student_IdNode with the given id
-        idNode = (Student_IdNode *)malloc(sizeof(Student_IdNode));
+        idNode = (Student_IdNode *)MALLOC(sizeof(Student_IdNode));
         idNode->id = id;
         idNode->prev = NULL;
         idNode->next = NULL;
@@ -83,7 +83,7 @@ Student_IdNode *Student_IdNode_Add(Student_IdNode *Head, int id) {
 // Returns stu_list if added or initialized, NULL if id already exists.
 Student_List *Student_List_AddStudentID(Student_List *stu_list, int id) {
     if (stu_list == NULL) {
-        stu_list = (Student_List *)malloc(sizeof(Student_List));
+        stu_list = (Student_List *)MALLOC(sizeof(Student_List));
         stu_list->end = stu_list->first = Student_IdNode_Add(NULL, id);
         stu_list->student_count = 1;
         return stu_list;
