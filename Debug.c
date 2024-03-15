@@ -1,7 +1,7 @@
 #include "StuMan_Import.h"
 
 int main() {
-    ImportData("Scores_Information.json");
+    ImportData("TestData.json");
     ReleaseResource();
     return 0;
 }
