@@ -96,6 +96,6 @@ struct STUMAN_DataAddress {
 };
 extern struct STUMAN_DataAddress data_address;
 
-extern Student *idIndex[90][4][32][32];
+extern Student_Node *idIndex[90][4][32][32];
 extern Student_List *nameIndex[65536];
 extern Student_List *gradeIndex[90][4];

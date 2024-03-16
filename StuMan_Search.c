@@ -14,19 +14,19 @@ size_t Get_16bit_Hash(const char str[]) {
 }
 
 Student *Get_Student_by_id(const int id) {
-    return idIndex[id / 1000000][id / 10000 % 100][id / 100 % 100][id % 100];
+    return &(idIndex[id / 1000000][id / 10000 % 100][id / 100 % 100][id % 100]->stu);
 }
 
-const Student_List *Get_StudentList_by_name(const char name[]) {
+Student_List *Get_StudentList_by_name(const char name[]) {
     Student_List *id_List = nameIndex[Get_16bit_Hash(name)];
     return id_List;
 }
 
-const Student_List *Get_StudentList_by_grade(int institute_and_grade) {
+Student_List *Get_StudentList_by_grade(int institute_and_grade) {
     return gradeIndex[institute_and_grade / 100][institute_and_grade % 100];
 }
 
-const Student_List *Get_StudentList_by_CourseID(const char *course_id) {
+Student_List *Get_StudentList_by_CourseID(const char *course_id) {
     return Get_Course(course_id)->followed;
 }
 
@@ -59,4 +59,8 @@ Enroll *Enroll_Find(Student *src, const char *course_id) {
         else
             enroll_node = enroll_node->next;
     }
+}
+
+Student_Node *Get_Student_Node_by_id(const int id) {
+    return idIndex[id / 1000000][id / 10000 % 100][id / 100 % 100][id % 100];
 }

@@ -4,9 +4,9 @@
 #include "StuMan_Student.h"
 
 #define STU_MAN_YEAR 24
-static void Build_ID_Index(Student *pStu) {
-    int id = pStu->id;
-    idIndex[id / 1000000][id / 10000 % 100][id / 100 % 100][id % 100] = pStu;
+static void Build_ID_Index(Student_Node *pStuNode) {
+    int id = pStuNode->stu.id;
+    idIndex[id / 1000000][id / 10000 % 100][id / 100 % 100][id % 100] = pStuNode;
 }
 
 static void Build_Name_Index(Student *pStu) {
@@ -28,10 +28,10 @@ static void Build_Grade_Index(Student *pStu) {
         Student_List_AddStudentID(stu_list, pStu->id);
 }
 
-void Build_Student_Index(Student *pStu) {
-    if (Get_Student_by_id(pStu->id) == NULL) {
-        Build_ID_Index(pStu);
-        Build_Name_Index(pStu);
-        Build_Grade_Index(pStu);
+void Build_Student_Index(Student_Node *pStuNode) {
+    if (Get_Student_by_id(pStuNode->stu.id) == NULL) {
+        Build_ID_Index(pStuNode);
+        Build_Name_Index(&(pStuNode->stu));
+        Build_Grade_Index(&(pStuNode->stu));
     }
 }

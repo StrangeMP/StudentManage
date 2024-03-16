@@ -142,7 +142,7 @@ static Student *Student_Insert(const cJSON *cjson_student) {
         currStudent->id = id;
         currStudent->institute_grade = parse_Institute_grade(cjson_student);
         currStudent->enrolled = NULL;
-        Build_Student_Index(currStudent);
+        Build_Student_Index(data_address.pStudentFoot);
     }
     return currStudent;
 }
