@@ -1,6 +1,7 @@
 #pragma once
 
 extern const char *Institutes[];
+extern const char *Professions[88][15];
 extern const char *pubCourseCategory[];
 extern const char *Course_type[];
 extern const char *Enroll_retake[];
