@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-Student *idIndex[90][4][32][32] = {NULL};            // 学号-学生内存地址索引
+Student_Node *idIndex[90][4][32][32] = {NULL};            // 学号-学生内存地址索引
 Student_List *nameIndex[65536] = {NULL};             // 名字-学号索引
 Student_List *gradeIndex[90][4] = {{0, NULL, NULL}}; // 学院年级-学号索引
 
