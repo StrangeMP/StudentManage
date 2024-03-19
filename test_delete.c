@@ -27,12 +27,12 @@ void del_(int which,int num,...)
                     {
                         p->prev->next=p->next;
                         p->next->prev=p->prev;
-                        free(p);
+                        FREE(p);
                     }
                     else
                     {
                         p->next->prev=NULL;
-                        free(p);
+                        FREE(p);
                     }
                     va_end(valist);
                     return ;
@@ -54,10 +54,10 @@ void del_(int which,int num,...)
             {
                 del_(1,2,(Get_StudentList_by_CourseID(p2->course_id))->first,id);
                 p2=p2->next;
-                free(p2->prev);
+                FREE(p2->prev);
             }
             del_(1,2,(Get_StudentList_by_CourseID(p2->course_id))->first,id);
-            free(p2);
+            FREE(p2);
             break;
         }
         case 3:
@@ -68,10 +68,10 @@ void del_(int which,int num,...)
             while(p3->next!=NULL) 
             {
                 p3=p3->next;
-                free(p3->prev);
+                FREE(p3->prev);
             }
-            free(p3);
-            free(pl);
+            FREE(p3);
+            FREE(pl);
             break;
         }
     }
@@ -172,7 +172,7 @@ void del_Stu(int id)
     del_name_index(p->name,id);
     //删除gradeindex学生
     del_gradeIndex(p->institute_grade,id);//??
-    free(p);
+    FREE(p);
     return;
 }
 
@@ -214,7 +214,7 @@ void del_course(char *course_id)
     //删除选课的学生
     del_(3,2,p->followed);
     //删课程
-    free(p);
+    FREE(p);
     return;
 }
 
