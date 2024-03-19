@@ -1,7 +1,6 @@
 #pragma once
 #include <stdbool.h>
 #define NULL 0LL
-
 #ifdef DEBUG
 #include <stddef.h>
 #define MALLOC my_alloc
@@ -75,10 +74,17 @@ typedef struct Enroll {
     struct Enroll *next;
 } Enroll;
 
-typedef struct {
+typedef struct Student{
     char name[32];
     int id;              // e.g. 20230501
     int institute_grade; // e.g. 2123
+    struct
+    {
+        struct Essays*essays;
+        struct Projects*projects;
+        struct Awards*award;
+    } Benefit;
+    
     Enroll *enrolled;
 } Student;
 

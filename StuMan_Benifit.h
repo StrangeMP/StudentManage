@@ -5,6 +5,12 @@ typedef enum
     APPROVED,
     DENIED
 } Status;
+typedef enum
+{
+    ESSAY,
+    PROJECT,
+    AWARDS
+} Benefit_type;
 typedef struct Essays // 设置Essays结构体变量
 {
     char Author[5][50];
@@ -41,6 +47,6 @@ typedef struct Awards  // 设置Awards结构体变量
     struct Awards *prev;
     Status status;
 }Awards;
-void addBenefitToStudentByID();
+void* Student_AddBenefits(int stu_id, Benefit_type t, void* benifits);
 
 
