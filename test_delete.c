@@ -146,17 +146,7 @@ typedef struct Student_Node {
 
 typedef struct Enroll {
     char course_id[13]; // 课程号 e.g. ae22931102
-    union {
-        double grade; // 百分制 总成绩
-        char level;   // 五级制成绩 1优秀/ 2良好/ 3中等/ 4及格/ 5不及格
-    };
-    char retake;    // 1初修/ 2重修/ 3重考
-    int semester;   // 学年学期 231 for 2023-2024学年第1学期
-    bool major;     // 是否主修
-    double gpa;     // 绩点
-    bool passed;    // 是否及格
-    bool effective; // 是否有效
-
+    ... ...
     struct Enroll *prev;
     struct Enroll *next;
 } Enroll;
@@ -229,11 +219,20 @@ void del(int which, int num, ...)
     switch(which)
     {
     case 1:
-    del_Stu(va_arg(valist,int));
-    break;
-    case 2:
-    del_course(va_arg(valist,char*));
+    {
+    int id=va_arg(valist,int);
+    del_Stu(id);
+    printf("已删除学号为%d的学生",id);
     break;
     }
+    case 2:
+    {
+    char *course_id=va_arg(valist,char *);
+    del_course(course_id);
+    printf("已删除课程号为%s的课程",course_id);
+    break;
+    }
+    }
     va_end(valist);
+    return;
 }
