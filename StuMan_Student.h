@@ -1,4 +1,5 @@
 #pragma once
+#include "StuMan_Benifit.h"
 #include <stdbool.h>
 #ifndef NULL
 #define NULL 0LL
@@ -46,6 +47,8 @@ typedef struct Course {
     char grade_type;        // 1百分制/ 2五级制
     char exam_type;         // 1考试 /2考察
     int institute;          // 开课单位
+    double ExcellentRate;   // 课程优秀率
+    double PassRate;        // 课程及格率
     Student_List *followed; // 选这门课的学生的学号的链表
 
     // struct Course *prev;
@@ -76,17 +79,25 @@ typedef struct Enroll {
     struct Enroll *next;
 } Enroll;
 
+typedef struct {
+    Essays *essays;
+    Projects *projects;
+    Awards *awards;
+} BENEFITS;
+
 typedef struct Student {
     char name[32];
     int id;              // e.g. 20230501
     int institute_grade; // e.g. 2123
     int major;           // e.g. 2101 for 计算机科学与技术
+    BENEFITS Benefit;
+    int failed;         // 不及格课程数
+    double GPA_basic;   // 学业成绩
+    double GPA_overall; // 学科素质加分分数
     struct {
-        struct Essays *essays;
-        struct Projects *projects;
-        struct Awards *award;
-    } Benefit;
-
+        int rk;
+        int basis;
+    } rank;
     Enroll *enrolled;
 } Student;
 

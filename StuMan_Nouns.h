@@ -10,3 +10,4 @@ extern const char *Course_nature[];
 extern const char *Course_grade_type[];
 extern const char *Course_exam_type[];
 int Get_NounArrLen(const char **p);
+int getNounIndex(const char **nounArr, int arrLen, const char *content);

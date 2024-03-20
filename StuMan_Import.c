@@ -3,6 +3,7 @@
 #include "StuMan_Node.h"
 #include "StuMan_Nouns.h"
 #include "StuMan_Search.h"
+#include "StuMan_Statistics.h"
 #include "cJSON.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,16 +14,6 @@ static Enroll *Enroll_Append(Student *dest, cJSON *cjson_enrolled);
 static Student *Student_Insert(const cJSON *cjson_student);
 static Course *Course_Insert(const cJSON *cjson_course);
 void ImportData(const char *fileDir);
-
-static int getNounIndex(const char **nounArr, int arrLen, const char *content) {
-    if (content == NULL)
-        return 0;
-    for (int i = 0; i < arrLen; i++) {
-        if (strcmp(nounArr[i], content) == 0)
-            return i;
-    }
-    return 0;
-}
 
 static int parse_Institute_grade(const cJSON *item) {
     int instit = getNounIndex(Institutes, Get_NounArrLen(Institutes),
@@ -64,6 +55,8 @@ static Enroll *Enroll_Append(Student *dest, cJSON *cjson_enrolled) {
     Enroll *ret = NULL;
     char course_id[13];
     strcpy(course_id, cJSON_GetObjectItem(cjson_enrolled, "课程号")->valuestring);
+    if (Get_Course(course_id) == NULL)
+        return NULL;
     Enroll *item = Enroll_Find(dest, course_id);
     if (item == NULL) { // course_id not found in enrolled-list
         ret = item = Enroll_Construct(cjson_enrolled);
@@ -77,6 +70,13 @@ static Enroll *Enroll_Append(Student *dest, cJSON *cjson_enrolled) {
             item->prev = NULL;
             dest->enrolled = item;
         }
+    } else {
+        Enroll *prev = item->prev;
+        Enroll *next = item->next;
+        Enroll *tmp = Enroll_Construct(cjson_enrolled);
+        *item = *tmp;
+        item->prev = prev;
+        item->next = next;
     }
     // Try updating Course follower-list
     // search for the course_id in the Course List
@@ -92,8 +92,8 @@ static Enroll *Enroll_Append(Student *dest, cJSON *cjson_enrolled) {
             Student_List_AddStudentID(stu_list, dest->id);
 
     } else // course_id not found in Course List, no such Course, error.
-        printf("Enroll_Append Error: Course %s not found when appending for %s:%d", item->course_id,
-               dest->name, dest->id);
+        printf("Enroll_Append Error: Course %s not found when appending for %s:%d\n",
+               item->course_id, dest->name, dest->id);
     return ret;
 }
 
@@ -106,6 +106,7 @@ static Student_Node *Student_Node_Add(Student_Node *Head, int id) {
     else {
         Student_Node *newNode = (Student_Node *)MALLOC(sizeof(Student_Node));
         newNode->stu.id = id;
+        newNode->stu.Benefit = (BENEFITS){.essays = NULL, .projects = NULL, .awards = NULL};
         if (Head == NULL) {
             newNode->prev = newNode->next = NULL;
             return newNode;
@@ -287,6 +288,31 @@ void ImportData(const char *fileDir) {
             }
         }
     }
+    {
+        // Update Student Info
+        Student_Node *crt_stuNode = data_address.pStudentHead;
+        while (crt_stuNode) {
+            Student_Update(crt_stuNode->stu.id);
+            crt_stuNode = crt_stuNode->next;
+        }
+    }
+    {
+        // Update Course Info
+        Course_Node *crt_crsNode = data_address.pCourseHead;
+        while (crt_crsNode) {
+            Course_Update(crt_crsNode->crs.id);
+            crt_crsNode = crt_crsNode->next;
+        }
+    }
+    {
+        // Update Rankings
+        for (int i = 1; i < 88; i++) {
+            if (Institutes[i])
+                for (int j = 0; Professions[i][j]; j++)
+                    UpdateRank(i, Professions[i][j]);
+        }
+    }
+
     cJSON_Delete(cjson_Data);
 }
 

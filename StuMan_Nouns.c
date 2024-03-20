@@ -1,4 +1,5 @@
 #include "StuMan_Nouns.h"
+#include <string.h>
 
 // Institutions
 const char *Institutes[] = {
@@ -159,7 +160,7 @@ const char *Professions[88][15] = {
     {"物理学类", "应用物理学", "核物理", "光电信息科学与工程", "物理学（中外合作办学） "}, // 11
     {"化学类", "应用化学", "材料化学", "高分子材料与工程", "化学工程与工艺"},              // 12
     {"生物科学类", "生物技术", "生物工程类", "生物制药", "药物制剂"},                      // 13
-    {"机械工程（饶斌班，本研贯通）", "机械工程", "工业工程", "工程力学", "智能制造工程"}, // 14
+    {"机械工程（饶斌班，本研贯通）", "机械工程", "工业工程", "工程力学", "智能制造工程"},  // 14
     {"车辆工程（饶斌班，本研贯通）", "车辆工程", "工业设计", "能源与动力工程"},            // 15
     {"材料类", "材料科学与工程 ", "无机非金属材料工程", "材料成型及控制工程", "材料物理",
      "材料物理(高校专项计划)"}, // 16
@@ -265,4 +266,17 @@ int Get_NounArrLen(const char **p) {
     else if (p == Course_exam_type)
         arrSize = sizeof(Course_exam_type);
     return arrSize / szp;
+}
+
+#ifndef NULL
+#define NULL 0LL
+#endif
+int getNounIndex(const char **nounArr, int arrLen, const char *content) {
+    if (content == NULL)
+        return 0;
+    for (int i = 0; i < arrLen; i++) {
+        if (strcmp(nounArr[i], content) == 0)
+            return i;
+    }
+    return 0;
 }
