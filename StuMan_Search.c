@@ -27,7 +27,11 @@ Student_List *Get_StudentList_by_grade(int institute_and_grade) {
 }
 
 Student_List *Get_StudentList_by_CourseID(const char *course_id) {
-    return Get_Course(course_id)->followed;
+    Course *pCrs = Get_Course(course_id);
+    if (pCrs)
+        return pCrs->followed;
+    else
+        return NULL;
 }
 
 // Returns address of the Course with course_id, NULL if not found.
