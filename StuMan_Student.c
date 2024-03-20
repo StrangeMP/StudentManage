@@ -21,7 +21,7 @@ void my_free(void *_Memory) {
     for (int i = 0; i < memRec.cnt; i++) {
         if (memRec.table[i] == _Memory) {
             memRec.table[i] = NULL;
-            --i;
+            break;
         }
     }
 }

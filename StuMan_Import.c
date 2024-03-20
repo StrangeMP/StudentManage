@@ -17,7 +17,7 @@ void ImportData(const char *fileDir);
 static int getNounIndex(const char **nounArr, int arrLen, const char *content) {
     if (content == NULL)
         return 0;
-    for (int i = 1; i < arrLen; i++) {
+    for (int i = 0; i < arrLen; i++) {
         if (strcmp(nounArr[i], content) == 0)
             return i;
     }
@@ -141,6 +141,10 @@ static Student *Student_Insert(const cJSON *cjson_student) {
         strcpy(currStudent->name, cJSON_GetObjectItem(cjson_student, "姓名")->valuestring);
         currStudent->id = id;
         currStudent->institute_grade = parse_Institute_grade(cjson_student);
+        int inst = currStudent->institute_grade / 100;
+        currStudent->major =
+            inst * 100 + getNounIndex(Professions[inst], 15,
+                                      cJSON_GetObjectItem(cjson_student, "专业")->valuestring);
         currStudent->enrolled = NULL;
         Build_Student_Index(data_address.pStudentFoot);
     }
@@ -231,6 +235,7 @@ void ImportData(const char *fileDir) {
     fclose(pf);
 
     cJSON *cjson_Data = cJSON_Parse(rawData);
+    FREE(rawData);
     // Process with to-be-imported Students
     cJSON *Student_Collection = cJSON_GetObjectItem(cjson_Data, "学生");
     int student_array_size = cJSON_GetArraySize(Student_Collection);
