@@ -22,8 +22,9 @@ Student_List *Get_StudentList_by_name(const char name[]) {
     return id_List;
 }
 
+#define YEAR 24
 Student_List *Get_StudentList_by_grade(int institute_and_grade) {
-    return gradeIndex[institute_and_grade / 100][institute_and_grade % 100];
+    return gradeIndex[institute_and_grade / 100][YEAR - 1 - institute_and_grade % 100];
 }
 
 Student_List *Get_StudentList_by_CourseID(const char *course_id) {
