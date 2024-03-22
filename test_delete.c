@@ -221,8 +221,20 @@ int  del_stu_in_course(char *course_id)
     //删除选课的学生
     int f=del_(3,2,p->followed);
     //删课程
-    //缺少删除course_node的接口
-    //FREE(p);
+    FREE(p);
+    Course_Node *p2=Get_Course_Node(course_id);
+    if(p2->prev!=NULL)
+    {
+        if(p2->next!=NULL)
+            p2->next->prev=p2->prev;
+        p2->prev->next=NULL;
+    }
+    else 
+    {
+        data_address.pCourseHead=p2->next;
+        if(p2->next!=NULL)p2->next->prev=NULL;
+    }
+
 
     if(f==1) {printf("该课程没有学生选课\n");return 1;}
     return 0;
