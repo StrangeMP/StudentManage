@@ -31,7 +31,7 @@ typedef struct Project // 设置Projec结构体变量
 {
     char Member[5][32];    // 项目成员
     char GuideTeacher[32]; // 指导教师
-    int ProjectID[10];     // 项目编号
+    char ProjectID[20];     // 项目编号
     char ProjectName[100]; // 项目名
     char StartDate[11];    // 开始日期
     char EndDate[11];      // 项目终止日期
