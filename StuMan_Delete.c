@@ -2,7 +2,7 @@
 #include <time.h>
 #include <malloc.h>
 #include <stdio.h>
-#include"test_delete.h"
+#include"StuMan_Delete.h"
 #include"StuMan_Student.h"
 #include"StuMan_Search.h"
 
@@ -54,8 +54,11 @@ int del_(int which,int num,...)
             while(*p2) 
             {
                 Student_List * p3=Get_StudentList_by_CourseID((*p2)->course_id);
+                int flag1=0;
                 if(p3==NULL) printf("课程%s没有学生选择\n",(*p2)->course_id);
-                else del_(1,2,p3->first,id);
+                //删除课程中的学生
+                else flag1=del_(1,2,p3->first,id);
+                if(flag1==1) printf("在课程%s中未找到学号为%d的学生\n",(*p2)->course_id,id);
                 Enroll* p4=*p2;
                 *p2=(*p2)->next;
                 FREE(p4);
@@ -79,24 +82,19 @@ int del_(int which,int num,...)
     return 0;
 }
 
-//1.1删除学生的enroll和enroll中的学生
+//删除学生的enroll和enroll中的学生
 int del_enroll(Enroll** enrolledp,int id)
 {
-    //由enroll删除课程中的学生
     int flag=del_(2,2,enrolledp,id);
     return flag;
 }
 
-//3删除nameindex里面的学生
-//4删除gradeindex学生
-/*
-typedef struct Student_IdNode {
+/*  ... ...
     int id;
     struct Student_IdNode *prev;
     struct Student_IdNode *next;
 } Student_IdNode;
-
-typedef struct {
+    ... ...
     int student_count;
     Student_IdNode *first;
     Student_IdNode *end;
@@ -109,8 +107,8 @@ Student_List *gradeIndex[90][4] = {{0, NULL, NULL}}; // 学院年级-学号索�
 */
 int del_gradeIndex(int institute_grade,int aim_id)
 {
-    int flag=del_(1,2,(Get_StudentList_by_grade(institute_grade))->first,aim_id);
-    return flag;
+    int flag1=del_(1,2,(Get_StudentList_by_grade(institute_grade))->first,aim_id);
+    return flag1;
 /*
     time_t timep;
     struct tm *p;
@@ -128,21 +126,15 @@ int del_name_index(char* name,int id)
 }
 
 //删除一个学生
-/*
-typedef struct {
-    ... ...
+/*  ... ...
     int institute_grade; // e.g. 2123
     Enroll *enrolled;
 } Student;
-
-typedef struct Student_Node {
+    ... ...
     Student stu;
     struct Student_Node *prev;
     struct Student_Node *next;
 } Student_Node;
-
-typedef struct Enroll {
-    char course_id[13]; // 课程号 e.g. ae22931102
     ... ...
     struct Enroll *prev;
     struct Enroll *next;
