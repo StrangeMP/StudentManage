@@ -32,9 +32,9 @@ static double Student_CalcGPAbasic(Student *stu) {
 
 static double Student_CalcGPAoverall(Student *stu) {
     double extra_gpa = 0.0;
-    Essays *crt_essay = stu->Benefit.essays;
-    Projects *crt_proj = stu->Benefit.projects;
-    Awards *crt_awards = stu->Benefit.awards;
+    Essay *crt_essay = stu->Benefits.essays;
+    Project *crt_proj = stu->Benefits.projects;
+    Award *crt_awards = stu->Benefits.awards;
     while (crt_essay) {
         extra_gpa += crt_essay->AddGPA;
         crt_essay = crt_essay->next;
@@ -47,7 +47,7 @@ static double Student_CalcGPAoverall(Student *stu) {
         extra_gpa += crt_awards->AddGPA;
         crt_awards = crt_awards->next;
     }
-    return stu->GPA_overall = Student_CalcGPAbasic(stu) + extra_gpa;
+    return stu->GPA_overall = Student_CalcGPAbasic(stu) + (extra_gpa > 0.4 ? 0.4 : extra_gpa);
 }
 
 // 不及格课程数、学业成绩、学科素质加分分数
