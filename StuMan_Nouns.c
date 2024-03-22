@@ -141,6 +141,8 @@ const char *Course_grade_type[] = {"", "百分制", "五级制"};
 
 const char *Course_exam_type[] = {"", "考试", "考察"};
 
+const char *Benefit_Status[] = {"审核中", "通过", "否决"};
+
 const char *Professions[88][15] = {
     {""},                                                                                   // 0
     {"哲学（匡亚明班，拔尖学生培养基地）", "哲学", "社会学", "社会工作", "劳动与社会保障"}, // 1
