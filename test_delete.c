@@ -22,8 +22,7 @@ int del_(int which,int num,...)
             Student_IdNode *p=pl->first;
             int aim_id=va_arg(valist,int);
             while(p!=NULL)
-            {
-                if(p->id==aim_id)
+            {   if(p->id==aim_id)
                 {
                     if(p->prev!=NULL) 
                     {
@@ -33,8 +32,7 @@ int del_(int which,int num,...)
                     }
                     else
                     {
-                        if(p->next!=NULL) p->next->prev=NULL;
-                        else pl->first=NULL;
+                        if(p->next!=NULL) p->next->prev=NULL;else pl->first=NULL;
                         FREE(p);
                     }
                     va_end(valist);
@@ -49,8 +47,7 @@ int del_(int which,int num,...)
 
         //删除学生的Enroll
         case 2:
-        {
-            Enroll** p2=va_arg(valist,Enroll **);
+        {   Enroll** p2=va_arg(valist,Enroll **);
             int id=va_arg(valist,int);
             if(*p2==NULL){ va_end(valist);return 1;}//当前该学生没有选课
             else
@@ -69,15 +66,10 @@ int del_(int which,int num,...)
 
         //删除course的整个Student_List
         case 3:
-        {
-            Student_List *pl=va_arg(valist,Student_List *);
+        {   Student_List *pl=va_arg(valist,Student_List *);
             Student_IdNode *p=pl->first;
             if(p==NULL){ va_end(valist);return 1;}
-            while(p->next!=NULL) 
-            {
-                p=p->next;
-                FREE(p->prev);
-            }
+            while(p->next!=NULL) {p=p->next;FREE(p->prev);}
             FREE(p);
             pl->first=NULL;
             break;
@@ -131,8 +123,8 @@ int del_gradeIndex(int institute_grade,int aim_id)
 
 int del_name_index(char* name,int id)
 {
-    int flag=del_(1,2,nameIndex[Get_16bit_Hash(name)]->first,id);
-    return flag;
+    int flagname=del_(1,2,nameIndex[Get_16bit_Hash(name)]->first,id);
+    return flagname;
 }
 
 //删除一个学生
@@ -167,34 +159,25 @@ typedef struct Enroll {
 flag del_Stu(int id)
 {
     Student *p=Get_Student_by_id(id); 
-    flag f;
-    f.flag=0;
-    f.flagenroll=0;
-    f.flagname=0;
-    f.flaggrade=0;
-    if(p==NULL){f.flag=1;return f;}
+    flag flag_stu={0,0,0,0};
+    if(p==NULL){flag_stu.flag=1;return flag_stu;}
     //由enroll删除课程中的学生
     //删除学生的enroll
-    f.flagenroll=del_enroll(&(p->enrolled),id);
+    flag_stu.flagenroll=del_enroll(&(p->enrolled),id);
     //删除nameindex里面的学生
-    f.flagname=del_name_index(p->name,id);
+    flag_stu.flagname=del_name_index(p->name,id);
     //删除gradeindex学生
-    f.flaggrade=del_gradeIndex(p->institute_grade,id);//time.h暂停使用
+    flag_stu.flaggrade=del_gradeIndex(p->institute_grade,id);//time.h暂停使用
     //删除学生本身
     Student_Node *stu=Get_Student_Node_by_id(id);
     if(stu->prev!=NULL)
     {
-        if(stu->next!=NULL)
-            stu->next->prev=stu->prev;
-        stu->prev->next=NULL;
+        if(stu->next!=NULL) stu->next->prev=stu->prev;
+        stu->prev->next=stu->next;
     }
-    else 
-    {
-        data_address.pStudentHead=stu->next;
-        if(stu->next!=NULL)stu->next->prev=NULL;
-    }
+    else {data_address.pStudentHead=stu->next;if(stu->next!=NULL)stu->next->prev=NULL;}
     FREE(stu);
-    return f;
+    return flag_stu;
 }
 
 /*
@@ -213,11 +196,7 @@ typedef struct Course_Node {
 int  del_stu_in_course(char *course_id)
 {
     Course *p=Get_Course(course_id);
-    if(p==NULL)
-    {
-        printf("未找到课程号为%s的课程\n",course_id);
-        return 1;
-    }
+    if(p==NULL){printf("未找到课程号为%s的课程\n",course_id);return 1;}
     //删除选课的学生
     int f=del_(3,2,p->followed);
     //删课程
@@ -225,14 +204,13 @@ int  del_stu_in_course(char *course_id)
     Course_Node *p2=Get_Course_Node(course_id);
     if(p2->prev!=NULL)
     {
-        if(p2->next!=NULL)
-            p2->next->prev=p2->prev;
-        p2->prev->next=NULL;
+        if(p2->next!=NULL) p2->next->prev=p2->prev;
+        p2->prev->next=p2->next;
     }
     else 
     {
         data_address.pCourseHead=p2->next;
-        if(p2->next!=NULL)p2->next->prev=NULL;
+        if(p2->next!=NULL) p2->next->prev=NULL;
     }
 
 
@@ -240,10 +218,6 @@ int  del_stu_in_course(char *course_id)
     return 0;
 }
 
-
-
-//1,1,id:del stu
-//2,1,course_id:del course
 void del(int which, int num, ...)
 {
     va_list valist;
@@ -255,6 +229,7 @@ void del(int which, int num, ...)
     {
     int id=va_arg(valist,int);
     flag flag=del_Stu(id);
+
     if(flag.flag==1) {printf("未找到该学生\n");return;}
     if(flag.flagenroll==1) printf("当前该学生没有选课\n");
     else if(flag.flaggrade==1) printf("在年级索引中未找到学号为%d的学生\n",id);
@@ -267,9 +242,18 @@ void del(int which, int num, ...)
     {
     char *course_id=va_arg(valist,char *);
     int f=del_stu_in_course(course_id);
+
     if(f==0)printf("已清空课程号为%s的课程中的学生\n",course_id);
     else printf("清空失败\n");
     break;
+    }
+    case 3:
+    {
+    //删除所有选课的学生
+    char *course_id=va_arg(valist,char*);
+    Course *p=Get_Course(course_id);
+    int f=del_(3,2,p->followed);
+    if(f==1) {printf("该课程没有学生选课\n");return;}
     }
     }
     va_end(valist);
