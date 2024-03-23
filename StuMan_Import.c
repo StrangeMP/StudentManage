@@ -123,54 +123,6 @@ static Student_Node *Student_Node_Add(Student_Node *Head, int id) {
     }
 }
 
-static Essay *Essay_Construct(cJSON *cjson_essay) {
-    Essay *newEssay = (Essay *)MALLOC(sizeof(Essay));
-    strcpy(newEssay->Title, cJSON_GetObjectItem(cjson_essay, "论文名")->valuestring);
-    cJSON *authors = cJSON_GetObjectItem(cjson_essay, "作者");
-    int author_num = cJSON_GetArraySize(authors);
-    for (int i = 0; i < author_num && i < 5; i++)
-        strcpy(newEssay->Author[0], cJSON_GetArrayItem(authors, i)->valuestring);
-    memset(newEssay->Author[author_num], 0, 32 * (5 - author_num));
-    strcpy(newEssay->Journal_Conference_Name,
-           cJSON_GetObjectItem(cjson_essay, "期刊或会议名")->valuestring);
-    strcpy(newEssay->PubDate, cJSON_GetObjectItem(cjson_essay, "发表日期")->valuestring);
-    strcpy(newEssay->Classification, cJSON_GetObjectItem(cjson_essay, "级别")->valuestring);
-    newEssay->AddGPA = cJSON_GetObjectItem(cjson_essay, "加分")->valuedouble;
-    newEssay->status = (Benefit_type)getNounIndex(
-        Benefit_Status, 3, cJSON_GetObjectItem(cjson_essay, "审核状态")->valuestring);
-    return newEssay;
-}
-
-static Project *Project_Construct(cJSON *cjson_proj) {
-    Project *newProject = (Project *)MALLOC(sizeof(Project));
-    strcpy(newProject->ProjectName, cJSON_GetObjectItem(cjson_proj, "项目名称")->valuestring);
-    strcpy(newProject->ProjectID, cJSON_GetObjectItem(cjson_proj, "项目编号")->valuestring);
-    cJSON *authors = cJSON_GetObjectItem(cjson_proj, "成员");
-    int author_num = cJSON_GetArraySize(authors);
-    for (int i = 0; i < author_num && i < 5; i++)
-        strcpy(newProject->Member[0], cJSON_GetArrayItem(authors, i)->valuestring);
-    memset(newProject->Member[author_num], 0, 32 * (5 - author_num));
-    strcpy(newProject->GuideTeacher, cJSON_GetObjectItem(cjson_proj, "指导老师")->valuestring);
-    strcpy(newProject->StartDate, cJSON_GetObjectItem(cjson_proj, "立项时间")->valuestring);
-    strcpy(newProject->EndDate, cJSON_GetObjectItem(cjson_proj, "结项时间")->valuestring);
-    newProject->AddGPA = cJSON_GetObjectItem(cjson_proj, "加分")->valuedouble;
-    newProject->status = (Benefit_type)getNounIndex(
-        Benefit_Status, 3, cJSON_GetObjectItem(cjson_proj, "审核状态")->valuestring);
-    return newProject;
-}
-
-static Award *Award_Construct(cJSON *cjson_award) {
-    Award *newAward = (Award *)MALLOC(sizeof(Award));
-    strcpy(newAward->CompetitionName, cJSON_GetObjectItem(cjson_award, "竞赛名称")->valuestring);
-    strcpy(newAward->Organizer, cJSON_GetObjectItem(cjson_award, "主办单位")->valuestring);
-    strcpy(newAward->AwardLevel, cJSON_GetObjectItem(cjson_award, "获奖等级")->valuestring);
-    strcpy(newAward->date, cJSON_GetObjectItem(cjson_award, "获奖时间")->valuestring);
-    newAward->AddGPA = cJSON_GetObjectItem(cjson_award, "加分")->valuedouble;
-    newAward->status = (Benefit_type)getNounIndex(
-        Benefit_Status, 3, cJSON_GetObjectItem(cjson_award, "审核状态")->valuestring);
-    return newAward;
-}
-
 // Insert a new Student_Node to database.
 // If the student already exists, update enrolled_List(if any).
 // Returns a pointer to that student, regardless of inserted or not.
@@ -196,30 +148,6 @@ static Student *Student_Insert(const cJSON *cjson_student) {
         currStudent->major =
             inst * 100 + getNounIndex(Professions[inst], 15,
                                       cJSON_GetObjectItem(cjson_student, "专业")->valuestring);
-        {
-            // Add Essays
-            cJSON *cjson_essays =
-                cJSON_GetObjectItem(cJSON_GetObjectItem(cjson_student, "素质加分"), "论文");
-            int essay_num = cJSON_GetArraySize(cjson_essays);
-            for (int i = 0; i < essay_num; i++)
-                Student_AddEssay(id, Essay_Construct(cJSON_GetArrayItem(cjson_essays, i)));
-        }
-        {
-            // Add Projects
-            cJSON *cjson_projs =
-                cJSON_GetObjectItem(cJSON_GetObjectItem(cjson_student, "素质加分"), "项目");
-            int proj_num = cJSON_GetArraySize(cjson_projs);
-            for (int i = 0; i < proj_num; i++)
-                Student_AddProject(id, Project_Construct(cJSON_GetArrayItem(cjson_projs, i)));
-        }
-        {
-            // Add Awards
-            cJSON *cjson_awards =
-                cJSON_GetObjectItem(cJSON_GetObjectItem(cjson_student, "素质加分"), "论文");
-            int award_num = cJSON_GetArraySize(cjson_awards);
-            for (int i = 0; i < award_num; i++)
-                Student_AddAward(id, Award_Construct(cJSON_GetArrayItem(cjson_awards, i)));
-        }
         currStudent->enrolled = NULL;
         Build_Student_Index(data_address.pStudentFoot);
     }
