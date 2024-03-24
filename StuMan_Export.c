@@ -14,13 +14,16 @@ static cJSON *Export_Enroll_To_Student(cJSON *cjson_Stu, Student *stu) {
         char tmp_semester[] = "2023-2024-1";
         //                    "0123456789X"
         int tmp_sem = crt_enrollNode->semester;
-        tmp_semester[2] = tmp_sem / 100 + '0';
-        tmp_semester[3] = tmp_sem / 10 % 10 + '0';
+        tmp_semester[2] = tmp_sem / 1000 + '0';
+        tmp_semester[3] = tmp_sem / 100 % 10 + '0';
         tmp_semester[7] = ((tmp_semester[3] == '9') ? (tmp_semester[2] + 1) : tmp_semester[2]);
         tmp_semester[8] = ((tmp_semester[3] == '9') ? '0' : tmp_semester[3] + 1);
         tmp_semester[10] = tmp_sem % 10 + '0';
         cJSON_AddStringToObject(crt_obj, "学年学期", tmp_semester);
-        cJSON_AddNumberToObject(crt_obj, "总成绩", crt_enrollNode->grade);
+        if (Get_Course(crt_enrollNode->course_id)->grade_type == 1)
+            cJSON_AddNumberToObject(crt_obj, "总成绩", crt_enrollNode->grade);
+        else
+            cJSON_AddStringToObject(crt_obj, "总成绩", Enroll_level[crt_enrollNode->level]);
         cJSON_AddStringToObject(crt_obj, "重修重考", Enroll_retake[crt_enrollNode->retake]);
         cJSON_AddStringToObject(crt_obj, "是否主修", crt_enrollNode->major ? "是" : "否");
         cJSON_AddNumberToObject(crt_obj, "绩点", crt_enrollNode->gpa);
