@@ -84,7 +84,7 @@ int del_(int which,int num,...)
         //删除指定学生的benifit
         case 4:
         {
-
+            break;
         }
     }
     va_end(valist);
@@ -122,7 +122,9 @@ int del_gradeIndex(int institute_grade,int aim_id)
 }
 
 int del_name_index(char* name,int id)
-{   int f=del_(1,2,nameIndex[Get_16bit_Hash(name)]->first,id);
+{   
+    Student_List *p=Get_StudentList_by_name(name);
+    int f=del_(1,2,p->first,id);
     return f;
 }
 
@@ -150,6 +152,9 @@ flag del_Stu(int id)
     //并删除学生的enroll
     f.flagenroll=del_enroll(&(p->enrolled),id);
     //删除学生的benefit
+
+
+
 
     //删除nameindex里面的学生
     f.flagname=del_name_index(p->name,id);
@@ -229,12 +234,18 @@ void del(int which, int num, ...)
     case 1:
     {
     int id=va_arg(valist,int);
+    int err=0;
     flag flag=del_Stu(id);
     if(flag.flag==1) {printf("未找到该学生\n");return;}
-    if(flag.flagenroll==1) printf("当前该学生没有选课\n");
-    else if(flag.flaggrade==1) printf("在年级索引中未找到学号为%d的学生\n",id);
-    else if(flag.flagname==1) printf("在姓名索引中未找到学号为%d的学生\n",id);
-    else printf("已删除学号为%d的学生\n",id);
+    else
+    {
+        if(flag.flagenroll==1) {printf("当前该学生没有选课\n");err+=1;}
+        if(flag.flaggrade==1) {printf("在年级索引中未找到学号为%d的学生\n",id);err+=1;}
+        if(flag.flagname==1) {printf("在姓名索引中未找到学号为%d的学生\n",id);err+=1;}
+    }
+
+
+    if(err==0)printf("已删除学号为%d的学生\n",id);
     break;
     }
 
@@ -257,6 +268,12 @@ void del(int which, int num, ...)
     if(f==0)printf("已清空课程号为%s的课程中的学生\n",course_id);
     else printf("清空失败\n");
     break;
+    }
+
+    //删除学生的某个benefit
+    case 4:
+    {
+        break;
     }
     }
     va_end(valist);
