@@ -1,13 +1,9 @@
-#include<_timeval.h>
-
 #include"tcpSocket.h"
 #include"fileTrans.h"
 
 #define PORT 1234
 #define CLI_NUM 3
- 
- 
-int client_fds[CLI_NUM];
+
 
 int main()
 {
@@ -22,7 +18,8 @@ int main()
     if(cfd==INVALID_SOCKET) err("accept");
 
     //行为
-
+    send_length(cfd,"data.json");
+    send_file(cfd,"pic.jpg");
 
     WSA_clean();
 
