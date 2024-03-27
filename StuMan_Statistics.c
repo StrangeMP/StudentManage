@@ -91,7 +91,6 @@ static int Student_Compare_By_Property(Student *stu1, Student *stu2, const char 
 
 static size_t Extract_Student(Student ***_dest, int college_num, int grade,
                               const char *professionName) {
-    printf("college_num: %d, grade: %d, professionName: %s\n", college_num, grade, professionName);
     int pro_num = getNounIndex(Professions[college_num], 15, professionName);
     Student_List *stu_list = Get_StudentList_by_grade(college_num * 100 + grade);
     if (stu_list == NULL)
