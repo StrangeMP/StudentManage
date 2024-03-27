@@ -6,9 +6,16 @@
 #include"StuMan_Student.h"
 #include"StuMan_Search.h"
 
-//1,2,Student_List,id :删除List中的指定id
-//2,2,Enroll &,id:删除学生的Enroll
-//3,1,Student_List:删除course的整个Student_List
+#define CLEAR_BEN(p) \
+{\
+    if(p!=NULL)\
+    {while(p->next!=NULL){p=p->next;FREE(p->prev);}FREE(p);}\
+}
+
+//1,2,Student_List*,id :删除List中的指定id
+//2,2,Enroll **,id:删除学生的Enroll
+//3,1,Student_List*:删除course的整个Student_List
+//4,1,Student*:clear指定学生的benifit
 int del_(int which,int num,...)
 {   
     va_list valist;
@@ -83,10 +90,24 @@ int del_(int which,int num,...)
             pl->first=NULL;
             break;
         }
-
-        //删除指定学生的benifit
+        
+        /*
+        Essay *essays;
+        Project *projects;
+        Award *awards;
+        } Benefits;
+        } Student;
+        */
+        //clear指定学生的benifit
         case 4:
         {
+            Student *p=va_arg(valist,Student *);
+            CLEAR_BEN(p->Benefits.awards);
+            p->Benefits.awards=NULL;
+            CLEAR_BEN(p->Benefits.projects);
+            p->Benefits.projects=NULL;
+            CLEAR_BEN(p->Benefits.essays);
+            p->Benefits.essays=NULL;
             break;
         }
     }
@@ -101,6 +122,11 @@ int del_enroll(Enroll** enrolledp,int id)
     return flag;
 }
 
+int clear_benefit(Student *p)
+{   
+    del_(4,1,p);
+    return 0;
+}
 /*  ... ...
     int id;
 } Student_IdNode;
@@ -108,9 +134,6 @@ int del_enroll(Enroll** enrolledp,int id)
     int student_count;
     Student_IdNode *first;
 } Student_List;
-
-Student_List *nameIndex[65536] = {NULL};             // 名字-学号索引
-Student_List *gradeIndex[90][4] = {{0, NULL, NULL}}; // 学院年级-学号索引
 */
 int del_gradeIndex(int institute_grade,int aim_id)
 {   
@@ -142,26 +165,24 @@ int del_name_index(char* name,int id)
     Student stu;
 } Student_Node;
 */
-    typedef struct 
-    {   
-        int flagenroll;
-        int flagname;
-        int flaggrade;
-        int flag;
-    } flag;
+typedef struct 
+{   
+    int flagenroll;
+    int flagname;
+    int flaggrade;
+    int flag;
+} flag;
 
 flag del_Stu(int id)
-{   Student *p=Get_Student_by_id(id); 
+{   
+    Student *p=Get_Student_by_id(id); 
     flag f={0,0,0,0};
     if(p==NULL){f.flag=1;return f;}
     //由enroll删除课程中的学生
     //并删除学生的enroll
     f.flagenroll=del_enroll(&(p->enrolled),id);
     //删除学生的benefit
-
-
-
-
+    clear_benefit(p);
     //删除nameindex里面的学生
     f.flagname=del_name_index(p->name,id);
     //删除gradeindex学生
@@ -183,7 +204,7 @@ flag del_Stu(int id)
 }
 
 //删除一个benifit
-int del_benift()
+int del_Abenift()
 {  
     return 0; 
 }

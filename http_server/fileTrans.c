@@ -74,7 +74,12 @@ bool send_file(SOCKET c,const char *file_name)
     return true;
 }
 
-
+bool sendfile(SOCKET c,const char *file_name)
+{
+    if(!send_length(c,file_name)) return false;
+    if(!send_file(c,file_name)) return false;
+    return true;
+}
 
 
 
@@ -126,5 +131,13 @@ bool recv_file(SOCKET s,const char *file_name,long fsize)
     {
         return false;
     }
+    return true;
+}
+
+bool recvfile(SOCKET s,const char *file_name)
+{
+    long fsize=recv_length(s);
+    if(fsize==0) return false;
+    if(!recv_file(s,file_name,fsize)) return false;
     return true;
 }
