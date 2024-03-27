@@ -9,14 +9,19 @@
 SOCKET cfd[CLI_NUM];
 bool cfd_status[CLI_NUM];
 DWORD thread_id[CLI_NUM];
+char buffer[CLI_NUM][64];
 
 //thread
-DWORD WINAPI file_trans(int i) 
+DWORD WINAPI *file_trans(int i) 
 {
-    sendfile(cfd[i],"pic.jpg");
+    sendfile(cfd[i],"pic.jpg"); 
+
+    recv(cfd[i],buffer[i],64,0);
+    printf("client %d:%s\n",i,buffer[i]);
     closesocket(cfd[i]);//关闭连接
+    printf("client %d disconnected\n",i);
     cfd_status[i]=false;
-    return NULL;
+    return 0;
 }
 
 
