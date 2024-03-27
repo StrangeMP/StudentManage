@@ -42,7 +42,6 @@ int del_(int which,int num,...)
                     {   
                         pl->first=p->next;
                         if(p->next!=NULL) p->next->prev=NULL;
-                        else pl->first=NULL;
                         FREE(p);
                     }
                     va_end(valist);
@@ -98,7 +97,7 @@ int del_(int which,int num,...)
         } Benefits;
         } Student;
         */
-        //clear指定学生的benifit
+        //clear学生的benifit
         case 4:
         {
             Student *p=va_arg(valist,Student *);
@@ -137,7 +136,7 @@ int clear_benefit(Student *p)
 */
 int del_gradeIndex(int institute_grade,int aim_id)
 {   
-    int flag1=del_(1,2,(Get_StudentList_by_grade(institute_grade))->first,aim_id);
+    int flag1=del_(1,2,(Get_StudentList_by_grade(institute_grade)),aim_id);
     return flag1;
 /*
     time_t timep;
@@ -152,9 +151,10 @@ int del_gradeIndex(int institute_grade,int aim_id)
 int del_name_index(char* name,int id)
 {   
     Student_List *p=Get_StudentList_by_name(name);
-    int f=del_(1,2,p->first,id);
+    int f=del_(1,2,p,id);
     return f;
 }
+
 
 //删除一个学生
 /*  ... ...
@@ -210,7 +210,6 @@ int del_Abenift()
 }
 
 /*  ... ...
-    char name[50];          // 课程名 e.g.大学物理B
     char id[13];            // 课程号 e.g. ae22931102
 } Course;
     ... ...
