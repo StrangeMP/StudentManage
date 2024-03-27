@@ -7,12 +7,10 @@ int main()
 {
     WSA_start();
 
-    SOCKET fd=init_client_socket("10.67.118.21",PORT);//use AF_INET——ipv4
+    SOCKET fd=init_client_socket("127.0.0.1",PORT);//use AF_INET——ipv4
     
     //行为
-    long length =recv_length(fd);
-    printf("length:%ld\n",length);
-    recv_file(fd,"pic_received.jpg",54731);
+    recvfile(fd,"pic_received2.jpg");
 
     
     WSA_clean();
