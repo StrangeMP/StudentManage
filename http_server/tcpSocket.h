@@ -15,6 +15,6 @@ bool WSA_clean();
 // init server
 SOCKET init_server_socket(u_short port);
 // init client
-SOCKET init_client_socket(const char *ip, u_short port);
+SOCKET connect_client_to(const char *ip, u_short port);
 
 #endif

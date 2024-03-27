@@ -51,7 +51,7 @@ SOCKET init_server_socket(u_short port)
 }
 
 //intialize client
-SOCKET init_client_socket(const char *ip, u_short port)
+SOCKET connect_client_to(const char *ip, u_short port)
 {
     //1.create an empty socket
     SOCKET fd=socket(AF_INET, SOCK_STREAM,IPPROTO_TCP);//ipv4地址族,流式传输,tcp协议
