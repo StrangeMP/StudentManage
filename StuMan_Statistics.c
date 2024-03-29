@@ -2,6 +2,7 @@
 #include "StuMan_Nouns.h"
 #include "StuMan_Search.h"
 #include "StuMan_Student.h"
+#include "VECTOR.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -89,46 +90,34 @@ static int Student_Compare_By_Property(Student *stu1, Student *stu2, const char 
     }
 }
 
-static size_t Extract_Student(Student ***_dest, int college_num, int grade,
-                              const char *professionName) {
-    int pro_num = getNounIndex(Professions[college_num], 15, professionName);
-    Student_List *stu_list = Get_StudentList_by_grade(college_num * 100 + grade);
+// clang-format off
+VECTOR(pStuVec, Student *) 
+size_t Extract_Students(Student ***_dest, const int institute_grade, const int professionNum) { // clang-format on
+    Student_List *stu_list = Get_StudentList_by_grade(institute_grade);
     if (stu_list == NULL)
         return 0;
-    size_t arrCapacity = 16, arrSize = 0;
-    Student **pstuArr = (Student **)MALLOC(sizeof(Student *) * arrCapacity);
+    pStuVec *pvec = pStuVec_create();
     Student_IdNode *idNode = stu_list->first;
     // Get Students of professionName
     for (size_t i = 0; idNode != NULL; i++, idNode = idNode->next) {
         Student *crt_stu = Get_Student_by_id(idNode->id);
-        if (crt_stu->major % 100 == pro_num) {
-            if (i == arrCapacity) {
-                Student **newArr = (Student **)MALLOC(sizeof(Student *) * (arrCapacity *= 2));
-                memcpy(newArr, pstuArr, (arrCapacity / 2) * sizeof(Student *));
-                FREE(pstuArr);
-                pstuArr = newArr;
-            }
-            pstuArr[i] = crt_stu;
-            ++arrSize;
-        }
+        if (crt_stu->major == professionNum)
+            pStuVec_push_back(pvec, crt_stu);
     }
-    if (arrSize == 0)
+    if (pStuVec_empty(pvec))
         return 0;
-    if (arrSize < arrCapacity) {
-        Student **newArr = (Student **)MALLOC(sizeof(Student *) * arrSize);
-        memcpy(newArr, pstuArr, sizeof(Student *) * arrSize);
-        FREE(pstuArr);
-        pstuArr = newArr;
-    }
-    *_dest = pstuArr;
-    return arrSize;
+    pStuVec_shrink_to_fit(pvec);
+    *_dest = pStuVec_data(pvec);
+    size_t sz = pStuVec_size(pvec);
+    FREE(pvec);
+    return sz;
 }
 
 // 更新某学院某专业某年级学生的排名
 COMPARE_EXPAND(GPA_overall)
-void UpdateRank(const int college_num, const int grade, const char *professionName) {
+void UpdateRank(const int institute_grade, const int professionNum) {
     Student **sortArr = NULL;
-    size_t numOfElem = Extract_Student(&sortArr, college_num, grade, professionName);
+    size_t numOfElem = Extract_Students(&sortArr, institute_grade, professionNum);
     if (numOfElem == 0)
         return;
     qsort(sortArr, numOfElem, sizeof(Student *),
