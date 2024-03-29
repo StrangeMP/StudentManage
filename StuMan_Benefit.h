@@ -48,6 +48,27 @@ typedef struct Award // 设置Award结构体变量
     double AddGPA;
 } Award;
 
+typedef struct
+{
+    int student_count;
+    Student_IdNode* first;
+    Student_IdNode* end;
+}Award_List;
+
+typedef struct 
+{   
+    int student_count;
+    Student_IdNode* first;
+    Student_IdNode* end; 
+}Essay_List;
+
+typedef struct
+{
+    int student_count;
+    Student_IdNode* first;
+    Student_IdNode* end;
+}Project_List;
+
 void *Student_AddEssay(int stu_id, Essay *essay);
 void *Student_AddProject(int stu_id, Project *project);
 void *Student_AddAward(int stu_id, Award *award);
