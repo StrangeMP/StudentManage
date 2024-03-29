@@ -30,7 +30,6 @@ bool send_length(SOCKET c, const char *file_name)
         err("sendFile");
         return false;
     }
-    printf("send file success\n");
     return true;
 }
 
