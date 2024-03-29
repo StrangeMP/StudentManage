@@ -7,11 +7,13 @@ int main()
 {
     WSA_start();
 
-    SOCKET fd=init_client_socket("127.0.0.1",PORT);//use AF_INET——ipv4
+    SOCKET fd=connect_client_to("127.0.0.1",PORT);//use AF_INET——ipv4
     
     //行为
-    recvfile(fd,"pic_received2.jpg");
+    recvfile(fd,"pic_received.jpg");
+    printf("tap any key to disconnect\n");
+    getchar();
+    send(fd,"disconnect",10,0);
 
-    
     WSA_clean();
 }

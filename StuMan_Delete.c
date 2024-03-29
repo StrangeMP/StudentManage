@@ -269,7 +269,6 @@ void del(int which, int num, ...)
         if(flag.flaggrade==1 ) {printf("在年级索引中未找到学号为%d的学生\n",id);err=1;}
         if(flag.flagname==1  ) {printf("在姓名索引中未找到学号为%d的学生\n",id);err=1;}
     }
-
     if(err==0)printf("已删除学号为%d的学生\n",id);
     break;
     }
