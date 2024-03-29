@@ -6,6 +6,27 @@
 #include"StuMan_Node.h"
 #include"StuMan_Import.h"
 
+typedef struct
+{
+    int student_count;
+    Student_IdNode* first;
+    Student_IdNode* end;
+}Award_List;
+
+typedef struct 
+{   
+    int student_count;
+    Student_IdNode* first;
+    Student_IdNode* end; 
+}Essay_List;
+
+typedef struct
+{
+    int student_count;
+    Student_IdNode* first;
+    Student_IdNode* end;
+}Project_List;
+
 static Award_List* InitAwardList()
 {
     Award_List* p = (Award_List*)malloc(sizeof(Award_List));
