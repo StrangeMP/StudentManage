@@ -312,7 +312,7 @@ void ImportData(const char *fileDir) {
             if (Institutes[i])
                 for (int y = 20; y < 24; y++)
                     for (int j = 0; Professions[i][j]; j++)
-                        UpdateRank(i, y, Professions[i][j]);
+                        UpdateRank(i * 100 + y, i * 100 + j);
         }
     }
 
