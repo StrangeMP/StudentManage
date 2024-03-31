@@ -5,6 +5,85 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static int Export_Essay(cJSON *cjson_Benefits, Student *stu) {
+    Essay *crt_essay = stu->Benefits.essays;
+    if (!crt_essay)
+        return 0;
+    cJSON *cjson_Es = cJSON_CreateArray();
+    while (crt_essay) {
+        cJSON *cjson_essay = cJSON_CreateObject();
+        cJSON_AddStringToObject(cjson_essay, "论文名", crt_essay->Title);
+        cJSON *cjson_authors = cJSON_CreateArray();
+        for (int i = 0; crt_essay->Author[i][0] && i < 5; i++)
+            cJSON_AddItemToArray(cjson_authors, cJSON_CreateString(crt_essay->Author[i]));
+        cJSON_AddItemToObject(cjson_essay, "作者", cjson_authors);
+        cJSON_AddStringToObject(cjson_essay, "期刊或会议名", crt_essay->Journal_Conference_Name);
+        cJSON_AddStringToObject(cjson_essay, "发表日期", crt_essay->PubDate);
+        cJSON_AddStringToObject(cjson_essay, "级别", crt_essay->Classification);
+        cJSON_AddNumberToObject(cjson_essay, "加分", crt_essay->AddGPA);
+        cJSON_AddStringToObject(cjson_essay, "审核状态", Benefit_Status[crt_essay->status]);
+        cJSON_AddItemToArray(cjson_Es, cjson_essay);
+        crt_essay = crt_essay->next;
+    }
+    cJSON_AddItemToObject(cjson_Benefits, "论文", cjson_Es);
+    return 1;
+}
+
+static int Export_Project(cJSON *cjson_Benefits, Student *stu) {
+    Project *crt_project = stu->Benefits.projects;
+    if (!crt_project)
+        return 0;
+    cJSON *cjson_Ps = cJSON_CreateArray();
+    while (crt_project) {
+        cJSON *cjson_project = cJSON_CreateObject();
+        cJSON_AddStringToObject(cjson_project, "项目名称", crt_project->ProjectName);
+        cJSON_AddStringToObject(cjson_project, "项目编号", crt_project->ProjectID);
+        cJSON *cjson_authors = cJSON_CreateArray();
+        for (int i = 0; crt_project->Member[i][0] && i < 5; i++)
+            cJSON_AddItemToArray(cjson_authors, cJSON_CreateString(crt_project->Member[i]));
+        cJSON_AddItemToObject(cjson_project, "成员", cjson_authors);
+        cJSON_AddStringToObject(cjson_project, "指导老师", crt_project->GuideTeacher);
+        cJSON_AddStringToObject(cjson_project, "立项时间", crt_project->StartDate);
+        cJSON_AddStringToObject(cjson_project, "结项时间", crt_project->EndDate);
+        cJSON_AddNumberToObject(cjson_project, "加分", crt_project->AddGPA);
+        cJSON_AddStringToObject(cjson_project, "审核状态", Benefit_Status[crt_project->status]);
+        cJSON_AddItemToArray(cjson_Ps, cjson_project);
+        crt_project = crt_project->next;
+    }
+    cJSON_AddItemToObject(cjson_Benefits, "项目", cjson_Ps);
+    return 1;
+}
+
+static int Export_Award(cJSON *cjson_Benefits, Student *stu) {
+    Award *crt_award = stu->Benefits.awards;
+    if (crt_award == NULL)
+        return 0;
+    cJSON *cjson_As = cJSON_CreateArray();
+    while (crt_award) {
+        cJSON *cjson_award = cJSON_CreateObject();
+        cJSON_AddStringToObject(cjson_award, "竞赛名称", crt_award->CompetitionName);
+        cJSON_AddStringToObject(cjson_award, "主办单位", crt_award->Organizer);
+        cJSON_AddStringToObject(cjson_award, "获奖等级", crt_award->AwardLevel);
+        cJSON_AddStringToObject(cjson_award, "获奖时间", crt_award->date);
+        cJSON_AddNumberToObject(cjson_award, "加分", crt_award->AddGPA);
+        cJSON_AddStringToObject(cjson_award, "审核状态", Benefit_Status[crt_award->status]);
+        cJSON_AddItemToArray(cjson_As, cjson_award);
+        crt_award = crt_award->next;
+    }
+    cJSON_AddItemToObject(cjson_Benefits, "竞赛获奖", cjson_As);
+    return 1;
+}
+
+static void Export_Benefits(cJSON *cjson_Stu, Student *stu) {
+    cJSON *cjson_Benefits = cJSON_CreateObject();
+    if (Export_Essay(cjson_Benefits, stu) + Export_Project(cjson_Benefits, stu) +
+            Export_Award(cjson_Benefits, stu) ==
+        0)
+        cJSON_Delete(cjson_Benefits);
+    else
+        cJSON_AddItemToObject(cjson_Stu, "素质加分", cjson_Benefits);
+}
+
 static cJSON *Export_Enroll_To_Student(cJSON *cjson_Stu, Student *stu) {
     cJSON *cjson_enroll = cJSON_CreateArray();
     Enroll *crt_enrollNode = stu->enrolled;
@@ -45,6 +124,7 @@ static cJSON *Student_Export(cJSON *_dest, int stu_id) {
     cJSON_AddStringToObject(cjson_Stu, "专业", Professions[stu->major / 100][stu->major % 100]);
     cJSON_AddNumberToObject(cjson_Stu, "年级", stu->institute_grade % 100 + 2000);
     Export_Enroll_To_Student(cjson_Stu, stu);
+    Export_Benefits(cjson_Stu, stu);
     cJSON_AddItemToArray(cJSON_GetObjectItem(_dest, "学生"), cjson_Stu);
     return _dest;
 }
@@ -98,26 +178,30 @@ void ExportData(cJSON *_data, const char *fileName) {
     cJSON_Delete(_dest);
     cJSON_Delete(_data);
     FREE(output);
+    FREE(output);
 }
 
-cJSON *CreateExportList(Student **stuArr, const int stuCnt, Course **crsArr, const int crsCnt) {
+cJSON *CreateExportList(int stuArr[], const int stuCnt, char *crsArr[], const int crsCnt) {
+    if ((!stuArr || !stuCnt) && (!crsArr || !crsCnt))
+        return NULL;
     cJSON *tobeExport = cJSON_CreateObject();
     cJSON *cjson_crsList = cJSON_CreateArray();
     if (stuArr && stuCnt > 0) {
         cJSON *cjson_stuList = cJSON_CreateArray();
         for (int i = 0; i < stuCnt; i++) {
-            cJSON_AddItemToArray(cjson_stuList, cJSON_CreateNumber(stuArr[i]->id));
-            Enroll *crt_enr = stuArr[i]->enrolled;
+            cJSON_AddItemToArray(cjson_stuList, cJSON_CreateNumber(stuArr[i]));
+            Enroll *crt_enr = Get_Student_by_id(stuArr[i])->enrolled;
             while (crt_enr) {
                 cJSON_AddItemToArray(cjson_crsList, cJSON_CreateString(crt_enr->course_id));
                 crt_enr = crt_enr->next;
             }
         }
-        cJSON_AddObjectToObject(cjson_stuList, "Students");
+        cJSON_AddItemToObject(tobeExport, "Students", cjson_stuList);
     }
     if (crsArr && crsCnt > 0)
-        for (int i = 0; i < crsCnt; i++)
-            cJSON_AddItemToArray(cjson_crsList, cJSON_CreateString(crsArr[i]->id));
-    cJSON_AddObjectToObject(cjson_crsList, "Courses");
+        for (int i = 0; i < crsCnt; i++) {
+            cJSON_AddItemToArray(cjson_crsList, cJSON_CreateString(crsArr[i]));
+        }
+    cJSON_AddItemToObject(tobeExport, "Courses", cjson_crsList);
     return tobeExport;
 }

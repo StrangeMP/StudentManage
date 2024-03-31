@@ -1,4 +1,5 @@
 #pragma once
+
 typedef enum { // 设置枚举变量显示状态
     PENDING,   // 受理
     APPROVED,  // 通过
@@ -47,6 +48,8 @@ typedef struct Award // 设置Award结构体变量
     Status status; // 提交状态加分同上
     double AddGPA;
 } Award;
+
+
 
 void *Student_AddEssay(int stu_id, Essay *essay);
 void *Student_AddProject(int stu_id, Project *project);

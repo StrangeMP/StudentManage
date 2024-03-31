@@ -12,4 +12,4 @@ _data should be formatted to:
 */
 void ExportData(cJSON *_data, const char *fileName);
 
-cJSON *CreateExportList(Student **stuArr, const int stuCnt, Course **crsArr, const int crsCnt);
+cJSON *CreateExportList(int stuArr[], const int stuCnt, char *crsArr[], const int crsCnt);
