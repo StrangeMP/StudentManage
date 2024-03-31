@@ -9,8 +9,8 @@ char benefit[3] = {'*' , '^' , '+'};//'*'放在essay末尾，'^'放在project末
 //Creat a binary file of the Student and the Course to be read when started the program
 void LinkedList_Binaried()
 {
-    FILE *p = fopen("Stu_Info.txt" , "wb");
-    FILE *f = fopen("Cor_Info.txt" , "wb");//学生数据一个文件，课程数据一个文件
+    FILE *p = fopen("Stu_Info.bin" , "wb");
+    FILE *f = fopen("Cor_Info.bin" , "wb");//学生数据一个文件，课程数据一个文件
     Student_Node *SHead = data_address.pStudentHead;//the pointer to move
     Course_Node  *CHead = data_address.pCourseHead; //the pointer to move  
 
