@@ -1,35 +1,39 @@
-{
-    "Number": 1,
-    "requests": [
-        {
-            "request": "display_students",
-            "institute_grade": 2123,
-            "major": 2100
-        },
-        {
-            "request": "display_courses_by_teacher",
-            "teacher": "teacher_name"
-        },
-        {
-            "request": "display_courses_by_course_id",
-            "course_ids": []
-        },
-        {
-            "request": "add",
-            "data": {}
-        },
-        {
-            "request": "delete_students",
-            "student_ids": []
-        },
-        {
-            "request": "delete_student_enrolls",
-            "info": [
-                {
-                    "student_id": 20202020,
-                    "course_ids": []
-                }
-            ]
-        }
-    ]
-}
+[
+    {
+        "Number": 1,
+        "request": "display_students",
+        "institute_grade": 2123,
+        "major": 2100
+    },
+    {
+        "Number": 2,
+        "request": "display_courses_by_teacher",
+        "teacher": "teacher_name"
+    },
+    {
+        "Number": 3,
+        "request": "display_courses_by_course_id",
+        "course_ids": []
+    },
+    {
+        "Number": 4,
+        "request": "add",
+        "data": {}
+    },
+    {
+        "Number": 5,
+        "request": "delete_students",
+        "student_ids": []
+    },
+    {
+        "Number": 6,
+        "request": "delete_student_enrolls",
+        "info": [
+            {
+                "student_id": 20202020,
+                "course_ids": []
+            }
+        ]
+    }
+]
+
