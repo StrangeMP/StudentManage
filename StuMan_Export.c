@@ -82,13 +82,16 @@ static cJSON *Export_Enroll_To_Student(cJSON *cjson_Stu, Student *stu) {
         char tmp_semester[] = "2023-2024-1";
         //                    "0123456789X"
         int tmp_sem = crt_enrollNode->semester;
-        tmp_semester[2] = tmp_sem / 100 + '0';
-        tmp_semester[3] = tmp_sem / 10 % 10 + '0';
+        tmp_semester[2] = tmp_sem / 1000 + '0';
+        tmp_semester[3] = tmp_sem / 100 % 10 + '0';
         tmp_semester[7] = ((tmp_semester[3] == '9') ? (tmp_semester[2] + 1) : tmp_semester[2]);
         tmp_semester[8] = ((tmp_semester[3] == '9') ? '0' : tmp_semester[3] + 1);
         tmp_semester[10] = tmp_sem % 10 + '0';
         cJSON_AddStringToObject(crt_obj, "学年学期", tmp_semester);
-        cJSON_AddNumberToObject(crt_obj, "总成绩", crt_enrollNode->grade);
+        if (Get_Course(crt_enrollNode->course_id)->grade_type == 1)
+            cJSON_AddNumberToObject(crt_obj, "总成绩", crt_enrollNode->grade);
+        else
+            cJSON_AddStringToObject(crt_obj, "总成绩", Enroll_level[crt_enrollNode->level]);
         cJSON_AddStringToObject(crt_obj, "重修重考", Enroll_retake[crt_enrollNode->retake]);
         cJSON_AddStringToObject(crt_obj, "是否主修", crt_enrollNode->major ? "是" : "否");
         cJSON_AddNumberToObject(crt_obj, "绩点", crt_enrollNode->gpa);
@@ -141,7 +144,7 @@ static cJSON *Course_Export(cJSON *_dest, const char *course_id) {
     return _dest;
 }
 
-void ExportData(cJSON *_data) {
+void ExportData(cJSON *_data, const char *fileName) {
     cJSON *_dest = cJSON_CreateObject();
     cJSON_AddArrayToObject(_dest, "学生");
     cJSON_AddArrayToObject(_dest, "课程");
@@ -157,11 +160,33 @@ void ExportData(cJSON *_data) {
         for (int i = 0; i < crs_num; i++)
             Course_Export(_dest, cJSON_GetArrayItem(ex_Crs, i)->valuestring);
     }
-    FILE *pf = fopen("ExportedData.json", "w");
+    FILE *pf = fopen(fileName, "w");
     char *output = cJSON_Print(_dest);
     fputs(output, pf);
     fclose(pf);
     cJSON_Delete(_dest);
     cJSON_Delete(_data);
     free(output);
+}
+
+cJSON *CreateExportList(Student **stuArr, const int stuCnt, Course **crsArr, const int crsCnt) {
+    cJSON *tobeExport = cJSON_CreateObject();
+    cJSON *cjson_crsList = cJSON_CreateArray();
+    if (stuArr && stuCnt > 0) {
+        cJSON *cjson_stuList = cJSON_CreateArray();
+        for (int i = 0; i < stuCnt; i++) {
+            cJSON_AddItemToArray(cjson_stuList, cJSON_CreateNumber(stuArr[i]->id));
+            Enroll *crt_enr = Get_Student_by_id(stuArr[i]->enrolled);
+            while (crt_enr) {
+                cJSON_AddItemToArray(cjson_crsList, cJSON_CreateString(crt_enr->course_id));
+                crt_enr = crt_enr->next;
+            }
+        }
+        cJSON_AddObjectToObject(cjson_stuList, "Students");
+    }
+    if (crsArr && crsCnt > 0)
+        for (int i = 0; i < crsCnt; i++)
+            cJSON_AddItemToArray(cjson_crsList, cJSON_CreateString(crsArr[i]->id));
+    cJSON_AddObjectToObject(cjson_crsList, "Courses");
+    return tobeExport;
 }
