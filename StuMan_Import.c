@@ -197,7 +197,7 @@ static Student *Student_Insert(const cJSON *cjson_student) {
             inst * 100 + getNounIndex(Professions[inst], 15,
                                       cJSON_GetObjectItem(cjson_student, "专业")->valuestring);
         currStudent->enrolled = NULL;
-        return currStudent;
+        Build_Student_Index(data_address.pStudentFoot);
         {
             // Add Essays
             cJSON *cjson_essays =
@@ -222,8 +222,8 @@ static Student *Student_Insert(const cJSON *cjson_student) {
             for (int i = 0; i < award_num; i++)
                 Student_AddAward(id, Award_Construct(cJSON_GetArrayItem(cjson_awards, i)));
         }
-        Build_Student_Index(data_address.pStudentFoot);
     }
+    return currStudent;
 }
 
 // Add a Course_Node based on course_id right behind Head if item doesn't exist,
