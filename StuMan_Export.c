@@ -97,7 +97,7 @@ void ExportData(cJSON *_data, const char *fileName) {
     fclose(pf);
     cJSON_Delete(_dest);
     cJSON_Delete(_data);
-    free(output);
+    FREE(output);
 }
 
 cJSON *CreateExportList(Student **stuArr, const int stuCnt, Course **crsArr, const int crsCnt) {
@@ -107,7 +107,7 @@ cJSON *CreateExportList(Student **stuArr, const int stuCnt, Course **crsArr, con
         cJSON *cjson_stuList = cJSON_CreateArray();
         for (int i = 0; i < stuCnt; i++) {
             cJSON_AddItemToArray(cjson_stuList, cJSON_CreateNumber(stuArr[i]->id));
-            Enroll *crt_enr = Get_Student_by_id(stuArr[i]->enrolled);
+            Enroll *crt_enr = stuArr[i]->enrolled;
             while (crt_enr) {
                 cJSON_AddItemToArray(cjson_crsList, cJSON_CreateString(crt_enr->course_id));
                 crt_enr = crt_enr->next;

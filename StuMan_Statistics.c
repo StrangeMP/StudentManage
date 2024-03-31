@@ -104,8 +104,10 @@ size_t Extract_Students(Student ***_dest, const int institute_grade, const int p
         if (crt_stu->major == professionNum)
             pStuVec_push_back(pvec, crt_stu);
     }
-    if (pStuVec_empty(pvec))
+    if (pStuVec_empty(pvec)) {
+        FREE(pvec);
         return 0;
+    }
     pStuVec_shrink_to_fit(pvec);
     *_dest = pStuVec_data(pvec);
     size_t sz = pStuVec_size(pvec);
@@ -126,6 +128,7 @@ void UpdateRank(const int institute_grade, const int professionNum) {
         sortArr[i]->rank.rk = i + 1;
         sortArr[i]->rank.basis = numOfElem;
     }
+    FREE(sortArr);
 }
 
 // 更新课程的优秀率、合格率

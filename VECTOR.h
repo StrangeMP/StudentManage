@@ -10,7 +10,7 @@
 #define FREE free
 #endif
 
-#define VECTOR(className, T)                                                                     \
+#define VECTOR(className, T)                                                                       \
     typedef T className##_value_type;                                                              \
     typedef T *className##_iterator;                                                               \
     typedef struct className {                                                                     \
@@ -31,17 +31,14 @@
         className *this, className##_iterator pos, className##_value_type *, size_t _size);        \
     static inline void className##_reserve(className *this, size_t new_cap);                       \
     static className *className##_create() {                                                       \
-        size_t initial_size = 4;                                                                   \
         className *this = (className *)MALLOC(sizeof(className));                                  \
-        this->capacity = initial_size;                                                             \
-        this->content =                                                                            \
-            (className##_value_type *)MALLOC(sizeof(className##_value_type) * initial_size);       \
-        this->_first = this->_last = this->content;                                                \
+        this->capacity = 0;                                                                        \
+        this->_first = this->_last = this->content = NULL;                                         \
         return this;                                                                               \
     }                                                                                              \
     static void className##_push_back(className *this, className##_value_type val) {               \
         if (className##_size(this) == this->capacity)                                              \
-            className##_reserve(this, this->capacity * 2);                                         \
+            className##_reserve(this, this->capacity ? this->capacity * 2 : 1);                    \
         *this->_last++ = val;                                                                      \
     }                                                                                              \
     static void className##_destroy(className *this) {                                             \
