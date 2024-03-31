@@ -130,7 +130,7 @@ static Essay *Essay_Construct(cJSON *cjson_essay) {
     cJSON *authors = cJSON_GetObjectItem(cjson_essay, "作者");
     int author_num = cJSON_GetArraySize(authors);
     for (int i = 0; i < author_num && i < 5; i++)
-        strcpy(newEssay->Author[0], cJSON_GetArrayItem(authors, i)->valuestring);
+        strcpy(newEssay->Author[i], cJSON_GetArrayItem(authors, i)->valuestring);
     memset(newEssay->Author[author_num], 0, 32 * (5 - author_num));
     strcpy(newEssay->Journal_Conference_Name,
            cJSON_GetObjectItem(cjson_essay, "期刊或会议名")->valuestring);
@@ -149,7 +149,7 @@ static Project *Project_Construct(cJSON *cjson_proj) {
     cJSON *authors = cJSON_GetObjectItem(cjson_proj, "成员");
     int author_num = cJSON_GetArraySize(authors);
     for (int i = 0; i < author_num && i < 5; i++)
-        strcpy(newProject->Member[0], cJSON_GetArrayItem(authors, i)->valuestring);
+        strcpy(newProject->Member[i], cJSON_GetArrayItem(authors, i)->valuestring);
     memset(newProject->Member[author_num], 0, 32 * (5 - author_num));
     strcpy(newProject->GuideTeacher, cJSON_GetObjectItem(cjson_proj, "指导老师")->valuestring);
     strcpy(newProject->StartDate, cJSON_GetObjectItem(cjson_proj, "立项时间")->valuestring);
