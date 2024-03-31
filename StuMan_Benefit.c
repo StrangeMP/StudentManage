@@ -6,6 +6,8 @@
 #include"StuMan_Node.h"
 #include"StuMan_Import.h"
 
+Student_List Benefits_PendingVerified;
+
 typedef struct
 {
     int student_count;
