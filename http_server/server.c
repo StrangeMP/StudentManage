@@ -50,13 +50,17 @@ DWORD WINAPI *file_trans(int i)
             } 
             else printf("没有找到内容\n");
             
-            //handler  会返回处理结果给buffer[i]
-            //handler(content,buffer[i]);
+            //handler
+            char buf[BUFFER_SIZE];
+            strcpy(buf,handler(content));
+
+            //send back
+            send(cfd[i],buf,strlen(buf),0);
 
             //echo
             //content仅用于测试，实际应用中应该是buffer[i]
-            content=strstr(content,"echo:");
-            if(content!=NULL) send(cfd[i],content+5,content_length-5,0);
+            //content=strstr(content,"echo:");
+            //if(content!=NULL) send(cfd[i],content+5,content_length-5,0);
         }
         else
         {
