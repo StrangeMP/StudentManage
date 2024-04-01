@@ -155,7 +155,7 @@ static cJSON *Course_Export(cJSON *_dest, const char *course_id) {
     return _dest;
 }
 
-void ExportData(cJSON *_data, const char *fileName) {
+cJSON *ExportData(cJSON *_data, const char *fileName) {
     cJSON *_dest = cJSON_CreateObject();
     cJSON_AddArrayToObject(_dest, "学生");
     cJSON_AddArrayToObject(_dest, "课程");
@@ -171,14 +171,19 @@ void ExportData(cJSON *_data, const char *fileName) {
         for (int i = 0; i < crs_num; i++)
             Course_Export(_dest, cJSON_GetArrayItem(ex_Crs, i)->valuestring);
     }
-    FILE *pf = fopen(fileName, "w");
     char *output = cJSON_Print(_dest);
-    fputs(output, pf);
-    fclose(pf);
-    cJSON_Delete(_dest);
-    cJSON_Delete(_data);
-    FREE(output);
-    FREE(output);
+    if (fileName) {
+        FILE *pf = fopen(fileName, "w");
+        fputs(output, pf);
+        fclose(pf);
+        cJSON_Delete(_dest);
+        cJSON_Delete(_data);
+        FREE(output);
+        return NULL;
+    } else {
+        cJSON_Delete(_data);
+        return _dest;
+    }
 }
 
 cJSON *CreateExportList(int stuArr[], const int stuCnt, char *crsArr[], const int crsCnt) {
