@@ -23,21 +23,23 @@ int del_(int which,int num,...)
     switch(which)
     {
         case 1:{//删除List中的指定id 
-            Student_List   *pl=va_arg(valist,Student_List *);
-            Student_IdNode *p=pl->first;
-            int aim_id=va_arg(valist,int);
+            Student_List   *pl= va_arg(valist,Student_List *);
+            Student_IdNode *p = pl->first;
+            int aim_id = va_arg(valist,int);
             while(p!=NULL)
             {
                 if(p->id==aim_id)
                 {
                     if(p->prev!=NULL) 
                     {
-                        p->prev->next=p->next;if(p->next!=NULL) p->next->prev=p->prev;
+                        p->prev->next=p->next;
+                        if(p->next!=NULL) p->next->prev=p->prev;
                         FREE(p);
                     }
                     else
                     {
-                        pl->first=p->next;if(p->next!=NULL) p->next->prev=NULL;
+                        pl->first=p->next;
+                        if(p->next!=NULL) p->next->prev=NULL;
                         FREE(p);
                     }
                     va_end(valist);return 0;
@@ -46,17 +48,23 @@ int del_(int which,int num,...)
             va_end(valist);return 1;}//未找到该学号的学生
 
         case 2:{//删除学生的Enroll
-            Enroll** p2=va_arg(valist,Enroll **);
-            int id=va_arg(valist,int);
-            if(*p2==NULL){ va_end(valist);return 1;}//当前该学生没有选课
+            Enroll** p2 = va_arg(valist,Enroll **);
+            int id = va_arg(valist,int);
+            if(*p2 == NULL)
+            {
+                va_end(valist);
+                return 1;
+            }//当前该学生没有选课
             else while(*p2)
             {   
                 Student_List * p3=Get_StudentList_by_CourseID((*p2)->course_id);
                 int flag1=0;
                 //删除课程中的学生
-                if(p3==NULL) printf("课程%s没有学生选择\n",(*p2)->course_id);
-                else flag1=del_(1,2,p3,id);
-                if(flag1==1) printf("在课程%s中未找到学号为%d的学生\n",(*p2)->course_id,id);
+                if(p3==NULL) 
+                printf("课程%s没有学生选择\n",(*p2)->course_id);
+                else if(del_(1,2,p3,id)==1) 
+                printf("在课程%s中未找到学号为%d的学生\n",(*p2)->course_id,id);
+
                 Enroll* p4=*p2;
                 *p2=(*p2)->next;
                 FREE(p4);
@@ -67,8 +75,16 @@ int del_(int which,int num,...)
         case 3:{   
             Student_List   *pl=va_arg(valist,Student_List *);
             Student_IdNode *p=pl->first;
-            if(p==NULL)     { va_end(valist);return 1;}
-            while(p->next!=NULL) {p=p->next;FREE(p->prev);}
+            if(p==NULL)     
+            { 
+                va_end(valist);
+                return 1;
+            }
+            while(p->next!=NULL) 
+            {
+                p=p->next;
+                FREE(p->prev);
+            }
             FREE(p);
             pl->first=NULL;
             break;}
@@ -124,11 +140,7 @@ flag del_Stu(int id)
     f.flagenroll=del_enroll(&(p->enrolled),id);
     //删除学生的benefit
     clear_benefit(p);
-    //删除award_list里面的学生
-
-    //删除project_list里面的学生
-
-    //删除essay_list里面的学生
+    //删除benefit_list里面的学生
 
     //删除nameindex里面的学生
     f.flagname=del_name_index(p->name,id);
@@ -140,12 +152,6 @@ flag del_Stu(int id)
     return f;
 }
 
-//删除一个benifit
-int del_Abenift()
-{  
-    return 0; 
-}
-
 int  del_stu_in_course(char *course_id)
 {   
     Course *p=Get_Course(course_id);
@@ -155,7 +161,8 @@ int  del_stu_in_course(char *course_id)
 }
 
 int del_course(char *course_id)
-{   //删除选课的学生
+{   
+    //删除选课的学生
     int f=del_stu_in_course(course_id);
     Course_Node* pcrsn=Get_Course_Node(course_id);
     //删除课程
@@ -174,48 +181,42 @@ void del(int which, int num, ...)
     va_start(valist,num);
     switch(which)
     {
-    //删除学生
-    case 1:
-    {
-    int id=va_arg(valist,int);
-    int err=0;
-    flag flag=del_Stu(id);
-    if(flag.flag==1) {printf("未找到该学生\n");return;}
-    else
-    {
-        if(flag.flagenroll==1) {printf("当前该学生没有选课\n");err=1;}
-        if(flag.flaggrade ==1) {printf("在年级索引中未找到学号为%d的学生\n",id);err=1;}
-        if(flag.flagname  ==1) {printf("在姓名索引中未找到学号为%d的学生\n",id);err=1;}
-    }
-    if(err==0)printf("已删除学号为%d的学生\n",id);
-    break;
-    }
-
-    //删除课程
-    case 2:
-    {
-    char *course_id=va_arg(valist,char *);
-    int f=del_course(course_id);
-    if     (f== 1) printf("未找到课程号为%s的课程\n",course_id);
-    else if(f==11) printf("该课程没有学生选课\n");
-    else if(f==0 ) printf("已删除课程号为%s的课程\n",course_id);
-    break;
-    }
-
-    //删除课程中的所有学生
-    case 3:
-    {
-    char *course_id=va_arg(valist,char *);
-    if(del_stu_in_course(course_id)==0) printf("已清空课程号为%s的课程中的学生\n",course_id);
-    else printf("清空失败\n");
-    break;
-    }
-
-    //删除学生的某个benefit
-    case 4:
-    {
+        //删除学生
+        case 1:
+        {
+        int id=va_arg(valist,int);
+        int err=0;
+        flag flag=del_Stu(id);
+        if(flag.flag==1) {printf("未找到该学生\n");return;}
+        else
+        {
+            if(flag.flagenroll==1) {printf("当前该学生没有选课\n");err=1;}
+            if(flag.flaggrade ==1) {printf("在年级索引中未找到学号为%d的学生\n",id);err=1;}
+            if(flag.flagname  ==1) {printf("在姓名索引中未找到学号为%d的学生\n",id);err=1;}
+        }
+        if(err==0)printf("已删除学号为%d的学生\n",id);
         break;
-    }
+        }
+
+        //删除课程
+        case 2:
+        {
+        char *course_id=va_arg(valist,char *);
+        int f=del_course(course_id);
+        if     (f== 1) printf("未找到课程号为%s的课程\n",course_id);
+        else if(f==11) printf("该课程没有学生选课\n");
+        else if(f==0 ) printf("已删除课程号为%s的课程\n",course_id);
+        break;
+        }
+
+        //删除课程中的所有学生
+        case 3:
+        {
+        char *course_id=va_arg(valist,char *);
+        if(del_stu_in_course(course_id)==0) printf("已清空课程号为%s的课程中的学生\n",course_id);
+        else printf("清空失败\n");
+        break;
+        }
     }
     va_end(valist);
     return;
