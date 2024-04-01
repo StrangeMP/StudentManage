@@ -1,18 +1,18 @@
 [
     {
         "Number": 1,
-        "request": "display_students",
+        "request": "get_students_by_profession",
         "institute_grade": 2123,
         "major": 2100
     },
     {
         "Number": 2,
-        "request": "display_courses_by_teacher",
+        "request": "get_courses_by_teacher",
         "teacher": "teacher_name"
     },
     {
         "Number": 3,
-        "request": "display_courses_by_course_id",
+        "request": "get_courses_by_course_id",
         "course_ids": []
     },
     {
@@ -34,6 +34,15 @@
                 "course_ids": []
             }
         ]
+    },
+    {
+        "Number": 7,
+        "request": "get_students_by_id",
+        "student_ids": []
+    },
+    {
+        "Number": 8,
+        "request": "get_students_by_name",
+        "name": ""
     }
 ]
-
