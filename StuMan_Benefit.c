@@ -6,45 +6,28 @@
 #include"StuMan_Node.h"
 #include"StuMan_Import.h"
 
-Student_List Benefits_PendingVerified;
-Student_List *bp;
-
-static Student_List* InitpdList()
-{
-    Student_List* p = (
-        Student_List*)malloc(sizeof(
-        Student_List
-    ));
-    p->first = NULL;
-    p->end = NULL;
-    p->student_count = 0;
-    return p;
-}
+Student_List Benefits_PendingVerified={0,NULL,NULL};
 
 static Student_List* AddpdList(int id,Student_List* p)
 {
-    if(p==NULL) InitpdList();
+    p->student_count++;
+    if(p->first==NULL)
+    {
+        Student_IdNode* q = malloc(sizeof(Student_IdNode));
+        q->id = id;
+        q->next = NULL;
+        q->prev = NULL;
+        p->first = q;
+        p->end = q;
+    }
     else
     {
-        p->student_count++;
-        if(p->first==NULL)
-        {
-            Student_IdNode* q = malloc(sizeof(Student_IdNode));
-            q->id = id;
-            q->next = NULL;
-            q->prev = NULL;
-            p->first = q;
-            p->end = q;
-        }
-        else
-        {
-            Student_IdNode* q = malloc(sizeof(Student_IdNode));
-            q->id = id;
-            q->next = NULL;
-            q->prev = p->end;
-            p->end->next = q;
-            p->end = q;
-        }
+        Student_IdNode* q = malloc(sizeof(Student_IdNode));
+        q->id = id;
+        q->next = NULL;
+        q->prev = p->end;
+        p->end->next = q;
+        p->end = q;
     }
     return p;
 }

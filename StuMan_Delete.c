@@ -5,6 +5,7 @@
 #include"StuMan_Delete.h"
 #include"StuMan_Student.h"
 #include"StuMan_Search.h"
+#include"StuMan_Benefit.h"
 
 #define CLEAR_BEN(p) \
 {\
@@ -40,6 +41,7 @@
 int del_stulist(Student_List * pl,int aim_id)
 {
     Student_IdNode  *p = pl->first;
+    if(p == NULL) return -1;
     while(p != NULL)
     {
         if(    p->id == aim_id)
@@ -83,10 +85,10 @@ int del_(int which,int num,...)
             }
             else while(pe)
             {
-                Student_List *p3=Get_StudentList_by_CourseID(pe->course_id);
-                if(p3==NULL)  printf("课程%s没有学生选择\n",  pe->course_id);
-                else if (del_stulist(  p3 , id ) == 1 )   //删除课程中的学生;
-                printf  ("在课程%s中未找到学号为%d的学生\n",pe->course_id,id);
+                Student_List    *p3 = Get_StudentList_by_CourseID(pe->course_id);
+                if(p3->first==NULL)printf("课程%s没有学生选择\n",  pe->course_id);
+                else if (  del_stulist(  p3 , id ) == 1 )      //删除课程中的学生;
+                printf  (  "在课程%s中未找到学号为%d的学生\n",   pe->course_id,id);
 
                 Enroll* p4 = pe;
                 pe  =  pe->next;
@@ -125,6 +127,7 @@ typedef struct
     int flagname  ;
     int flaggrade ;
     int flag;
+    int pd;
 } flag;
 
 flag del_Stu(int id)
@@ -139,11 +142,11 @@ flag del_Stu(int id)
     //删除课程中的学生,并删除学生的enroll
     f.flagenroll = del_(2,2,p->enrolled,id);
     //删除学生的benefit
-    CLEAR_BEN( p->Benefits.awards    ); p->Benefits.awards  = NULL;
-    CLEAR_BEN( p->Benefits.projects  ); p->Benefits.projects= NULL;
-    CLEAR_BEN( p->Benefits.essays    ); p->Benefits.essays  = NULL;
+    CLEAR_BEN  ( p->Benefits.awards    ); p->Benefits.awards  = NULL;
+    CLEAR_BEN  ( p->Benefits.projects  ); p->Benefits.projects= NULL;
+    CLEAR_BEN  ( p->Benefits.essays    ); p->Benefits.essays  = NULL;
     //删除pd_list里面的学生
-    
+    f.pd = del_stulist( &Benefits_PendingVerified, id );
     //删除nameindex里面的学生
     Student_List *pn = Get_StudentList_by_name(p->name);
     f.flagname   = del_stulist(pn,id);
@@ -248,10 +251,10 @@ void del(int which, int num, ...)
                 strcpy(cr1,e->course_id);
                 if(strcmp(cr1,crs_id)==0)
                 {
-                    Student_List *pl=Get_StudentList_by_CourseID  (e->course_id);
-                    if(pl==NULL)  printf("课程%s没有学生选择\n",    e->course_id);
-                    else if (del_stulist(pl , stu_id ) == 1 )  //删除课程中的学生;
-                    printf("在课程%s中未找到学号为%d的学生\n",e->course_id,stu_id);
+                    Student_List  *pl=Get_StudentList_by_CourseID  (e->course_id);
+                    if(pl->first==NULL)printf("课程%s没有学生选择\n",e->course_id);
+                    else if (del_stulist(pl , stu_id ) == 1 )   //删除课程中的学生;
+                    printf ("在课程%s中未找到学号为%d的学生\n",e->course_id,stu_id);
 
                     if(e->prev != NULL)
                     {
