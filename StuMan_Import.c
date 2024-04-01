@@ -74,9 +74,19 @@ static Enroll *Enroll_Append(Student *dest, cJSON *cjson_enrolled) {
         Enroll *prev = item->prev;
         Enroll *next = item->next;
         Enroll *tmp = Enroll_Construct(cjson_enrolled);
-        *item = *tmp;
-        item->prev = prev;
-        item->next = next;
+        tmp->prev = prev;
+        tmp->next = next;
+        if (item == dest->enrolled) {
+            dest->enrolled = tmp;
+            if (tmp->next)
+                tmp->next->prev = tmp;
+        } else {
+            tmp->prev->next = tmp;
+            if (tmp->next)
+                tmp->next->prev = tmp;
+        }
+        FREE(item);
+        item = tmp;
     }
     // Try updating Course follower-list
     // search for the course_id in the Course List
@@ -122,7 +132,6 @@ static Student_Node *Student_Node_Add(Student_Node *Head, int id) {
         }
     }
 }
-
 
 static Essay *Essay_Construct(cJSON *cjson_essay) {
     Essay *newEssay = (Essay *)MALLOC(sizeof(Essay));
@@ -296,22 +305,8 @@ static Course *Course_Insert(const cJSON *cjson_course) {
     return currCourse;
 }
 
-void ImportData(const char *fileDir) {
-    if (fileDir == NULL) {
-        printf("ImportData Error: invalid fileDir\n");
-        return;
-    }
-    FILE *pf = fopen(fileDir, "r");
-    fseek(pf, 0, SEEK_END);
-    long fsize = ftell(pf);
-    fseek(pf, 0, SEEK_SET);
-    char *rawData = (char *)MALLOC(fsize + 1);
-    fread(rawData, fsize, 1, pf);
-    rawData[fsize] = '\0';
-    fclose(pf);
-
+void ImportData_fromString(const char *rawData) {
     cJSON *cjson_Data = cJSON_Parse(rawData);
-    FREE(rawData);
     // Process with to-be-imported Students
     cJSON *Student_Collection = cJSON_GetObjectItem(cjson_Data, "学生");
     int student_array_size = cJSON_GetArraySize(Student_Collection);
@@ -388,22 +383,57 @@ void ImportData(const char *fileDir) {
                         UpdateRank(i * 100 + y, i * 100 + j);
         }
     }
-
     cJSON_Delete(cjson_Data);
+}
+
+void ImportData(const char *fileDir) {
+    if (fileDir == NULL) {
+        printf("ImportData Error: invalid fileDir\n");
+        return;
+    }
+    FILE *pf = fopen(fileDir, "r");
+    fseek(pf, 0, SEEK_END);
+    long fsize = ftell(pf);
+    fseek(pf, 0, SEEK_SET);
+    char *rawData = (char *)MALLOC(fsize + 1);
+    fread(rawData, fsize, 1, pf);
+    rawData[fsize] = '\0';
+    fclose(pf);
+    ImportData_fromString(rawData);
+    FREE(rawData);
 }
 
 static void Student_Node_Free(Student_Node *res) {
     Student_Node *last = NULL, *crt = res;
     while (crt) {
         last = crt;
+
         Enroll *lastEnroll = NULL, *crtEnroll = crt->stu.enrolled;
         while (crtEnroll) {
             lastEnroll = crtEnroll;
             crtEnroll = crtEnroll->next;
             FREE(lastEnroll);
         }
-        crt = crt->next;
+        Essay *lastEssay = NULL, *crtEssay = crt->stu.Benefits.essays;
+        while (crtEssay) {
+            lastEssay = crtEssay;
+            crtEssay = crtEssay->next;
+            FREE(lastEssay);
+        }
+        Project *lastProject = NULL, *crtProject = crt->stu.Benefits.projects;
+        while (crtProject) {
+            lastProject = crtProject;
+            crtProject = crtProject->next;
+            FREE(lastProject);
+        }
+        Award *lastAward = NULL, *crtAward = crt->stu.Benefits.awards;
+        while (crtAward) {
+            lastAward = crtAward;
+            crtAward = crtAward->next;
+            FREE(lastAward);
+        }
 
+        crt = crt->next;
         FREE(last);
     }
 }
