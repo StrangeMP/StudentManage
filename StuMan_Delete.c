@@ -1,5 +1,5 @@
 #include <stdarg.h>
-//#include <time.h>
+#include <string.h>
 #include <malloc.h>
 #include <stdio.h>
 #include"StuMan_Delete.h"
@@ -39,7 +39,6 @@
 //1,2,Student_List*,id :删除List中的指定id
 //2,2,Enroll **,id:删除学生的Enroll
 //3,1,Student_List*:删除course的整个Student_List
-//4,1,Student*:clear指定学生的benifit
 int del_(int which,int num,...)
 {   
     va_list  valist;
@@ -90,7 +89,7 @@ int del_(int which,int num,...)
             {
                 Student_List *p3=Get_StudentList_by_CourseID(p2->course_id);
                 if(p3==NULL)  printf("课程%s没有学生选择\n",  p2->course_id);
-                else if(del_(1,2,p3,id)==1)                //删除课程中的学生
+                else if (del_( 1 , 2 , p3 , id ) == 1 )   //删除课程中的学生;
                 printf  ("在课程%s中未找到学号为%d的学生\n",p2->course_id,id);
 
                 Enroll *p4 = p2;
@@ -100,15 +99,15 @@ int del_(int which,int num,...)
 
             break;
         }
-        //删除course的整个Student_List
-        case 3:
+        
+        case 3://删除course的整个Student_List
         {   
             Student_List   *pl= va_arg(valist,Student_List *);
             Student_IdNode *p = pl->first;
-            if(p==NULL)     
+            if(p==NULL)//无人选课    
             { 
                 va_end(valist);
-                return    1   ;
+                return   1    ;
             }
             while(p->next!=NULL) 
             {
@@ -118,16 +117,6 @@ int del_(int which,int num,...)
             FREE(p);
             pl->first =  NULL;
             break  ;
-        }
-
-        //clear学生的benifit
-        case 4:
-        {
-            Student *p=va_arg(valist,Student*);
-            CLEAR_BEN( p->Benefits.awards    ); p->Benefits.awards  = NULL;
-            CLEAR_BEN( p->Benefits.projects  ); p->Benefits.projects= NULL;
-            CLEAR_BEN( p->Benefits.essays    ); p->Benefits.essays  = NULL;
-            break;
         }
     }
     va_end(valist);
@@ -155,7 +144,9 @@ flag del_Stu(int id)
     //删除课程中的学生,并删除学生的enroll
     f.flagenroll = del_(2,2,p->enrolled,id);
     //删除学生的benefit
-    del_(4,1,p);
+    CLEAR_BEN( p->Benefits.awards    ); p->Benefits.awards  = NULL;
+    CLEAR_BEN( p->Benefits.projects  ); p->Benefits.projects= NULL;
+    CLEAR_BEN( p->Benefits.essays    ); p->Benefits.essays  = NULL;
     //删除pd_list里面的学生
     
     //删除nameindex里面的学生
@@ -171,20 +162,14 @@ flag del_Stu(int id)
     return f;
 }
 
-int  del_stu_in_course(char *course_id)
+int  del_stu_in_course (char *course_id)
 {   
     Course * p  =  Get_Course(course_id);
-    if(p == NULL)
-    {
-        printf("未找到课程号为%s的课程\n",course_id);
-        return 1 ;
-    }
+    if( p == NULL) 
+        return 1;
+    if( del_( 3 , 2 , p->followed) == 1)
+        return 2;
 
-    if(del_(3,2,p->followed) == 1) 
-    {
-        printf("该课程没有学生选课\n"              );
-        return 11;
-    }
     return 0;
 }
 
@@ -193,7 +178,7 @@ int del_course(char *course_id)
     //删除选课学生
     int          f = del_stu_in_course(course_id);
     Course_Node* pc=   Get_Course_Node(course_id);
-    DELETE(pc,data_address.pCourseHead);//删除课程
+    DELETE(      pc,   data_address.pCourseHead );
     return f;  
 }
 
@@ -231,18 +216,22 @@ void del(int which, int num, ...)
         case 2://删除课程
         {
         char *course_id = va_arg(valist,char *);
+        char  id[13];
+        strcpy(id,course_id);
         int           f = del_course(course_id);
-        if     (f== 1) printf("未找到课程号为%s的课程\n",course_id);
-        else if(f==11) printf("该课程没有学生选课\n"              );
-        else if(f==0 ) printf("已删除课程号为%s的课程\n",course_id);
+        if     ( f == 1) printf("未找到课程号为%s的课程\n",id);
+        else if( f == 2) printf("该课程没有任何学生选择\n"          );
+        else if( f == 0) printf("已删除课程号为%s的课程\n",id);
         break;
         }
         
         case 3://删除课程中的所有学生
         {
         char *course_id = va_arg(valist,char *);
+        char  id[13];
+        strcpy(id,course_id);
         if  (del_stu_in_course(course_id) == 0)
-             printf("已清空课程号为%s的课程中的学生\n",course_id);
+             printf("已清空课程号为%s的课程中的学生\n",id);
         else printf("清空失败\n");
         break;
         }

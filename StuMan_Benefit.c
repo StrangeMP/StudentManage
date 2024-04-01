@@ -7,6 +7,7 @@
 #include"StuMan_Import.h"
 
 Student_List Benefits_PendingVerified;
+Student_List *bp;
 
 static Student_List* InitpdList()
 {
@@ -128,17 +129,17 @@ static void *AddAward(const int stu_id, Award *award){
 void*Student_AddEssay(int stu_id,Essay*essay)
 {
    AddEssay(stu_id,essay);
-
+   //AddpdList(stu_id,p);
 }
 void*Student_AddProject(int stu_id,Project*project)
 {
     AddProject(stu_id,project);
-
+    //AddpdList(stu_id,p);
 }
 void*Student_AddAward(int stu_id,Award*award)
 {
     AddAward(stu_id,award);
-
+    //AddpdList(stu_id,p);
 }
 
 
