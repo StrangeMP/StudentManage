@@ -18,7 +18,10 @@
     {
         "Number": 4,
         "request": "add",
-        "data": {}
+        "data": {
+            "学生": [],
+            "课程": []
+        }
     },
     {
         "Number": 5,

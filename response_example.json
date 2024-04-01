@@ -1,0 +1,58 @@
+[
+    {
+        "comments": "get_students_by_profession, response 是所求专业的学生信息，以及他们所选课程的课程信息，和导入信息的格式相同，可参见 TestData.json",
+        "Number": 1,
+        "response": {
+            "学生": [],
+            "课程": []
+        }
+    },
+    {
+        "comments": "get_courses_by_teacher, response 是课程列表",
+        "Number": 2,
+        "response": {
+            "课程": []
+        }
+    },
+    {
+        "comments": "get_courses_by_course_id",
+        "Number": 3,
+        "response": {
+            "课程": []
+        }
+    },
+    {
+        "comments": "add",
+        "Number": 4,
+        "response": {
+            "学生": [],
+            "课程": []
+        }
+    },
+    {
+        "comments": "delete_students, 返回 true",
+        "Number": 5,
+        "response": true
+    },
+    {
+        "comments": "delete_student_enrolls, 返回 true",
+        "Number": 6,
+        "response": true
+    },
+    {
+        "comments": "get_students_by_id",
+        "Number": 7,
+        "response": {
+            "学生": [],
+            "课程": []
+        }
+    },
+    {
+        "comments": "get_students_by_name",
+        "Number": 7,
+        "response": {
+            "学生": [],
+            "课程": []
+        }
+    }
+]
