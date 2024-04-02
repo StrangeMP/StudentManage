@@ -1,4 +1,5 @@
 #include "StuMan_Memory.h"
+#include <stdlib.h>
 #ifdef DEBUG
 MemoryRecord memRec = {0, {NULL}};
 void *my_alloc(size_t _Size) {
