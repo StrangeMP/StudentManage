@@ -97,6 +97,6 @@
         className##_iterator iter = className##_begin(this);                                       \
         for (; iter != className##_end(this); iter++)                                              \
             if (_Deter(iter))                                                                      \
-                break;                                                                             \
-        return iter;                                                                               \
+                return iter;                                                                       \
+        return NULL;                                                                               \
     }
