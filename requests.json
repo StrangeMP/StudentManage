@@ -47,5 +47,16 @@
         "Number": 8,
         "request": "get_students_by_name",
         "name": ""
+    },
+    {
+        "Number": 9,
+        "request": "login",
+        "username": "",
+        "identity": 123
+    },
+    {
+        "Number": 10,
+        "request": "get_student_enrolls_by_course_id",
+        "course_ids": []
     }
 ]
