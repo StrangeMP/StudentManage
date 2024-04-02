@@ -84,6 +84,7 @@ typedef struct Student {
         int basis;
     } rank;
     Enroll *enrolled;
+    char pw_MD5[33];
 } Student;
 
 typedef struct Student_Node {
