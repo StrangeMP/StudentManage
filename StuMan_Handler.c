@@ -1,3 +1,4 @@
+#include "StuMan_Account.h"
 #include "StuMan_Delete.h"
 #include "StuMan_Export.h"
 #include "StuMan_Import.h"
@@ -20,7 +21,9 @@ enum REQ_T {
     DEL_STU,
     DEL_STU_ENR,
     GET_STU_ID,
-    GET_STU_NAME
+    GET_STU_NAME,
+    GET_ENR_BY_CRSID,
+    LOGIN
 };
 static const char *REQ_STR[] = {"get_students_by_profession",
                                 "get_courses_by_teacher",
@@ -29,7 +32,9 @@ static const char *REQ_STR[] = {"get_students_by_profession",
                                 "delete_students",
                                 "delete_student_enrolls",
                                 "get_students_by_id",
-                                "get_students_by_name"};
+                                "get_students_by_name",
+                                "get_student_enrolls_by_course_id",
+                                "login"};
 
 static void AddResponse(cJSON *_dest, cJSON *_item, int num) {
     cJSON *response = cJSON_CreateObject();
@@ -156,6 +161,59 @@ static void Handle_DEL_STU_ENR(cJSON *response, cJSON *req) {
     AddResponse(response, cJSON_CreateBool(true), cJSON_GetObjectItem(req, "Number")->valueint);
 }
 
+// 1教务 2老师 3学生
+static void Handle_LOGIN(cJSON *response, cJSON *req) {
+    int identity = cJSON_GetObjectItem(req, "identity")->valueint;
+    cJSON *acc_info = cJSON_CreateObject();
+    switch (identity) {
+    case 1:
+        break;
+    case 2:
+        struct Teacher *crt_tea = Get_Teacher(cJSON_GetObjectItem(req, "username")->valuestring);
+        cJSON_AddItemToObject(acc_info, "username",
+                              crt_tea ? cJSON_CreateString(crt_tea->id) : cJSON_CreateString(""));
+        if (crt_tea) {
+            cJSON_AddItemToObject(acc_info, "password", cJSON_CreateString(crt_tea->PW_MD5));
+            cJSON_AddItemToObject(acc_info, "identity", cJSON_CreateNumber(2));
+            cJSON_AddItemToObject(acc_info, "name", cJSON_CreateString(crt_tea->name));
+        }
+        break;
+    case 3:
+        Student *crt_stu = Get_Student_by_id(cJSON_GetObjectItem(req, "username")->valueint);
+        cJSON_AddItemToObject(acc_info, "username",
+                              crt_stu ? cJSON_CreateNumber(crt_stu->id) : cJSON_CreateNumber(0));
+        if (crt_stu) {
+            cJSON_AddItemToObject(acc_info, "password", cJSON_CreateString(crt_stu->pw_MD5));
+            cJSON_AddItemToObject(acc_info, "identity", cJSON_CreateNumber(3));
+        }
+        break;
+    default:
+        break;
+    }
+    AddResponse(response, acc_info, cJSON_GetObjectItem(req, "Number")->valueint);
+}
+
+VECTOR(intVec, int)
+static void Handle_GET_ENR_BY_CRSID(cJSON *response, cJSON *req) {
+    intVec *ivec = intVec_create();
+    cJSON *cjson_crses = cJSON_GetObjectItem(req, "course_ids");
+    int crs_cnt = cJSON_GetArraySize(cjson_crses);
+    for (int i = 0; i < crs_cnt; i++) {
+        Course *crt_crs = Get_Course(cJSON_GetArrayItem(cjson_crses, i)->valuestring);
+        if (crt_crs == NULL)
+            return;
+        Student_IdNode *crt_node = crt_crs->followed->first;
+        while (crt_node) {
+            intVec_push_back(ivec, crt_node->id);
+            crt_node = crt_node->next;
+        }
+    }
+    AddResponse(response,
+                ExportData(CreateExportList(intVec_data(ivec), intVec_size(ivec), NULL, 0), NULL),
+                cJSON_GetObjectItem(req, "Number")->valueint);
+    intVec_destroy(ivec);
+}
+
 char *Handler(const char *reqs) {
     if (!reqs)
         return NULL;
@@ -195,6 +253,12 @@ char *Handler(const char *reqs) {
             break;
         case GET_STU_NAME:
             Handle_GET_STU_NAME(response, crt_req);
+            break;
+        case LOGIN:
+            Handle_LOGIN(response, crt_req);
+            break;
+        case GET_ENR_BY_CRSID:
+            Handle_GET_ENR_BY_CRSID(response, crt_req);
             break;
         default:
             break;
