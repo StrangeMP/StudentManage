@@ -1,8 +1,8 @@
 #include "StuMan_Delete.h"
 #include "StuMan_Export.h"
 #include "StuMan_Import.h"
-#include "StuMan_Nouns.h"
 #include "StuMan_Memory.h"
+#include "StuMan_Nouns.h"
 #include "StuMan_Search.h"
 #include "StuMan_Statistics.h"
 #include "StuMan_Student.h"
@@ -91,7 +91,7 @@ static void Handle_DEL_STU(cJSON *response, cJSON *req) {
     cJSON *del_arr = cJSON_GetObjectItem(req, "student_ids");
     int del_cnt = cJSON_GetArraySize(del_arr);
     for (int i = 0; i < del_cnt; i++)
-        del(STUDENT, 1, cJSON_GetArrayItem(del_arr, i)->valueint);
+        del(STU, 1, cJSON_GetArrayItem(del_arr, i)->valueint);
     AddResponse(response, cJSON_CreateBool(true), cJSON_GetObjectItem(req, "Number")->valueint);
 }
 
