@@ -16,7 +16,7 @@ typedef struct {
     Student_IdNode *first;
     Student_IdNode *end;
 } Student_List;
-
+Student_List Benefits_PendingVerified;
 // 课程信息
 typedef struct Course {
     char name[50];          // 课程名 e.g.大学物理B
