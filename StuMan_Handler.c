@@ -120,19 +120,40 @@ static void Handle_GET_STU_NAME(cJSON *response, cJSON *req) {
     FREE(stu_arr);
 }
 
+#define HTTP_HEADER_PROTO                                                                          \
+    "HTTP/1.1 200 OK\r\n"                                                                          \
+    "Content-Type: text/plain\r\n"                                                                 \
+    "Content-Length: \r\n"                                                                         \
+    "Access-Control-Allow-Origin: *\r\n"                                                           \
+    "Connection: close\r\n\r\n"
+#define HEADER_LEN sizeof(HTTP_HEADER_PROTO) / sizeof(char) - 1
+
 // Function to create an HTTP response with the specified content
 static char *create_http_response(const char *content) {
     size_t content_length = strlen(content);
     char lenlen[10];
     sprintf(lenlen, "%d", content_length);
-    size_t buffer_size = 82 + strlen(lenlen) + content_length + 1;
+    size_t buffer_size = HEADER_LEN + strlen(lenlen) + content_length + 1;
     char *response = (char *)MALLOC(sizeof(char) * buffer_size);
     snprintf(response, buffer_size,
-             "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\nConnection: "
-             "close\r\n\r\n%s",
+             "HTTP/1.1 200 OK\r\n"
+             "Content-Type: text/plain\r\n"
+             "Content-Length: %d\r\n"
+             "Access-Control-Allow-Origin: *\r\n"
+             "Connection: close\r\n\r\n"
+             "%s",
              content_length, content);
     FREE((void *)content);
     return response;
+}
+
+static void Handle_DEL_STU_ENR(cJSON *response, cJSON *req) {
+    int stu_id = cJSON_GetObjectItem(cJSON_GetObjectItem(req, "info"), "student_id")->valueint;
+    cJSON *enr_arr = cJSON_GetObjectItem(cJSON_GetObjectItem(req, "info"), "course_ids");
+    int del_cnt = cJSON_GetArraySize(enr_arr);
+    for (int i = 0; i < del_cnt; i++)
+        del(CRS_OF_STU, 2, stu_id, cJSON_GetArrayItem(enr_arr, i)->valuestring);
+    AddResponse(response, cJSON_CreateBool(true), cJSON_GetObjectItem(req, "Number")->valueint);
 }
 
 char *Handler(const char *reqs) {
@@ -165,7 +186,7 @@ char *Handler(const char *reqs) {
             Handle_DEL_STU(response, crt_req);
             break;
         case DEL_STU_ENR:
-
+            Handle_DEL_STU_ENR(response, crt_req);
             break;
         case GET_STU_ID:
             Handle_GET_STU_ID(response, crt_req);
