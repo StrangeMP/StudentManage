@@ -5,34 +5,36 @@
 #include"StuMan_Search.h"
 #include"StuMan_Node.h"
 #include"StuMan_Import.h"
+#include"StuMan_Delete.h"
 
 Student_List Benefits_PendingVerified={0,NULL,NULL};
 
-static Student_List* AddpdList(int id,Student_List* p)
+void AddpdList(int id)
 {
-    p->student_count++;
-    if(p->first==NULL)
+    Benefits_PendingVerified.student_count++;
+    if(Benefits_PendingVerified.first==NULL)
     {
         Student_IdNode* q = malloc(sizeof(Student_IdNode));
         q->id = id;
         q->next = NULL;
         q->prev = NULL;
-        p->first = q;
-        p->end = q;
+        Benefits_PendingVerified.first = q;
+        Benefits_PendingVerified.end   = q;
     }
     else
     {
         Student_IdNode* q = malloc(sizeof(Student_IdNode));
         q->id = id;
         q->next = NULL;
-        q->prev = p->end;
-        p->end->next = q;
-        p->end = q;
+        q->prev = Benefits_PendingVerified.end;
+        Benefits_PendingVerified.end->next = q;
+        Benefits_PendingVerified.end = q;
     }
-    return p;
+    return ;
 }
 
-static void *AddEssay(int stu_id, Essay *essay){
+
+void*Student_AddEssay(int stu_id,Essay*essay){
     Student* student = Get_Student_by_id(stu_id);
     if(student->Benefits.essays == NULL){
         essay->prev = NULL;
@@ -54,7 +56,7 @@ static void *AddEssay(int stu_id, Essay *essay){
 }
 
 
-static void *AddProject(int stu_id, Project *project){
+void*Student_AddProject(int stu_id,Project*project){
 
     Student*student= Get_Student_by_id( stu_id); // Add the missing function declaration
 
@@ -83,7 +85,7 @@ static void *AddProject(int stu_id, Project *project){
     return NULL;
 }
 
-static void *AddAward(const int stu_id, Award *award){  
+void*Student_AddAward(int stu_id,Award*award){  
     Student* student = Get_Student_by_id(stu_id);
     
    if(student->Benefits.awards == NULL){
@@ -108,19 +110,4 @@ static void *AddAward(const int stu_id, Award *award){
     }
 
     return NULL ;
-}
-void*Student_AddEssay(int stu_id,Essay*essay)
-{
-   AddEssay(stu_id,essay);
-   //AddpdList(stu_id,p);
-}
-void*Student_AddProject(int stu_id,Project*project)
-{
-    AddProject(stu_id,project);
-    //AddpdList(stu_id,p);
-}
-void*Student_AddAward(int stu_id,Award*award)
-{
-    AddAward(stu_id,award);
-    //AddpdList(stu_id,p);
 }
