@@ -5,7 +5,7 @@ CC_FLAGS = -O2 $(CC_INCLUDE_FLAGS)
 C_SRC_FILES = main.c StuMan_Benefit.c StuMan_Binary.c StuMan_BuildIndex.c\
  StuMan_Delete.c StuMan_Export.c StuMan_Handler.c StuMan_Import.c StuMan_Memory.c\
  StuMan_Node.c StuMan_Nouns.c StuMan_Search.c StuMan_Statistics.c StuMan_Student.c\
- Libraries/cJSON/cJSON.c Libraries/md5-c-main/md5.c Server/fileTrans.c Server/StuMan_Server.c Server/tcpSocket.c
+ Libraries/cJSON/cJSON.c Libraries/md5-c-main/md5.c StuMan_Server.c
 C_OBJ_FILES = $(patsubst %.c, %.o, $(C_SRC_FILES))
 
 target : main.exe
@@ -80,15 +80,9 @@ StuMan_Student.o: StuMan_Student.c Include/StuMan_Student.h \
  Include/StuMan_Benefit.h Include/StuMan_Search.h
 	$(CC) $(CC_FLAGS) -c $<
 
-Server/StuMan_Server.o: Server/StuMan_Server.c Include/StuMan_Server.h \
+StuMan_Server.o: StuMan_Server.c Include/StuMan_Server.h \
  Include/StuMan_Handler.h Include/StuMan_Student.h \
  Include/StuMan_Benefit.h Include/tcpSocket.h
-	$(CC) $(CC_FLAGS) -c $< -o $@
-
-Server/fileTrans.o: Server/fileTrans.c Include/fileTrans.h Include/tcpSocket.h
-	$(CC) $(CC_FLAGS) -c $< -o $@
-
-Server/tcpSocket.o: Server/tcpSocket.c Include/tcpSocket.h
 	$(CC) $(CC_FLAGS) -c $< -o $@
 
 clean :
