@@ -8,9 +8,10 @@
 #include "VECTOR.h"
 #include "cJSON.h"
 #include "string.h"
+#include <stdio.h>
 
 // index of the same request in the two arrays should be identical
-static enum REQ_T {
+enum REQ_T {
     GET_STU_PRO,
     GET_CRS_TEACHER,
     GET_CRS_ID,
@@ -20,19 +21,20 @@ static enum REQ_T {
     GET_STU_ID,
     GET_STU_NAME
 };
-static const char *REQ_STR = {"get_students_by_profession",
-                              "get_courses_by_teacher",
-                              "get_courses_by_course_id",
-                              "add",
-                              "delete_students",
-                              "delete_student_enrolls",
-                              "get_students_by_id",
-                              "get_students_by_name"};
+static const char *REQ_STR[] = {"get_students_by_profession",
+                                "get_courses_by_teacher",
+                                "get_courses_by_course_id",
+                                "add",
+                                "delete_students",
+                                "delete_student_enrolls",
+                                "get_students_by_id",
+                                "get_students_by_name"};
 
 static void AddResponse(cJSON *_dest, cJSON *_item, int num) {
     cJSON *response = cJSON_CreateObject();
     cJSON_AddItemToObject(response, "Number", cJSON_CreateNumber(num));
-    cJSON_AddItemToObject(response, "reponse", _item);
+    cJSON_AddItemToObject(response, "response", _item);
+    cJSON_AddItemToArray(_dest, response);
 }
 
 static void Handle_GET_STU_PRO(cJSON *response, cJSON *req) {
@@ -80,7 +82,7 @@ static void Handle_GET_CRS_ID(cJSON *response, cJSON *req) {
 static void Handle_ADD(cJSON *response, cJSON *req) {
     const char *data = cJSON_Print(cJSON_GetObjectItem(req, "data"));
     ImportData_fromString(data);
-    free(data); // memory allocated by cJSON, do not use FREE
+    free((void *)data); // memory allocated by cJSON, do not use FREE
     AddResponse(response, cJSON_CreateBool(true), cJSON_GetObjectItem(req, "Number")->valueint);
 }
 
@@ -117,7 +119,22 @@ static void Handle_GET_STU_NAME(cJSON *response, cJSON *req) {
     FREE(stu_arr);
 }
 
-const char *Handler(const char *reqs) {
+// Function to create an HTTP response with the specified content
+static char *create_http_response(const char *content) {
+    size_t content_length = strlen(content);
+    char lenlen[10];
+    sprintf(lenlen, "%d", content_length);
+    size_t buffer_size = 82 + strlen(lenlen) + content_length + 1;
+    char *response = (char *)MALLOC(sizeof(char) * buffer_size);
+    snprintf(response, buffer_size,
+             "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\nConnection: "
+             "close\r\n\r\n%s",
+             content_length, content);
+    FREE((void *)content);
+    return response;
+}
+
+char *Handler(const char *reqs) {
     if (!reqs)
         return NULL;
     cJSON *all_reqs = cJSON_Parse(reqs);
@@ -160,5 +177,8 @@ const char *Handler(const char *reqs) {
         }
     }
     cJSON_Delete(all_reqs);
-    return cJSON_Print(response);
+    char *json_result = cJSON_Print(response);
+    cJSON_Delete(response);
+    char *ret = create_http_response(json_result);
+    return ret;
 }
