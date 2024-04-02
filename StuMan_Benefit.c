@@ -8,7 +8,7 @@
 
 Student_List Benefits_PendingVerified={0,NULL,NULL};
 
-static Student_List* AddpdList(int id,Student_List* p)
+void AddpdList(int id,Student_List* p)
 {
     p->student_count++;
     if(p->first==NULL)
@@ -29,8 +29,9 @@ static Student_List* AddpdList(int id,Student_List* p)
         p->end->next = q;
         p->end = q;
     }
-    return p;
+    return ;
 }
+
 
 static void *AddEssay(int stu_id, Essay *essay){
     Student* student = Get_Student_by_id(stu_id);
