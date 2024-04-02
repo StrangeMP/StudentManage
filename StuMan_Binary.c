@@ -1,4 +1,5 @@
 #include "StuMan_Binary.h"
+#include "StuMan_Memory.h"
 #include "StuMan_Student.h"
 #include <stdio.h>
 

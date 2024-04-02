@@ -1,5 +1,6 @@
 #include "StuMan_Import.h"
 #include "StuMan_BuildIndex.h"
+#include "StuMan_Memory.h"
 #include "StuMan_Node.h"
 #include "StuMan_Nouns.h"
 #include "StuMan_Search.h"

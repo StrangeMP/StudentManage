@@ -1,3 +1,4 @@
+#include "StuMan_Memory.h"
 #include "StuMan_Node.h"
 #include <stdlib.h>
 

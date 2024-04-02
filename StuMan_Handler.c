@@ -2,6 +2,7 @@
 #include "StuMan_Export.h"
 #include "StuMan_Import.h"
 #include "StuMan_Nouns.h"
+#include "StuMan_Memory.h"
 #include "StuMan_Search.h"
 #include "StuMan_Statistics.h"
 #include "StuMan_Student.h"
