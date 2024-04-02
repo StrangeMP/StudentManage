@@ -186,7 +186,7 @@ cJSON *ExportData(cJSON *_data, const char *fileName) {
     }
 }
 
-cJSON *CreateExportList(int stuArr[], const int stuCnt, char *crsArr[], const int crsCnt) {
+cJSON *CreateExportList(int stuArr[], const int stuCnt, const char *crsArr[], const int crsCnt) {
     if ((!stuArr || !stuCnt) && (!crsArr || !crsCnt))
         return NULL;
     cJSON *tobeExport = cJSON_CreateObject();
