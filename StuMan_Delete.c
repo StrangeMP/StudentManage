@@ -46,19 +46,7 @@ int del_stulist(Student_List * pl,int aim_id)
     {
         if(    p->id == aim_id)
         {
-            if(p->prev != NULL) 
-            {
-                p->prev->next = p->next;
-                if(p->next !=NULL) 
-                p->next->prev = p->prev;  
-            }
-            else
-            {
-                pl->first = p->next;
-                if( p->next != NULL) 
-                p->next->prev= NULL;
-            }
-            FREE(p);
+            DELETE(p,pl->first);
             pl->student_count--;
             return 0;
         }
@@ -226,19 +214,7 @@ void del(int which, int num, ...)
                     else if (del_stulist(pl , stu_id ) == 1 )   //删除课程中的学生;
                     printf ("在课程%s中未找到学号为%d的学生\n",e->course_id,stu_id);
 
-                    if(e->prev != NULL)
-                    {
-                        e->prev->next = e->next;
-                        if(e->next != NULL)
-                        e->next->prev = e->prev;
-                    }
-                    else
-                    {
-                        p->enrolled  = e->next;
-                        if( e->next != NULL) 
-                        e->next->prev= NULL;
-                    }
-                    FREE(e);
+                    DELETE(e,p->enrolled);
                     printf("已删除学号为%d的学生课程号为%s的课程\n",stu_id,crs);
                     va_end(valist);
                     return;
