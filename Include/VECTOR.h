@@ -91,4 +91,12 @@
             this->_last = this->_first + this->capacity;                                           \
             this->capacity = new_cap;                                                              \
         }                                                                                          \
+    }                                                                                              \
+    static inline className##_iterator className##_find(className *this,                           \
+                                                        bool (*_Deter)(className##_iterator)) {    \
+        className##_iterator iter = className##_begin(this);                                       \
+        for (; iter != className##_end(this); iter++)                                              \
+            if (_Deter(iter))                                                                      \
+                break;                                                                             \
+        return iter;                                                                               \
     }
