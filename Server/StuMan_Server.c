@@ -1,6 +1,7 @@
-#include "../StuMan_Handler.h"
-#include "../StuMan_Server.h"
-#include "../StuMan_Student.h"
+#include "StuMan_Server.h"
+#include "StuMan_Handler.h"
+#include "StuMan_Memory.h"
+#include "StuMan_Student.h"
 #include "tcpSocket.h"
 #include <processthreadsapi.h>
 #include <string.h>
@@ -112,5 +113,4 @@ void RunServer() {
 
     closesocket(sfd);
     WSA_clean();
-    return 0;
 }
