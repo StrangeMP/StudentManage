@@ -19,11 +19,11 @@ void handle_client(void *client_socket) {
     int bytes_received = recv(client, buffer, sizeof(buffer), 0);
     if (bytes_received > 0) {
         buffer[bytes_received] = '\0';
-        {
-            FILE *f = fopen("__tmp.txt", "w");
-            fputs(buffer, f);
-            fclose(f);
-        }
+        // {
+        //     FILE *f = fopen("__tmp.txt", "w");
+        //     fputs(buffer, f);
+        //     fclose(f);
+        // }
         char first_word[10];
         sscanf(buffer, "%s", first_word);
         if (strcmp(first_word, "OPTIONS") == 0) {
@@ -44,17 +44,16 @@ void handle_client(void *client_socket) {
 
                 // Send the HTTP response
                 // send(client_socket, http_response, strlen(http_response), 0);
-                if (response)
+                if (response) {
                     send(client, response, strlen(response), 0);
-                else {
+                    FREE(response);
+                } else {
                     char invalidReq[] = "HTTP/1.1 405 Method Not Allowed\r\n"
                                         "Content-Length: 0\r\n"
                                         "Access-Control-Allow-Origin: *\r\n"
                                         "Connection: close\r\n\r\n";
                     send(client, invalidReq, strlen(invalidReq), 0);
                 }
-
-                FREE(response);
             }
         }
     }
