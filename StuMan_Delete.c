@@ -252,3 +252,37 @@ void del(int which, int num, ...)
     va_end(valist);
     return;
 }
+
+void Update_pd(int id)
+{
+    Student *p = Get_Student_by_id(id);
+    if(p->Benefits.essays   == NULL 
+    && p->Benefits.projects == NULL
+    && p->Benefits.awards   == NULL)
+    {
+        Student_IdNode *q = Benefits_PendingVerified.first;
+        while(q)
+        {
+            if(q->id == id)
+            {
+                DELETE(q,Benefits_PendingVerified.first);
+                return ;
+            }
+            q = q->next;
+        }
+    }
+    else
+    {
+        Student_IdNode *q = Benefits_PendingVerified.first;
+        while(q)
+        {
+            if(q->id == id)
+            {
+                return ;
+            }
+            q = q->next;
+        }
+        AddpdList(id);
+    }
+    return ;
+}
