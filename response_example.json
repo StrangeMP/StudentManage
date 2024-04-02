@@ -54,5 +54,22 @@
             "学生": [],
             "课程": []
         }
+    },
+    {
+        "comments": "get_student_enrolls_by_course_id",
+        "Number": 8,
+        "response": {
+            "学生": []
+        }
+    },
+    {
+        "comments": "login",
+        "Number": 9,
+        "response": {
+            "username": "",
+            "password": "",
+            "identity": 123,
+            "name": ""
+        }
     }
 ]
