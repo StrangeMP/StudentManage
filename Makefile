@@ -5,7 +5,7 @@ CC_FLAGS = -O2 $(CC_INCLUDE_FLAGS)
 C_SRC_FILES = main.c StuMan_Benefit.c StuMan_Binary.c StuMan_BuildIndex.c\
  StuMan_Delete.c StuMan_Export.c StuMan_Handler.c StuMan_Import.c StuMan_Memory.c\
  StuMan_Node.c StuMan_Nouns.c StuMan_Search.c StuMan_Statistics.c StuMan_Student.c\
- Libraries/cJSON/cJSON.c Libraries/md5-c-main/md5.c StuMan_Server.c
+ Libraries/cJSON/cJSON.c Libraries/md5-c-main/md5.c StuMan_Server.c StuMan_Account.c
 C_OBJ_FILES = $(patsubst %.c, %.o, $(C_SRC_FILES))
 
 target : main.exe
@@ -84,6 +84,12 @@ StuMan_Server.o: StuMan_Server.c Include/StuMan_Server.h \
  Include/StuMan_Handler.h Include/StuMan_Student.h \
  Include/StuMan_Benefit.h Include/tcpSocket.h
 	$(CC) $(CC_FLAGS) -c $< -o $@
+
+StuMan_Account.o: StuMan_Account.c Include/StuMan_Account.h \
+ Include/VECTOR.h Libraries/cJSON/cJSON.h Include/StuMan_Search.h \
+ Include/StuMan_Student.h Include/StuMan_Benefit.h
+	$(CC) $(CC_FLAGS) -c $< -o $@
+
 
 clean :
 	@powershell -Command "Get-ChildItem -Path . -Include *.o,*.exe -File -Recurse | Remove-Item -Force"
