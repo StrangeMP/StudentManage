@@ -58,7 +58,7 @@ static void Handle_GET_CRS_TEACHER(cJSON *reponse, cJSON *req) {
     CrsIdVec *vec = CrsIdVec_create();
     while (crt_crs) {
         if (!strcmp(crt_crs->crs.teacher, teacher))
-            CrsIdVec_push_back(vec, crt_crs->crs.teacher);
+            CrsIdVec_push_back(vec, crt_crs->crs.id);
         crt_crs = crt_crs->next;
     }
     AddResponse(reponse,
@@ -160,6 +160,8 @@ char *Handler(const char *reqs) {
     if (!reqs)
         return NULL;
     cJSON *all_reqs = cJSON_Parse(reqs);
+    if (!cJSON_IsArray(all_reqs))
+        return NULL;
     int req_num = cJSON_GetArraySize(all_reqs);
     if (!req_num) {
         cJSON_Delete(all_reqs);
