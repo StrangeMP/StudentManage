@@ -212,31 +212,32 @@ static Student *Student_Insert(const cJSON *cjson_student) {
         strcpy(currStudent->pw_MD5, stu_pw ? stu_pw->valuestring : "null");
         currStudent->enrolled = NULL;
         Build_Student_Index(data_address.pStudentFoot);
-        {
-            // Add Essays
-            cJSON *cjson_essays =
-                cJSON_GetObjectItem(cJSON_GetObjectItem(cjson_student, "素质加分"), "论文");
-            int essay_num = cJSON_GetArraySize(cjson_essays);
-            for (int i = 0; i < essay_num; i++)
-                Student_AddEssay(id, Essay_Construct(cJSON_GetArrayItem(cjson_essays, i)));
-        }
-        {
-            // Add Projects
-            cJSON *cjson_projs =
-                cJSON_GetObjectItem(cJSON_GetObjectItem(cjson_student, "素质加分"), "项目");
-            int proj_num = cJSON_GetArraySize(cjson_projs);
-            for (int i = 0; i < proj_num; i++)
-                Student_AddProject(id, Project_Construct(cJSON_GetArrayItem(cjson_projs, i)));
-        }
-        {
-            // Add Awards
-            cJSON *cjson_awards =
-                cJSON_GetObjectItem(cJSON_GetObjectItem(cjson_student, "素质加分"), "竞赛获奖");
-            int award_num = cJSON_GetArraySize(cjson_awards);
-            for (int i = 0; i < award_num; i++)
-                Student_AddAward(id, Award_Construct(cJSON_GetArrayItem(cjson_awards, i)));
-        }
     }
+    {
+        // Add Essays
+        cJSON *cjson_essays =
+            cJSON_GetObjectItem(cJSON_GetObjectItem(cjson_student, "素质加分"), "论文");
+        int essay_num = cJSON_GetArraySize(cjson_essays);
+        for (int i = 0; i < essay_num; i++)
+            Student_AddEssay(id, Essay_Construct(cJSON_GetArrayItem(cjson_essays, i)));
+    }
+    {
+        // Add Projects
+        cJSON *cjson_projs =
+            cJSON_GetObjectItem(cJSON_GetObjectItem(cjson_student, "素质加分"), "项目");
+        int proj_num = cJSON_GetArraySize(cjson_projs);
+        for (int i = 0; i < proj_num; i++)
+            Student_AddProject(id, Project_Construct(cJSON_GetArrayItem(cjson_projs, i)));
+    }
+    {
+        // Add Awards
+        cJSON *cjson_awards =
+            cJSON_GetObjectItem(cJSON_GetObjectItem(cjson_student, "素质加分"), "竞赛获奖");
+        int award_num = cJSON_GetArraySize(cjson_awards);
+        for (int i = 0; i < award_num; i++)
+            Student_AddAward(id, Award_Construct(cJSON_GetArrayItem(cjson_awards, i)));
+    }
+
     return currStudent;
 }
 
@@ -312,6 +313,9 @@ static Course *Course_Insert(const cJSON *cjson_course) {
 void ImportData_fromString(const char *rawData) {
     cJSON *cjson_Data = cJSON_Parse(rawData);
     // Process with to-be-imported Students
+    FILE *fp = fopen("__tmp.txt", "w");
+    fputs(rawData, fp);
+    fclose(fp);
     cJSON *Student_Collection = cJSON_GetObjectItem(cjson_Data, "学生");
     int student_array_size = cJSON_GetArraySize(Student_Collection);
     for (int i = 0; i < student_array_size; i++) {
@@ -474,6 +478,6 @@ void ReleaseResource() {
     for (int i = 0; i < 90; i++)
         for (int j = 0; j < 4; j++)
             Student_List_Free(gradeIndex[i][j]);
-    Student_List_Free(&Benefits_PendingVerified);
+    Student_List_Free(Benefits_PendingVerified);
     CleanTeachers();
 }
