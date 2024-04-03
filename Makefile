@@ -82,8 +82,7 @@ StuMan_Student.o: StuMan_Student.c Include/StuMan_Student.h \
 	$(CC) $(CC_FLAGS) -c $<
 
 StuMan_Server.o: StuMan_Server.c Include/StuMan_Server.h \
- Include/StuMan_Handler.h Include/StuMan_Student.h \
- Include/StuMan_Benefit.h Include/tcpSocket.h
+ Include/StuMan_Handler.h Include/StuMan_Memory.h
 	$(CC) $(CC_FLAGS) -c $< -o $@
 
 StuMan_Account.o: StuMan_Account.c Include/StuMan_Account.h \
