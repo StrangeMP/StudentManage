@@ -312,9 +312,6 @@ static Course *Course_Insert(const cJSON *cjson_course) {
 void ImportData_fromString(const char *rawData) {
     cJSON *cjson_Data = cJSON_Parse(rawData);
     // Process with to-be-imported Students
-    FILE *fp = fopen("__tmp.txt", "w");
-    fputs(rawData, fp);
-    fclose(fp);
     cJSON *Student_Collection = cJSON_GetObjectItem(cjson_Data, "学生");
     int student_array_size = cJSON_GetArraySize(Student_Collection);
     for (int i = 0; i < student_array_size; i++) {
