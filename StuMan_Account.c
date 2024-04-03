@@ -65,6 +65,8 @@ static bool comp(TeacherVector_iterator item) {
         return false;
 }
 struct Teacher *Get_Teacher(const char *teacher_id) {
+    if (t_vec == NULL)
+        return NULL;
     comparator = teacher_id;
     return TeacherVector_find(t_vec, comp);
 }
