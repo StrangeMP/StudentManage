@@ -194,10 +194,15 @@ void LoadData(const char *fileDir1, const char *fileDir2) {
     pCf = pCh;
     pCh->prev = NULL;
     pCh->next = NULL; // 建立课程链表
+
     while (examin(f, '(')) {
         pC0 = (Course_Node *)MALLOC(sizeof(Course_Node));
-        fread(&pC0->crs, sizeof(Course), 1, f);
-        fread(&pC0->crs.followed->student_count, sizeof(int), 1, f);
+        //建立课程的学生指针指向的Student_List结构体，否则不存在无法指向。
+        Student_List *followStu = (Student_List*)MALLOC(sizeof(Student_List));
+        pC0->crs.followed = followStu;
+
+        fread(&(pC0->crs), sizeof(Course), 1, f);
+        fread(&(pC0->crs.followed->student_count), sizeof(int), 1, f);
 
         Student_IdNode *fh, *fr, *f0; // 学号链表的建立
         fh = (Student_IdNode *)MALLOC(sizeof(Student_IdNode));
