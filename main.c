@@ -1,10 +1,10 @@
-#include "StuMan_Account.h"
-#include "StuMan_Import.h"
+﻿#include "StuMan_Binary.h"
 #include "StuMan_Server.h"
+
 int main() {
-    ImportData("TestData_Benefits.json");
-    Teacher_Signup("Teachers.json");
+    LoadData("Stu_Info.bin", "Cor_Info.bin");
     RunServer();
+    SaveData();
     ReleaseResource();
     return 0;
 }
