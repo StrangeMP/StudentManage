@@ -12,8 +12,8 @@ static void Cor_Write(Course pCor, FILE *f);
 void LoadData(const char *fileDir1, const char *fileDir2);
 
 void SaveData() {
-    FILE *p = fopen("Stu_Info.bin", "wb");
-    FILE *f = fopen("Cor_Info.bin", "wb"); // 学生数据一个文件，课程数据一个文件
+    FILE *p = fopen("./Storage/Stu_Info.bin", "wb");
+    FILE *f = fopen("./Storage/Cor_Info.bin", "wb"); // 学生数据一个文件，课程数据一个文件
     Student_Node *SHead = data_address.pStudentHead; // the pointer to move
     Course_Node *CHead = data_address.pCourseHead;   // the pointer to move
 
@@ -33,7 +33,7 @@ void SaveData() {
     fclose(f);
 }
 
-void write_symbol(enum sym _symbol, FILE *f) {
+static void write_symbol(enum sym _symbol, FILE *f) {
     enum sym *_S = &_symbol;
     fwrite(_S, sizeof(enum sym), 1, f);
 }
