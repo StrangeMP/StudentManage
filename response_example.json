@@ -71,5 +71,13 @@
             "identity": 123,
             "name": ""
         }
+    },
+    {
+        "comments": "get_pending_list",
+        "Number": 11,
+        "response": {
+            "学生": [],
+            "课程": []
+        }
     }
 ]
