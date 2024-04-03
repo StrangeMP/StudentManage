@@ -1,4 +1,5 @@
 #include "StuMan_Import.h"
+#include "StuMan_Account.h"
 #include "StuMan_BuildIndex.h"
 #include "StuMan_Memory.h"
 #include "StuMan_Node.h"
@@ -207,6 +208,8 @@ static Student *Student_Insert(const cJSON *cjson_student) {
         currStudent->major =
             inst * 100 + getNounIndex(Professions[inst], 15,
                                       cJSON_GetObjectItem(cjson_student, "专业")->valuestring);
+        cJSON *stu_pw = cJSON_GetObjectItem(cjson_student, "MD5");
+        strcpy(currStudent->pw_MD5, stu_pw ? stu_pw->valuestring : "null");
         currStudent->enrolled = NULL;
         Build_Student_Index(data_address.pStudentFoot);
         {
@@ -471,4 +474,6 @@ void ReleaseResource() {
     for (int i = 0; i < 90; i++)
         for (int j = 0; j < 4; j++)
             Student_List_Free(gradeIndex[i][j]);
+    Student_List_Free(&Benefits_PendingVerified);
+    CleanTeachers();
 }
