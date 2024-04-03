@@ -275,6 +275,8 @@ char *Handler(const char *reqs) {
         case GET_ENR_BY_CRSID:
             Handle_GET_ENR_BY_CRSID(response, crt_req);
             break;
+        case GET_PENDING:
+            Handle_GET_PENDING(response, crt_req);
         default:
             break;
         }
