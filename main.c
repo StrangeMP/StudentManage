@@ -2,7 +2,7 @@
 #include "StuMan_Server.h"
 
 int main() {
-    LoadData("Stu_Info.bin", "Cor_Info.bin");
+    LoadData("./Storage/Stu_Info.bin", "./Storage/Cor_Info.bin");
     RunServer();
     SaveData();
     ReleaseResource();
