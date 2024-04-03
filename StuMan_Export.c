@@ -118,6 +118,8 @@ static cJSON *Export_Enroll_To_Student(cJSON *cjson_Stu, Student *stu) {
 
 static cJSON *Student_Export(cJSON *_dest, int stu_id) {
     Student *stu = Get_Student_by_id(stu_id);
+    if (stu == NULL)
+        return NULL;
     cJSON *cjson_Stu = cJSON_CreateObject();
     cJSON_AddStringToObject(cjson_Stu, "姓名", stu->name);
     cJSON_AddNumberToObject(cjson_Stu, "学号", stu->id);
