@@ -132,6 +132,8 @@ static cJSON *Student_Export(cJSON *_dest, int stu_id) {
 
 static cJSON *Course_Export(cJSON *_dest, const char *course_id) {
     Course *crs = Get_Course(course_id);
+    if (crs == NULL)
+        return NULL;
     cJSON *cjson_Crs = cJSON_CreateObject();
     cJSON_AddStringToObject(cjson_Crs, "上课老师", crs->teacher);
     cJSON_AddStringToObject(cjson_Crs, "课程名", crs->name);
