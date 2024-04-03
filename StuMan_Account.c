@@ -70,8 +70,11 @@ struct Teacher *Get_Teacher(const char *teacher_id) {
 }
 
 void CleanTeachers() {
-    for (TeacherVector_iterator iter = TeacherVector_begin(t_vec); iter != TeacherVector_end(t_vec);
-         iter++) {
+    if (t_vec == NULL)
+        return;
+    TeacherVector_iterator iter = TeacherVector_begin(t_vec);
+    TeacherVector_iterator end = TeacherVector_end(t_vec);
+    for (; iter != end; iter++) {
         StrVec_destroy(iter->courses);
     }
     TeacherVector_destroy(t_vec);
