@@ -10,8 +10,3 @@
 //STU_IN_CRS, 1, char * course_id   :del all stu in course
 //CRS_OF_STU, 2, int id,char *course:del course of student
 void del(int which, int num, ...);
-
-//增加需要获奖pending的学生,
-void AddpdList(int id);
-//更新获奖学生数据
-void Update_pd(int id);

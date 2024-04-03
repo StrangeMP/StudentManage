@@ -17,7 +17,7 @@ typedef struct {
     Student_IdNode *end;
 } Student_List;
 
-extern Student_List Benefits_PendingVerified;
+extern Student_List * Benefits_PendingVerified;
 
 // 课程信息
 typedef struct Course {
