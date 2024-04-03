@@ -23,7 +23,8 @@ enum REQ_T {
     GET_STU_ID,
     GET_STU_NAME,
     GET_ENR_BY_CRSID,
-    LOGIN
+    LOGIN,
+    GET_PENDING
 };
 static const char *REQ_STR[] = {"get_students_by_profession",
                                 "get_courses_by_teacher",
@@ -34,7 +35,8 @@ static const char *REQ_STR[] = {"get_students_by_profession",
                                 "get_students_by_id",
                                 "get_students_by_name",
                                 "get_student_enrolls_by_course_id",
-                                "login"};
+                                "login",
+                                "get_pending_list"};
 
 static void AddResponse(cJSON *_dest, cJSON *_item, int num) {
     cJSON *response = cJSON_CreateObject();
@@ -207,6 +209,19 @@ static void Handle_GET_ENR_BY_CRSID(cJSON *response, cJSON *req) {
             intVec_push_back(ivec, crt_node->id);
             crt_node = crt_node->next;
         }
+    }
+    AddResponse(response,
+                ExportData(CreateExportList(intVec_data(ivec), intVec_size(ivec), NULL, 0), NULL),
+                cJSON_GetObjectItem(req, "Number")->valueint);
+    intVec_destroy(ivec);
+}
+
+static void Handle_GET_PENDING(cJSON *response, cJSON *req) {
+    intVec *ivec = intVec_create();
+    Student_IdNode *node = Benefits_PendingVerified->first;
+    while (node) {
+        intVec_push_back(ivec, node->id);
+        node = node->next;
     }
     AddResponse(response,
                 ExportData(CreateExportList(intVec_data(ivec), intVec_size(ivec), NULL, 0), NULL),
