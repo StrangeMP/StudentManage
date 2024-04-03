@@ -9,7 +9,7 @@
 #include <winsock2.h>
 
 #pragma comment(lib, "ws2_32.lib")
-
+#define MAX_CLIENTS 32
 bool should_terminate = false;
 
 void handle_client(void *client_socket) {
@@ -19,11 +19,6 @@ void handle_client(void *client_socket) {
     int bytes_received = recv(client, buffer, sizeof(buffer), 0);
     if (bytes_received > 0) {
         buffer[bytes_received] = '\0';
-        // {
-        //     FILE *f = fopen("__tmp.txt", "w");
-        //     fputs(buffer, f);
-        //     fclose(f);
-        // }
         char first_word[10];
         sscanf(buffer, "%s", first_word);
         if (strcmp(first_word, "OPTIONS") == 0) {
@@ -98,11 +93,23 @@ void server_thread(void *unused) {
 
     printf("Server listening on port 8080...\n");
 
+    // Array to store thread handles (adjust MAX_CLIENTS as needed)
+    HANDLE client_threads[MAX_CLIENTS];
+    int num_client_threads = 0;
+
     while (!should_terminate) {
         SOCKET client_socket = accept(server_socket, NULL, NULL);
         if (client_socket != INVALID_SOCKET) {
-            _beginthreadex(NULL, 0, handle_client, &client_socket, 0, NULL);
+            client_threads[num_client_threads] =
+                _beginthreadex(NULL, 0, handle_client, &client_socket, 0, NULL);
+            num_client_threads++;
         }
+    }
+
+    // Wait for all client handling threads to finish
+    for (int i = 0; i < num_client_threads; i++) {
+        WaitForSingleObject(client_threads[i], INFINITE);
+        CloseHandle(client_threads[i]);
     }
 
     closesocket(server_socket);
@@ -114,6 +121,6 @@ void RunServer() {
     _beginthreadex(NULL, 0, server_thread, NULL, 0, NULL);
 
     getchar();
-
+    should_terminate = true;
     return;
 }
