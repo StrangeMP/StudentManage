@@ -10,6 +10,7 @@
 #include "VECTOR.h"
 #include "cJSON.h"
 #include "string.h"
+#include <ctype.h>
 #include <stdio.h>
 
 // index of the same request in the two arrays should be identical
@@ -165,7 +166,8 @@ static void Handle_DEL_STU_ENR(cJSON *response, cJSON *req) {
 
 // 1教务 2老师 3学生
 static void Handle_LOGIN(cJSON *response, cJSON *req) {
-    int identity = cJSON_GetObjectItem(req, "identity")->valueint;
+    char *un = cJSON_GetObjectItem(req, "username")->valuestring;
+    int identity = isalpha(un[0]) ? 2 : 1;
     cJSON *acc_info = cJSON_CreateObject();
     switch (identity) {
     case 1:
