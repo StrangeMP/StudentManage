@@ -167,12 +167,12 @@ static void Handle_DEL_STU_ENR(cJSON *response, cJSON *req) {
 // 1教务 2老师 3学生
 static void Handle_LOGIN(cJSON *response, cJSON *req) {
     char *un = cJSON_GetObjectItem(req, "username")->valuestring;
-    int identity = isalpha(un[0]) ? 2 : 1;
+    int identity = isalpha(un[0]) ? 2 : 3;
     cJSON *acc_info = cJSON_CreateObject();
     switch (identity) {
     case 1:
         break;
-    case 2:
+    case 2:{
         struct Teacher *crt_tea = Get_Teacher(cJSON_GetObjectItem(req, "username")->valuestring);
         cJSON_AddItemToObject(acc_info, "username",
                               crt_tea ? cJSON_CreateString(crt_tea->id) : cJSON_CreateString(""));
@@ -181,16 +181,18 @@ static void Handle_LOGIN(cJSON *response, cJSON *req) {
             cJSON_AddItemToObject(acc_info, "identity", cJSON_CreateNumber(2));
             cJSON_AddItemToObject(acc_info, "name", cJSON_CreateString(crt_tea->name));
         }
-        break;
-    case 3:
-        Student *crt_stu = Get_Student_by_id(cJSON_GetObjectItem(req, "username")->valueint);
+        break;}
+    case 3:{
+        int stu_id = 0;
+        sscanf(cJSON_GetObjectItem(req, "username")->valuestring, "%d", &stu_id);
+        Student *crt_stu = Get_Student_by_id(stu_id);
         cJSON_AddItemToObject(acc_info, "username",
                               crt_stu ? cJSON_CreateNumber(crt_stu->id) : cJSON_CreateNumber(0));
         if (crt_stu) {
             cJSON_AddItemToObject(acc_info, "password", cJSON_CreateString(crt_stu->pw_MD5));
             cJSON_AddItemToObject(acc_info, "identity", cJSON_CreateNumber(3));
         }
-        break;
+        break;}
     default:
         break;
     }
