@@ -25,3 +25,4 @@ void my_free(void *_Memory);
 #define FREE free
 #endif
 #endif
+void ReleaseResource();

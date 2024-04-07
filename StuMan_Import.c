@@ -1,5 +1,4 @@
 #include "StuMan_Import.h"
-#include "StuMan_Account.h"
 #include "StuMan_BuildIndex.h"
 #include "StuMan_Memory.h"
 #include "StuMan_Node.h"
@@ -313,9 +312,6 @@ static Course *Course_Insert(const cJSON *cjson_course) {
 void ImportData_fromString(const char *rawData) {
     cJSON *cjson_Data = cJSON_Parse(rawData);
     // Process with to-be-imported Students
-    FILE *fp = fopen("__tmp.txt", "w");
-    fputs(rawData, fp);
-    fclose(fp);
     cJSON *Student_Collection = cJSON_GetObjectItem(cjson_Data, "学生");
     int student_array_size = cJSON_GetArraySize(Student_Collection);
     for (int i = 0; i < student_array_size; i++) {
@@ -409,75 +405,4 @@ void ImportData(const char *fileDir) {
     fclose(pf);
     ImportData_fromString(rawData);
     FREE(rawData);
-}
-
-static void Student_Node_Free(Student_Node *res) {
-    Student_Node *last = NULL, *crt = res;
-    while (crt) {
-        last = crt;
-
-        Enroll *lastEnroll = NULL, *crtEnroll = crt->stu.enrolled;
-        while (crtEnroll) {
-            lastEnroll = crtEnroll;
-            crtEnroll = crtEnroll->next;
-            FREE(lastEnroll);
-        }
-        Essay *lastEssay = NULL, *crtEssay = crt->stu.Benefits.essays;
-        while (crtEssay) {
-            lastEssay = crtEssay;
-            crtEssay = crtEssay->next;
-            FREE(lastEssay);
-        }
-        Project *lastProject = NULL, *crtProject = crt->stu.Benefits.projects;
-        while (crtProject) {
-            lastProject = crtProject;
-            crtProject = crtProject->next;
-            FREE(lastProject);
-        }
-        Award *lastAward = NULL, *crtAward = crt->stu.Benefits.awards;
-        while (crtAward) {
-            lastAward = crtAward;
-            crtAward = crtAward->next;
-            FREE(lastAward);
-        }
-
-        crt = crt->next;
-        FREE(last);
-    }
-}
-
-static void Student_List_Free(Student_List *stu_list) {
-    if (stu_list == NULL || stu_list->first == NULL)
-        return;
-    Student_IdNode *last_node = NULL;
-    Student_IdNode *crt_node = stu_list->first;
-    while (crt_node) {
-        last_node = crt_node;
-        crt_node = crt_node->next;
-        FREE(last_node);
-    }
-    FREE(stu_list);
-}
-
-static void Course_Node_Free(Course_Node *res) {
-    Course_Node *last = NULL, *crt = res;
-    while (crt) {
-        last = crt;
-        Student_List_Free(crt->crs.followed);
-        crt = crt->next;
-        FREE(last);
-    }
-}
-
-void ReleaseResource() {
-    Student_Node_Free(data_address.pStudentHead);
-    Course_Node_Free(data_address.pCourseHead);
-
-    for (int i = 0; i < 65536; i++)
-        Student_List_Free(nameIndex[i]);
-    for (int i = 0; i < 90; i++)
-        for (int j = 0; j < 4; j++)
-            Student_List_Free(gradeIndex[i][j]);
-    Student_List_Free(Benefits_PendingVerified);
-    CleanTeachers();
 }

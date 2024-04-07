@@ -126,6 +126,7 @@ static cJSON *Student_Export(cJSON *_dest, int stu_id) {
     cJSON_AddStringToObject(cjson_Stu, "学院", Institutes[stu->institute_grade / 100]);
     cJSON_AddStringToObject(cjson_Stu, "专业", Professions[stu->major / 100][stu->major % 100]);
     cJSON_AddNumberToObject(cjson_Stu, "年级", stu->institute_grade % 100 + 2000);
+    cJSON_AddStringToObject(cjson_Stu, "MD5", stu->pw_MD5);
     Export_Enroll_To_Student(cjson_Stu, stu);
     Export_Benefits(cjson_Stu, stu);
     cJSON_AddItemToArray(cJSON_GetObjectItem(_dest, "学生"), cjson_Stu);
