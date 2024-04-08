@@ -32,7 +32,7 @@ static bool Check_Pending(Student *stu) {
     return false;
 }
 
-static void pendingList_Update(Student *stu) {
+void PendingList_Update(Student *stu) {
     if (Benefits_PendingVerified == NULL) {
         Benefits_PendingVerified = (Student_List *)MALLOC(sizeof(Student_List));
         Benefits_PendingVerified->first = Benefits_PendingVerified->end = NULL;
@@ -119,7 +119,7 @@ void Student_AddEssay(int stu_id, Essay *essay) {
             student->Benefits.essays = essay;
         }
     }
-    pendingList_Update(student);
+    PendingList_Update(student);
 }
 
 void Student_AddAward(int stu_id, Award *award) {
@@ -142,7 +142,7 @@ void Student_AddAward(int stu_id, Award *award) {
             student->Benefits.awards = award;
         }
     }
-    pendingList_Update(student);
+    PendingList_Update(student);
 }
 
 void Student_AddProject(int stu_id, Project *project) {
@@ -165,5 +165,5 @@ void Student_AddProject(int stu_id, Project *project) {
             student->Benefits.projects = project;
         }
     }
-    pendingList_Update(student);
+    PendingList_Update(student);
 }
