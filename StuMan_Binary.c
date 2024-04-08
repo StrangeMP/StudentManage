@@ -1,4 +1,5 @@
 #include "StuMan_Binary.h"
+#include "StuMan_Benefit.h"
 #include "StuMan_BuildIndex.h"
 #include "StuMan_Memory.h"
 #include "StuMan_Student.h"
@@ -9,7 +10,7 @@ enum sym { eof_sym, stu_sym, enr_sym, ess_sym, prj_sym, awd_sym, crs_sym };
 static void Stu_Write(Student pStu, FILE *f);
 void SaveData();
 static void Cor_Write(Course pCor, FILE *f);
-void LoadData(const char *fileDir1, const char *fileDir2);
+void LoadData(const char *StudentFile, const char *CourseFile);
 
 void SaveData() {
     FILE *p = fopen("__Stu_Info.bin", "wb");
@@ -96,8 +97,8 @@ enum sym get_symbol(FILE *f) {
     return _S;
 }
 
-void LoadData(const char *fileDir1, const char *fileDir2) {
-    FILE *p = fopen(fileDir1, "rb");
+static void LoadStudents(const char *StuBinDir) {
+    FILE *p = fopen(StuBinDir, "rb");
 
     // 存入学生链表
     Student_Node *ph = NULL, *pf = NULL, *p0 = NULL; // 头 尾
@@ -217,16 +218,18 @@ void LoadData(const char *fileDir1, const char *fileDir2) {
     if (data_address.pStudentHead)
         data_address.pStudentHead->prev = NULL; // 去除哨兵项
     data_address.pStudentFoot = pf;
+    fclose(p);
+}
 
+static void LoadCourses(const char *CrsBinDir) {
     // 存入课程信息
-    FILE *f = fopen(fileDir2, "rb");
+    FILE *f = fopen(CrsBinDir, "rb");
     Course_Node *pCh, *pCf, *pC0; // 头 尾
     pCh = (Course_Node *)MALLOC(sizeof(Course_Node));
     pCf = pCh;
     pCh->prev = NULL;
     pCh->next = NULL; // 建立课程链表
-
-    crt_sym = get_symbol(f);
+    enum sym crt_sym = get_symbol(f);
     while (crt_sym == crs_sym) {
         pC0 = (Course_Node *)MALLOC(sizeof(Course_Node));
         // 建立课程的学生指针指向的Student_List结构体，否则不存在无法指向。
@@ -267,7 +270,12 @@ void LoadData(const char *fileDir1, const char *fileDir2) {
         data_address.pCourseHead->prev = NULL; // 去除哨兵项
     data_address.pCourseFoot = pCf;
     FREE(pCh);
-
-    fclose(p);
     fclose(f);
+}
+
+void LoadData(const char *StudentFile, const char *CourseFile) {
+    LoadStudents(StudentFile);
+    LoadCourses(CourseFile);
+    for (Student_Node *crt_node = data_address.pStudentHead; crt_node; crt_node = crt_node->next)
+        PendingList_Update(&crt_node->stu);
 }
