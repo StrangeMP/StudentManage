@@ -204,7 +204,7 @@ cJSON *CreateExportList(int stuArr[], const int stuCnt, const char *crsArr[], co
             Student *crt_stu = Get_Student_by_id(stuArr[i]);
             if (!crt_stu) {
                 printf("CreateExportList Error: Student %d does not exist, please check the "
-                       "request list or try update the binary data.",
+                       "request list or try update the binary data.\n",
                        stuArr[i]);
                 continue;
             }
