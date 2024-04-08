@@ -1,4 +1,5 @@
 #include "StuMan_Import.h"
+#include "StuMan_Benefit.h"
 #include "StuMan_BuildIndex.h"
 #include "StuMan_Memory.h"
 #include "StuMan_Node.h"
@@ -149,7 +150,7 @@ static Essay *Essay_Construct(cJSON *cjson_essay) {
     strcpy(newEssay->PubDate, cJSON_GetObjectItem(cjson_essay, "发表日期")->valuestring);
     strcpy(newEssay->Classification, cJSON_GetObjectItem(cjson_essay, "级别")->valuestring);
     newEssay->AddGPA = cJSON_GetObjectItem(cjson_essay, "加分")->valuedouble;
-    newEssay->status = (Benefit_type)getNounIndex(
+    newEssay->status = (Status)getNounIndex(
         Benefit_Status, 3, cJSON_GetObjectItem(cjson_essay, "审核状态")->valuestring);
     return newEssay;
 }
@@ -167,7 +168,7 @@ static Project *Project_Construct(cJSON *cjson_proj) {
     strcpy(newProject->StartDate, cJSON_GetObjectItem(cjson_proj, "立项时间")->valuestring);
     strcpy(newProject->EndDate, cJSON_GetObjectItem(cjson_proj, "结项时间")->valuestring);
     newProject->AddGPA = cJSON_GetObjectItem(cjson_proj, "加分")->valuedouble;
-    newProject->status = (Benefit_type)getNounIndex(
+    newProject->status = (Status)getNounIndex(
         Benefit_Status, 3, cJSON_GetObjectItem(cjson_proj, "审核状态")->valuestring);
     return newProject;
 }
@@ -179,7 +180,7 @@ static Award *Award_Construct(cJSON *cjson_award) {
     strcpy(newAward->AwardLevel, cJSON_GetObjectItem(cjson_award, "获奖等级")->valuestring);
     strcpy(newAward->date, cJSON_GetObjectItem(cjson_award, "获奖时间")->valuestring);
     newAward->AddGPA = cJSON_GetObjectItem(cjson_award, "加分")->valuedouble;
-    newAward->status = (Benefit_type)getNounIndex(
+    newAward->status = (Status)getNounIndex(
         Benefit_Status, 3, cJSON_GetObjectItem(cjson_award, "审核状态")->valuestring);
     return newAward;
 }
