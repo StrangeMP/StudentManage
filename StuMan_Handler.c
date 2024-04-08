@@ -250,8 +250,11 @@ char *Handler(const char *reqs) {
     cJSON *response = cJSON_CreateArray();
     for (int i = 0; i < req_num; i++) {
         cJSON *crt_req = cJSON_GetArrayItem(all_reqs, i);
+        cJSON *cjson_req_t = cJSON_GetObjectItem(crt_req, "request");
+        if (!cjson_req_t)
+            continue;
         switch ((enum REQ_T)getNounIndex(REQ_STR, sizeof(REQ_STR) / sizeof(const char *),
-                                         cJSON_GetObjectItem(crt_req, "request")->valuestring)) {
+                                         cjson_req_t->valuestring)) {
         case GET_STU_PRO:
             Handle_GET_STU_PRO(response, crt_req);
             break;
