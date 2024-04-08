@@ -1,5 +1,6 @@
 #include "StuMan_Server.h"
 #include "StuMan_Handler.h"
+#include "StuMan_Log.h"
 #include "StuMan_Memory.h"
 #include <process.h> // For _beginthreadex
 #include <stdbool.h>
@@ -49,6 +50,7 @@ void handle_client(void *client_socket) {
                                         "Connection: close\r\n\r\n";
                     send(client, invalidReq, strlen(invalidReq), 0);
                 }
+                Log(request_body);
             }
         }
     }
