@@ -172,7 +172,7 @@ static void Handle_LOGIN(cJSON *response, cJSON *req) {
     switch (identity) {
     case 1:
         break;
-    case 2:{
+    case 2: {
         struct Teacher *crt_tea = Get_Teacher(cJSON_GetObjectItem(req, "username")->valuestring);
         cJSON_AddItemToObject(acc_info, "username",
                               crt_tea ? cJSON_CreateString(crt_tea->id) : cJSON_CreateString(""));
@@ -181,8 +181,9 @@ static void Handle_LOGIN(cJSON *response, cJSON *req) {
             cJSON_AddItemToObject(acc_info, "identity", cJSON_CreateNumber(2));
             cJSON_AddItemToObject(acc_info, "name", cJSON_CreateString(crt_tea->name));
         }
-        break;}
-    case 3:{
+        break;
+    }
+    case 3: {
         int stu_id = 0;
         sscanf(cJSON_GetObjectItem(req, "username")->valuestring, "%d", &stu_id);
         Student *crt_stu = Get_Student_by_id(stu_id);
@@ -191,8 +192,10 @@ static void Handle_LOGIN(cJSON *response, cJSON *req) {
         if (crt_stu) {
             cJSON_AddItemToObject(acc_info, "password", cJSON_CreateString(crt_stu->pw_MD5));
             cJSON_AddItemToObject(acc_info, "identity", cJSON_CreateNumber(3));
+            cJSON_AddItemToObject(acc_info, "name", cJSON_CreateString(crt_stu->name));
         }
-        break;}
+        break;
+    }
     default:
         break;
     }
