@@ -156,11 +156,16 @@ static char *create_http_response(const char *content) {
 }
 
 static void Handle_DEL_STU_ENR(cJSON *response, cJSON *req) {
-    int stu_id = cJSON_GetObjectItem(cJSON_GetObjectItem(req, "info"), "student_id")->valueint;
-    cJSON *enr_arr = cJSON_GetObjectItem(cJSON_GetObjectItem(req, "info"), "course_ids");
-    int del_cnt = cJSON_GetArraySize(enr_arr);
-    for (int i = 0; i < del_cnt; i++)
-        del(CRS_OF_STU, 2, stu_id, cJSON_GetArrayItem(enr_arr, i)->valuestring);
+    cJSON *del_list = cJSON_GetObjectItem(req, "info");
+    int del_cnt = cJSON_GetArraySize(del_list);
+    for (int i = 0; i < del_cnt; i++) {
+        cJSON *crt_del = cJSON_GetArrayItem(del_list, i);
+        int stu_id = cJSON_GetObjectItem(crt_del, "student_id")->valueint;
+        cJSON *enr_arr = cJSON_GetObjectItem(crt_del, "course_ids");
+        int enr_cnt = cJSON_GetArraySize(enr_arr);
+        for (int i = 0; i < enr_cnt; i++)
+            del(CRS_OF_STU, 2, stu_id, cJSON_GetArrayItem(enr_arr, i)->valuestring);
+    }
     AddResponse(response, cJSON_CreateBool(true), cJSON_GetObjectItem(req, "Number")->valueint);
 }
 
