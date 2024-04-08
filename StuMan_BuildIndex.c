@@ -18,7 +18,7 @@ static void Build_Name_Index(Student *pStu) {
         Student_List_AddStudentID(stu_list, pStu->id);
 }
 
-static void Build_Grade_Index(Student *pStu) {
+void Build_Grade_Index(Student *pStu) {
     int institute = pStu->institute_grade / 100;
     int grade = STU_MAN_YEAR - pStu->institute_grade % 100 - 1;
     Student_List *stu_list = gradeIndex[institute][grade];
