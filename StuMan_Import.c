@@ -11,14 +11,16 @@
 #include <string.h>
 
 static Enroll *Enroll_Construct(const cJSON *item);
-static Enroll *Enroll_Append(Student *dest, cJSON *cjson_enrolled);
+static Enroll *Student_AddEnroll(Student *dest, cJSON *cjson_enrolled);
 static Student *Student_Insert(const cJSON *cjson_student);
 static Course *Course_Insert(const cJSON *cjson_course);
 void ImportData(const char *fileDir);
 
 static int parse_Institute_grade(const cJSON *item) {
-    int instit = getNounIndex(Institutes, Get_NounArrLen(Institutes),
-                              cJSON_GetObjectItem(item, "学院")->valuestring);
+    cJSON *inst_data = cJSON_GetObjectItem(item, "学院");
+    if (!inst_data)
+        return 0;
+    int instit = getNounIndex(Institutes, Get_NounArrLen(Institutes), inst_data->valuestring);
     int grade = cJSON_GetObjectItem(item, "年级")->valueint;
     return instit * 100 + grade % 100;
 }
@@ -50,7 +52,7 @@ static Enroll *Enroll_Construct(const cJSON *item) {
 // Adds cjson_enrolled to dest if possible, returns the added node if added, otherwise returns NULL.
 // Course follower-list is checked and updated if possible, regardless of whether dest has enrolled
 // in the course;
-static Enroll *Enroll_Append(Student *dest, cJSON *cjson_enrolled) {
+static Enroll *Student_AddEnroll(Student *dest, cJSON *cjson_enrolled) {
     if (dest == NULL || cjson_enrolled == NULL)
         return NULL;
     Enroll *ret = NULL;
@@ -103,7 +105,7 @@ static Enroll *Enroll_Append(Student *dest, cJSON *cjson_enrolled) {
             Student_List_AddStudentID(stu_list, dest->id);
 
     } else // course_id not found in Course List, no such Course, error.
-        printf("Enroll_Append Error: Course %s not found when appending for %s:%d\n",
+        printf("Student_AddEnroll Error: Course %s not found when appending for %s:%d\n",
                item->course_id, dest->name, dest->id);
     return ret;
 }
@@ -211,6 +213,16 @@ static Student *Student_Insert(const cJSON *cjson_student) {
         strcpy(currStudent->pw_MD5, stu_pw ? stu_pw->valuestring : "null");
         currStudent->enrolled = NULL;
         Build_Student_Index(data_address.pStudentFoot);
+    } else {
+        int newCode = parse_Institute_grade(cjson_student);
+        if (newCode) {
+            currStudent->institute_grade = newCode;
+            int inst = currStudent->institute_grade / 100;
+            currStudent->major =
+                inst * 100 + getNounIndex(Professions[inst], 15,
+                                          cJSON_GetObjectItem(cjson_student, "专业")->valuestring);
+            Build_Grade_Index(currStudent);
+        }
     }
     {
         // Add Essays
@@ -337,7 +349,7 @@ void ImportData_fromString(const char *rawData) {
             Get_Student_by_id(cJSON_GetObjectItem(cjson_student, "学号")->valueint);
         for (int i = 0; i < course_array_size; i++) {
             cJSON *cjson_enrolled = cJSON_GetArrayItem(Enrolled_Collection, i);
-            Enroll_Append(currStudent, cjson_enrolled);
+            Student_AddEnroll(currStudent, cjson_enrolled);
         }
     }
     for (int i = 0; i < course_array_size; i++) {
