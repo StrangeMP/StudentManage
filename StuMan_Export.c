@@ -197,22 +197,56 @@ cJSON *CreateExportList(int stuArr[], const int stuCnt, const char *crsArr[], co
         return NULL;
     cJSON *tobeExport = cJSON_CreateObject();
     cJSON *cjson_crsList = cJSON_CreateArray();
+    cJSON *cjson_stuList = cJSON_CreateArray();
     if (stuArr && stuCnt > 0) {
-        cJSON *cjson_stuList = cJSON_CreateArray();
         for (int i = 0; i < stuCnt; i++) {
             cJSON_AddItemToArray(cjson_stuList, cJSON_CreateNumber(stuArr[i]));
-            Enroll *crt_enr = Get_Student_by_id(stuArr[i])->enrolled;
+            Student *crt_stu = Get_Student_by_id(stuArr[i]);
+            if (!crt_stu) {
+                printf("CreateExportList Error: Student %d does not exist, please check the "
+                       "request list or try update the binary data.",
+                       stuArr[i]);
+                continue;
+            }
+            Enroll *crt_enr = crt_stu->enrolled;
             while (crt_enr) {
                 cJSON_AddItemToArray(cjson_crsList, cJSON_CreateString(crt_enr->course_id));
                 crt_enr = crt_enr->next;
             }
         }
-        cJSON_AddItemToObject(tobeExport, "Students", cjson_stuList);
     }
-    if (crsArr && crsCnt > 0)
+    if (crsArr && crsCnt > 0) {
         for (int i = 0; i < crsCnt; i++) {
-            cJSON_AddItemToArray(cjson_crsList, cJSON_CreateString(crsArr[i]));
+            bool CrsIsExist = false;
+            cJSON *crtCrsNode = NULL;
+            cJSON_ArrayForEach(crtCrsNode, cjson_crsList) {
+                if (strcmp(crtCrsNode->valuestring, crsArr[i]) == 0) {
+                    CrsIsExist = true;
+                    break;
+                }
+            }
+            if (!CrsIsExist)
+                cJSON_AddItemToArray(cjson_crsList, cJSON_CreateString(crsArr[i]));
+            Course *crt_crs = Get_Course(crsArr[i]);
+            if (crt_crs == NULL)
+                continue;
+            for (Student_IdNode *crtIdNode = crt_crs->followed->first; crtIdNode != NULL;
+                 crtIdNode = crtIdNode->next) {
+                cJSON *crtStuNode = NULL;
+                bool StuIsExist = false;
+                cJSON_ArrayForEach(crtStuNode, cjson_stuList) {
+                    if (crtStuNode->valueint == crtIdNode->id) {
+                        StuIsExist = true;
+                        break;
+                    }
+                }
+                if (!StuIsExist) {
+                    cJSON_AddItemToArray(cjson_stuList, cJSON_CreateNumber(crtIdNode->id));
+                }
+            }
         }
+    }
+    cJSON_AddItemToObject(tobeExport, "Students", cjson_stuList);
     cJSON_AddItemToObject(tobeExport, "Courses", cjson_crsList);
     return tobeExport;
 }
