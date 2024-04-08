@@ -15,12 +15,12 @@ C_OBJ_FILES = $(patsubst %.c, %.o, $(C_SRC_FILES))
 #	$(info $(CC_INCLUDE_FLAGS))
 #	@echo Project Successfully Built
 .PHONY: all debug reload
-all: main.exe
+all: StudentManage.exe
 debug: CC_FLAGS = $(DEBUG_FLAGS)
 debug: all
 reload: reload.exe
 
-main.exe: $(C_OBJ_FILES) main.o
+StudentManage.exe: $(C_OBJ_FILES) StudentManage.o
 	$(CC) $^ -lws2_32 -o $@
 
 reload.exe: $(C_OBJ_FILES) reload.o
@@ -29,7 +29,7 @@ reload.exe: $(C_OBJ_FILES) reload.o
 Libraries/cJSON/cJSON.o: Libraries/cJSON/cJSON.c Libraries/cJSON/cJSON.h
 	$(CC) $(CC_FLAGS) -c $< -o $@
 
-main.o: main.c Include/StuMan_Import.h Include/StuMan_Server.h
+StudentManage.o: StudentManage.c Include/StuMan_Import.h Include/StuMan_Server.h
 	$(CC) $(CC_FLAGS) -c $<
 
 reload.o: reload.c Include/StuMan_Binary.h Include/StuMan_Memory.h Include/StuMan_Import.h
