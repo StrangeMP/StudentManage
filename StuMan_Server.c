@@ -93,7 +93,7 @@ void server_thread(void *unused) {
         return;
     }
 
-    printf("Server listening on port 8080...\n");
+    printf("\n\n\nServer listening on port 8080...\n");
 
     // Array to store thread handles (adjust MAX_CLIENTS as needed)
     HANDLE client_threads[MAX_CLIENTS];
