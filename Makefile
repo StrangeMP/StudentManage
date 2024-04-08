@@ -3,7 +3,7 @@ INCLUDE_PATH = ./Include $(shell powershell -Command "Get-ChildItem -Path Librar
 CC_INCLUDE_FLAGS = $(addprefix -I,$(INCLUDE_PATH))
 CC_FLAGS = -O2 $(CC_INCLUDE_FLAGS)
 DEBUG_FLAGS = $(CC_INCLUDE_FLAGS) -DDEBUG -g
-C_SRC_FILES = StuMan_Benefit.c StuMan_Binary.c StuMan_BuildIndex.c\
+C_SRC_FILES = StuMan_Benefit.c StuMan_Binary.c StuMan_BuildIndex.c StuMan_Log.o\
  StuMan_Delete.c StuMan_Export.c StuMan_Handler.c StuMan_Import.c StuMan_Memory.c\
  StuMan_Node.c StuMan_Nouns.c StuMan_Search.c StuMan_Statistics.c StuMan_Student.c\
  Libraries/cJSON/cJSON.c StuMan_Server.c StuMan_Account.c
@@ -33,6 +33,9 @@ main.o: main.c Include/StuMan_Import.h Include/StuMan_Server.h
 	$(CC) $(CC_FLAGS) -c $<
 
 reload.o: reload.c Include/StuMan_Binary.h Include/StuMan_Memory.h Include/StuMan_Import.h
+	$(CC) $(CC_FLAGS) -c $<
+
+StuMan_Log.o: StuMan_Log.c Libraries/cJSON/cJSON.h Include/StuMan_Log.h
 	$(CC) $(CC_FLAGS) -c $<
 
 StuMan_Benefit.o: StuMan_Benefit.c Include/StuMan_Benefit.h Include/StuMan_Student.h\

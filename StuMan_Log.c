@@ -1,10 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
-
 #include "StuMan_Log.h"
-#include "cJSON.h"
 
 void Log(const char *request) {
     FILE *logFile = fopen("__log.txt", "a");
