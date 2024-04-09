@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="Guide.css" />
+    <title>StuShow</title>
+    <style>
+        #insti {
+            display: none;
+        }
+
+        table {
+            width: 100%;
+            /* 表格宽度占满容器 */
+            border-collapse: collapse;
+            /* 移除单元格之间的空白 */
+            margin-bottom: 1em;
+            /* 表格下方添加一些间距 */
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            /* 为单元格添加边框 */
+            padding: 8px;
+            /* 为单元格内容添加内边距 */
+            word-wrap: break-word;
+            /* 允许单词在边界处断开以换行 */
+            max-width: 200px;
+            /* 设置单元格内容的最大宽度 */
+            overflow: auto;
+            /* 当内容超出单元格时显示滚动条 */
+            white-space: normal;
+            /* 允许文本自动换行和折叠连续的空白字符 */
+        }
+
+        /* 可选：为表头添加背景色和加粗字体 */
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="menu">
+        <div class="nav">
+            <ul>
+                <img src="./jd-xhh.jpg" class="symbol">
+                <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
+                <li><a href="Academic_StuSearch.html">返回上一页</a></li>
+                <div class="drop">
+                    <li><a href="#" class="drop">查找学生</a></li>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <h2>你好，教务老师</h2>
+    <p id="Show"></p>
+    <table id="class">
+        <tr>
+            <th>课程名</th>
+            <th>课程号</th>
+            <th>成绩</th>
+            <th>重修重考</th><!--初修/重修/重考-->
+            <th>学年学期</th>
+            <th>是否主修</th>
+            <th>绩点</th>
+            <th>是否及格</th>
+            <th>是否有效</th>
+            <!-- <th>学时</th> -->
+        </tr>
+    </table>
+    </div>
+    <h3>素质加分成绩：</h3>
+    <div id="Artical">
+        <p>论文：</p>
+        <table id="table_Artical">
+            <tr>
+                <th style="width: 20%;">论文名</th>
+                <th>作者</th>
+                <th>期刊或会议名</th>
+                <th>发表日期</th>
+                <th>级别</th>
+                <th style="width: 10%;">加分</th>
+                <th style="width: 10%;">审核状态</th>
+            </tr>
+        </table>
+    </div>
+    <div id="Project">
+        <p>项目：</p>
+        <table id="table_Project">
+            <tr>
+                <th style="width: 20%;">项目名称</th>
+                <th>项目编号</th>
+                <th>立项时间</th>
+                <th>结项时间</th>
+                <th>指导老师</th>
+                <th>成员</th>
+                <th style="width: 10%;">加分</th>
+                <th style="width: 10%;">审核状态</th>
+            </tr>
+
+        </table>
+    </div>
+    <div id="Competition">
+        <p>竞赛：</p>
+        <table id="table_Competition">
+            <tr>
+                <th style="width: 20%;">竞赛名称</th>
+                <th>获奖时间</th>
+                <th>获奖等级</th>
+                <th>主办单位</th>
+                <th style="width: 10%;">加分</th>
+                <th style="width: 10%;">审核状态</th>
+            </tr>
+
+        </table>
+    </div>
+
+
+    <script>
+        var id = localStorage.getItem('Stu_id');
+        var name = localStorage.getItem('Stu_name');
+        document.getElementById('Show').innerHTML = name + '同学的详细成绩如下';
+
+        //通过id查找学生
+        window.onload = function IdGet(val) {
+            // 阻止表单提交导致的页面刷新
+            event.preventDefault();
+
+            var Stu_int = parseInt(id, 10);
+            var data = [{
+                "Number": 7,
+                "request": "get_students_by_id",
+                "student_ids": [Stu_int]
+            }];
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:8080', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    if (xhr.status === 200) {
+                        var response = xhr.responseText;
+                        // console.log(response);
+                        var Stu_ = JSON.parse(response)[0];
+                        var Stu_info = Stu_.response.学生[0];
+                        var StuCor = Stu_info.所选课程;//是一个学生课程数组
+                        var Cor = Stu_.response.课程;//是一个学生对应的课程数组
+                        // console.log(Stu_info);
+
+                        // // 清除上一次剩余的学生表格
+                        var table = document.getElementById("class");
+                        // while (table.rows.length > 1) {
+                        //     table.deleteRow(1);
+                        // }
+
+                        // 遍历课程信息并插入到表格中  
+                        StuCor.forEach(function (course) {
+                            var row = table.insertRow(-1);
+                            row.id = course.课程号;
+                            ['课程名', '课程号', '总成绩', '重修重考', '学年学期', '是否主修', '绩点', '是否及格', '是否有效'].forEach(function (header, index) {
+                                var cell = row.insertCell(index);
+                                cell.textContent = course[header];
+                            });
+                        });
+
+                        Cor.forEach(function (course) {
+                            var row = document.getElementById(course.课程号);
+                            row.cells[0].textContent = course.课程名;
+                            // row.cells[9].textContent = course.学时;
+                        });
+
+
+
+                        // 素质加分信息
+                        var benefit = JSON.parse(xhr.responseText)[0].response.学生[0].素质加分;//获取学生数据
+                        // console.log(benefit);
+                        var table_Artical = document.getElementById("table_Artical");
+                        var table_Competition = document.getElementById("table_Competition");
+                        var table_Project = document.getElementById("table_Project");
+                        console.log(benefit);
+
+                        var row = document.createElement('tr');//添加新行
+                        var cell = document.createElement('td');//添加新的子项
+                        cell.textContent = "暂无";
+                        row.appendChild(cell);
+
+                        if (benefit === undefined) {
+                            var rowA = document.createElement('tr');//添加新行
+                            var cellA = document.createElement('td');//添加新的子项
+                            cellA.textContent = "暂无";
+                            rowA.appendChild(cellA);
+
+                            var rowC = document.createElement('tr');//添加新行
+                            var cell = document.createElement('td');//添加新的子项
+                            cell.textContent = "暂无";
+                            rowC.appendChild(cell);
+
+                            var rowP = document.createElement('tr');//添加新行
+                            var cell = document.createElement('td');//添加新的子项
+                            cell.textContent = "暂无";
+                            rowP.appendChild(cell);
+
+                            table_Artical.appendChild(rowA);
+                            table_Competition.appendChild(rowC);
+                            table_Project.appendChild(rowP);
+
+                            console.log(benefit);
+
+                            return;
+                        } else {
+
+                            if (benefit.项目 !== undefined) {
+                                benefit.项目.forEach(element => {
+                                    var row1 = document.createElement('tr');//创建行元素
+                                    ['项目名称', '项目编号', '立项时间', '结项时间', '指导老师', '成员', '加分', '审核状态'].forEach(function (header, index) {
+                                        var cell = row1.insertCell(index);
+                                        cell.textContent = element[header];
+                                    })
+                                    console.log(row1);
+                                    table_Project.appendChild(row1);
+                                });
+                            } else {
+                                var rown = document.createElement('tr');//添加新行
+                                var cell = document.createElement('td');//添加新的子项
+                                cell.textContent = "暂无";
+                                rown.appendChild(cell);
+                                table_Project.appendChild(rown);
+                            }
+
+
+                            if (benefit.竞赛获奖 !== undefined) {
+                                benefit.竞赛获奖.forEach(element => {
+                                    var row2 = document.createElement('tr');//创建行元素
+                                    ['竞赛名称', '获奖时间', '获奖等级', '主办单位', '加分', '审核状态'].forEach(function (header, index) {
+                                        var cell = row2.insertCell(index);
+                                        cell.textContent = element[header];
+                                    })
+                                    table_Competition.appendChild(row2);
+                                });
+                            } else {
+                                var rown = document.createElement('tr');//添加新行
+                                var cell = document.createElement('td');//添加新的子项
+                                cell.textContent = "暂无";
+                                rown.appendChild(cell);
+                                table_Competition.appendChild(rown);
+                            }
+
+
+                            if (benefit.论文 !== undefined) {
+                                benefit.论文.forEach(element => {
+                                    var row3 = document.createElement('tr');//创建行元素
+                                    ['论文名', '作者', '期刊或会议名', '发表日期', '级别', '加分', '审核状态'].forEach(function (header, index) {
+                                        var cell = row3.insertCell(index);
+                                        cell.textContent = element[header];
+                                    })
+                                    table_Artical.appendChild(row3);
+                                });
+                            } else {
+                                var rown = document.createElement('tr');//添加新行
+                                var cell = document.createElement('td');//添加新的子项
+                                cell.textContent = "暂无";
+                                rown.appendChild(cell);
+                                table_Artical.appendChild(rown);
+                            }
+                        }
+
+                    }
+                };
+            }
+            xhr.send(JSON.stringify(data));
+        }
+
+
+    </script>
+</body>
+
+</html>

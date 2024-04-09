@@ -7,77 +7,55 @@
     <title>ScoresInput</title>
     <link rel="stylesheet" type="text/css" href="Guide.css" /> <!-- 调用css -->
     <style>
+        /* 选择器 */
         #course {
             width: 200px;
-            /* 设置宽度 */
             padding: 5px;
-            /* 设置内边距 */
             font-size: 16px;
-            /* 设置字体大小 */
         }
 
-        /* 尝试样式化滚动条（仅在支持的浏览器中有效） */
-        /* Firefox */
         #course {
             scrollbar-width: thin;
-            /* 滚动条宽度 */
             scrollbar-color: #666 transparent;
-            /* 滚动条颜色 */
         }
 
-        /* Chrome, Safari and Edge */
         #course::-webkit-scrollbar {
             width: 10px;
-            /* 滚动条宽度 */
         }
 
         #course::-webkit-scrollbar-track {
             background: transparent;
-            /* 滚动条轨道背景 */
         }
 
         #course::-webkit-scrollbar-thumb {
             background-color: #666;
-            /* 滚动条滑块颜色 */
             border-radius: 10px;
-            /* 圆角 */
         }
 
-        /* 样式化选项 */
         #course option {
             padding: 5px;
-            /* 设置选项内边距 */
         }
-
+        /* 学生 */
         #CourseTable {
             width: 100%;
             border-collapse: collapse;
-            /* 合并边框 */
             margin-top: 20px;
-            /* 与页面顶部保持距离 */
         }
 
-        /* 设置表头样式 */
         #CourseTable th {
             background-color: #f2f2f2;
-            /* 灰色背景 */
             color: #333;
-            /* 文字颜色 */
-            padding: 10px;
-            /* 内边距 */
+            padding: 15px;
             text-align: left;
-            /* 文本左对齐 */
+            width: 20%;
         }
 
-        /* 设置单元格样式 */
         #CourseTable td {
             border: 1px solid #ddd;
-            /* 边框 */
             padding: 8px;
-            /* 内边距 */
+            width: 20%;
         }
 
-        /* 设置表格的交替行背景色，以改善可读性 */
         #CourseTable tr:nth-child(even) {
             background-color: #f9f9f9;
         }
@@ -103,14 +81,15 @@
     <div>
         <label for="course">请选择您的课程：</label>
         <select id="course">
-            <option value="">请选择</option>
+            <option value="_">请选择</option>
         </select>
     </div>
 
     <table id="CourseTable">
         <tr>
-            <th style="width: 20%;">学生姓名</th>
-            <th style="width: 20%;">学生学号</th>
+            <th>学生姓名</th>
+            <th>学生学号</th>
+            <th>学生原成绩</th>
             <th>学生成绩</th>
             <th>操作按钮</th>
         </tr>
@@ -145,7 +124,7 @@
                     // console.log(xhr.responseText);      
                     // 请求成功，处理返回的数据    
                     const CoursData = JSON.parse(xhr.responseText);
-                    console.log(CoursData);
+                    // console.log(CoursData);
                     // 获取表格元素  
                     const select = document.getElementById('course');
 
@@ -156,21 +135,32 @@
                         option.value = course.课程号;
                         option.textContent = content;
                         select.appendChild(option);
-                    });
+                    
 
 
                     //构建学生表格
-                    CoursData[0].response.学生.forEach(followed => {
-                        const row = document.createElement('tr');
-                        var table = document.getElementById("CourseTable")
-                        row.innerHTML = `  
-                        <td>${followed.姓名}</td>  
-                        <td id=${followed.学号}>${followed.学号}</td>  
-                        <td><input type="text"></td>  
-                        <td><button class="submit" onclick="submit(this)">确定</button></td>`;
-                        // 将行添加到表格中  
-                        table.appendChild(row);
+                        CoursData[0].response.学生.forEach(followed => {
+                            followed.所选课程.forEach(element =>{
+                                if(element.课程号 === course.课程号 ){
+                                    cor = element;
+                                }
+                            })
+                            const row = document.createElement('tr');
+                            row.classList.add(course.课程号);
+                            // console.log(course.课程号);
+                            row.style.display = "none";
+                            var table = document.getElementById("CourseTable");
+                            var cor;
+                            row.innerHTML = `  
+                            <td>${followed.姓名}</td>  
+                            <td id=${followed.学号}>${followed.学号}</td>
+                            <td >${cor.总成绩}</td>
+                            <td><input type="text"></td>  
+                            <td><button class="submit" onclick="submit(this)">确定</button></td>`;
+                            // 将行添加到表格中  
+                            table.appendChild(row);
 
+                        });
                     });
 
                 } else {
@@ -224,22 +214,28 @@
             xhr.send(JSON.stringify(data));
         }
 
-        // // 监听select的change事件  
-        // select.addEventListener('change', function () {
-        //     // 隐藏所有内容容器  
-        //     var contentContainers = document.getElementsByClassName('content-container');
-        //     for (var i = 0; i < contentContainers.length; i++) {
-        //         contentContainers[i].style.display = 'none';
-        //     }
+        // 监听select的change事件  
+        var select = document.getElementById('course');
+        var course_table = document.getElementById("CourseTable");
+        select.addEventListener('change', function () {
+            // 隐藏所有内容容器  
+            // var trs = select.querySelectorAll('tr');
+            // trs.forEach(ele =>{
+            //     ele.style.display = "none";
+            // })
+            for(var i=1;i<course_table.rows.length;i++){
+                course_table.rows[i].style.display = "none";
+            }
 
-        //     // 显示对应的内容容器  
-        //     var selectedValue = this.value; // 获取选中的值  
-        //     var contentId = 'content-' + selectedValue; // 构建对应内容容器的ID  
-        //     var contentContainer = document.getElementById(contentId);
-        //     if (contentContainer) {
-        //         contentContainer.style.display = 'block'; // 显示内容容器  
-        //     }
-        // });
+            // 显示对应的内容容器  
+            var selectedValue = this.value; // 获取选中的值  
+            var names = document.getElementsByClassName(selectedValue);
+            var namesArray = Array.from(names);
+            console.log(namesArray);
+            namesArray.forEach(ele =>{
+                ele.style.display = "table-row";
+            })
+        });
 
 
         // function GetStudent(followed) {

@@ -1,31 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="Guide.css"/>
-    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="Guide.css" />
+    <title>Benefit</title>
     <style>
+        #Stu_table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1em;
+        }
 
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
+
 <body>
-    <div class="menu"> 
+    <div class="menu">
         <div class="nav">
-            <ul>    
+            <ul>
                 <img src="./jd-xhh.jpg" class="symbol">
                 <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
-                <li><a href="Academic.html">返回上一页</a></li>  
+                <li><a href="Academic.html">返回上一页</a></li>
                 <div class="drop">
-                    <li ><a href="#" class="drop">素质加分认定</a></li>
+                    <li><a href="#" class="drop">素质加分认定</a></li>
                 </div>
             </ul>
         </div>
-      </div>
-      <h2>你好，教务老师</h2>
-      <p>待处理学生信息：</p>
-      <div>
-        <table>
+    </div>
+    <h2>你好，教务老师</h2>
+    <p>待处理学生信息：</p>
+    <div>
+        <table id="Stu_Table">
             <tr>
                 <th>学生姓名</th>
                 <th>学号</th>
@@ -34,77 +51,224 @@
                 <th>审核状态</th>
             </tr>
         </table>
-      </div>
-      
+    </div>
 
 
 
-      <script>
-            window.onload = function () {
-                var data = [{
-                    "Number": 11,
-                    "request": "get_pending_list"
-                }]
-            var xhr = new XMLHttpRequest();   
-            xhr.open('POST', 'http://127.0.0.1:8080', true);  
-            xhr.onload = function() {  
+
+    <script>
+        //查找学生
+        window.onload = function () {
+            var data = [{
+                "Number": 11,
+                "request": "get_pending_list"
+            }]
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:8080', true);
+            xhr.onload = function () {
                 if (xhr.status === 200) {       // 请求成功，处理返回的数据    
-                    console.log(xhr.responseText);
-                    const CoursData = JSON.parse(xhr.responseText);
-                    console.log(CoursData);
+                    const CoursData = JSON.parse(xhr.responseText)[0];
+                    // console.log(CoursData);
 
                     var Stu = CoursData.response.学生;
+                    console.log(Stu);
                     Stu.forEach(element => {
                         var bene = element.素质加分;
-                        if(bene.项目){
+                        if (bene.项目) {
                             for (let item of bene.项目) {
-                                if (item.审核状态 === '审核中'){
-                                    var Bene = item;
+                                if (item.审核状态 === '审核中') {
+                                    var Bene = JSON.stringify(item);//详细信息
                                     var chose = "项目";
                                     break;
                                 }
                             }
                         }
-                        if(bene.竞赛获奖){
-                            for(let item of bene.竞赛获奖){
-                                if (item.审核状态 === '审核中'){
-                                    var Bene = item;
+                        if (bene.竞赛获奖) {
+                            for (let item of bene.竞赛获奖) {
+                                if (item.审核状态 === '审核中') {
+                                    var Bene = JSON.stringify(item);
                                     var chose = "竞赛获奖";
                                     break;
                                 }
                             }
                         }
-                        if(bene.项目){
-                            for(let item of bene.项目){
-                                if (item.审核状态 === '审核中'){
-                                    var Bene = item;
+                        if (bene.项目) {
+                            for (let item of bene.项目) {
+                                if (item.审核状态 === '审核中') {
+                                    var Bene = JSON.stringify(item);
                                     var chose = "项目";
                                     break;
                                 }
                             }
                         }
+
+                        var table = document.getElementById("Stu_Table");
                         var row = table.insertRow(-1);
                         row.innerHTML = `  
                             <td>${element.姓名}</td>  
                             <td>${element.学号}</td>  
                             <td>${chose}</td>  
                             <td>${Bene}</td>
-                            <td><button>通过</button><button>否决</button></td>  
+                            <td><button class = "pass" onclick="pass(this)">通过</button><button class="refuse" onclick="refuse(this)">否决</button></td>  
                         `;
                         table.appendChild(row);
                     });
 
-                    
-                }  
-            };   
+
+                }
+            };
             // 处理网络错误  
-            xhr.onerror = function() {  
-                console.error('Network Error');  
-            };    
+            xhr.onerror = function () {
+                console.error('Network Error');
+            };
             // 发送请求  
             xhr.send(JSON.stringify(data));
-        };  
+        };
 
-      </script>
+
+        //确认通过的函数
+        function pass(btn_pass) {
+            //获取父对象，找到是哪一类素质加分
+            var tr = btn_pass.parentNode.parentNode;
+            var StuName = tr.cells[0].textContent;
+            var StuId = tr.cells[1].textContent;
+            var bene_name = tr.cells[2].textContent;
+            var Content = JSON.parse(tr.cells[3].textContent);
+            Content.审核状态="通过";
+            //确定数据类型
+            switch (bene_name) {
+                case "竞赛获奖":
+                    var data = [{
+                        "Number": 4,
+                        "request": "add",
+                        "data": {
+                            "学生": [{
+                                "姓名": StuName,
+                                "学号": StuId,
+                                "素质加分": {
+                                    "竞赛获奖": [Content]
+                                }
+                            }],
+                        }
+                    }];
+                    break;
+                case "项目":
+                    var data = [{
+                        "Number": 4,
+                        "request": "add",
+                        "data": {
+                            "学生": [{
+                                "姓名": StuName,
+                                "学号": StuId,
+                                "素质加分": {
+                                    "项目": [Content]
+                                }
+                            }],
+                        }
+                    }];
+                    break;
+                case "论文":
+                    var data = [{
+                        "Number": 4,
+                        "request": "add",
+                        "data": {
+                            "学生": [{
+                                "姓名": StuName,
+                                "学号": StuId,
+                                "素质加分": {
+                                    "论文": [Content]
+                                }
+                            }],
+                        }
+                    }];
+                    break;
+            }
+            console.log(data);
+            //发送add请求
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    alert("请求成功");
+                }
+            };
+            xhr.send(JSON.stringify(data));
+        };
+
+        //确认不通过的函数
+        function refuse(btn_pass) {
+            //获取父对象，找到是哪一类素质加分
+            var tr = btn_pass.parentNode.parentNode;
+            var StuName = tr.cells[0].textContent;
+            var StuId = tr.cells[1].textContent;
+            var bene_name = tr.cells[2].textContent;
+            var Content = JSON.parse(tr.cells[3].textContent);
+            Content.审核状态="否决";
+            //确定数据类型
+            switch (bene_name) {
+                case "竞赛获奖":
+                    var data = [{
+                        "Number": 4,
+                        "request": "add",
+                        "data": {
+                            "学生": [{
+                                "姓名": StuName,
+                                "学号": StuId,
+                                "素质加分": {
+                                    "竞赛获奖": [Content]
+                                }
+                            }],
+                        }
+                    }];
+                    break;
+                case "项目":
+                    var data = [{
+                        "Number": 4,
+                        "request": "add",
+                        "data": {
+                            "学生": [{
+                                "姓名": StuName,
+                                "学号": StuId,
+                                "素质加分": {
+                                    "项目": [Content]
+                                }
+                            }],
+                        }
+                    }];
+                    break;
+                case "论文":
+                    var data = [{
+                        "Number": 4,
+                        "request": "add",
+                        "data": {
+                            "学生": [{
+                                "姓名": StuName,
+                                "学号": StuId,
+                                "素质加分": {
+                                    "论文": [Content]
+                                }
+                            }],
+                        }
+                    }];
+                    break;
+            }
+            console.log(data);
+            //发送add请求
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    alert("请求成功");
+                }
+            };
+            xhr.send(JSON.stringify(data));
+        };
+
+    </script>
 </body>
+
 </html>
