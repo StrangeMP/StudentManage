@@ -25,7 +25,8 @@ enum REQ_T {
     GET_STU_NAME,
     GET_ENR_BY_CRSID,
     LOGIN,
-    GET_PENDING
+    GET_PENDING,
+    DEL_CRS
 };
 static const char *REQ_STR[] = {"get_students_by_profession",
                                 "get_courses_by_teacher",
@@ -37,7 +38,8 @@ static const char *REQ_STR[] = {"get_students_by_profession",
                                 "get_students_by_name",
                                 "get_student_enrolls_by_course_id",
                                 "login",
-                                "get_pending_list"};
+                                "get_pending_list",
+                                "del_courses"};
 
 static void AddResponse(cJSON *_dest, cJSON *_item, int num) {
     cJSON *response = cJSON_CreateObject();
@@ -241,6 +243,14 @@ static void Handle_GET_PENDING(cJSON *response, cJSON *req) {
     intVec_destroy(ivec);
 }
 
+static void Handle_DEL_CRS(cJSON *response, cJSON *req) {
+    cJSON *del_queue = cJSON_GetObjectItem(req, "course_ids");
+    int del_num = cJSON_GetArraySize(del_queue);
+    for (int i = 0; i < del_num; i++)
+        del(CRS, 1, cJSON_GetArrayItem(del_queue, i)->valuestring);
+    AddResponse(response, cJSON_CreateBool(true), cJSON_GetObjectItem(req, "Number")->valueint);
+}
+
 char *Handler(const char *reqs) {
     if (!reqs)
         return NULL;
@@ -292,6 +302,10 @@ char *Handler(const char *reqs) {
             break;
         case GET_PENDING:
             Handle_GET_PENDING(response, crt_req);
+            break;
+        case DEL_CRS:
+            Handle_DEL_CRS(response, crt_req);
+            break;
         default:
             break;
         }
