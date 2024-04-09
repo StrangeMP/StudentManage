@@ -84,7 +84,7 @@
                 <th>学时</th>
                 <th>学分</th>
                 <th>选课学生</th>
-
+                <th>删除课程</th>
             </tr>
         </table>
     </div>
@@ -131,13 +131,13 @@
 
 
                     // console.log(table.rows.length);
-                    // // 判断是否重复
-                    // for (var i = 1; i < table.rows.length; i++) {
-                    //     var tableText = table.row[i].cell[2].textContent;
-                    //     if (tableText === course_info.课程号) {
-                    //         return ;
-                    //     } 
-                    // }
+                    // 判断是否重复
+                    for (var i = 1; i < table.rows.length; i++) {
+                        var tableText = table.row[i].cell[2].textContent;
+                        if (tableText === course_info.课程号) {
+                            return ;
+                        } 
+                    }
                     
                     // 创建新的表格行并插入数据  
                     var keys = Object.keys(course_info);
@@ -146,17 +146,16 @@
                         var cell = row.insertCell(-1);
                         cell.textContent = course_info[keys[i]];
                     }
-                    console.log(table.rows.length); 
+                    // var cellbtn = document.createElement('td');
+                    // cellbtn.innerHTML=`<button class="delete" onclick="deleteCor(this)">删除</button>`;
+                    // row.appendChild(cellbtn);
+                    // console.log(table.rows.length); 
                 };
                 //添加名字
 
-
-
-                
             }
             xhr.send(JSON.stringify(data));
         }
-
 
         //name查询课程
         function search_name(){
@@ -182,12 +181,12 @@
 
                     // console.log(table.rows.length);
                     // // 判断是否重复
-                    // for (var i = 1; i < table.rows.length; i++) {
-                    //     var tableText = table.row[i].cell[2].textContent;
-                    //     if (tableText === course_info.课程号) {
-                    //         return ;
-                    //     } 
-                    // }
+                    for (var i = 1; i < table.rows.length; i++) {
+                        var tableText = table.row[i].cell[2].textContent;
+                        if (tableText === course_info.课程号) {
+                            return ;
+                        } 
+                    }
                     
                     // 创建新的表格行并插入数据  
                     var keys = Object.keys(course_info);
@@ -202,6 +201,25 @@
             xhr.send(JSON.stringify(data));
         }
 
+        // //删除课程
+        // function deleteCor(this){
+        //     var data = [{
+        //         "Number": 6,
+        //         "request": "delete_student_enrolls",
+        //         "course_ids": [course_id]
+        //     }];
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.open('POST', 'http://127.0.0.1:8080', true);
+        //     xhr.setRequestHeader('Content-Type', 'application/json');
+        //     xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+        //     xhr.onload = function () {
+        //         if (xhr.status === 200) {
+
+        //         }
+
+        //     }
+        //     xhr.send(JSON.stringify(data));
+        // }
     </script>
 </body>
 

@@ -28,7 +28,6 @@
             background-color: #f2f2f2;
         }
 
-        /* 响应式设计（可选） */
         @media (max-width: 600px) {
             table {
                 border: 0;
@@ -134,11 +133,11 @@
                 if (xhr.status === 200) {
                     // console.log(xhr.responseText);
                     var courses = JSON.parse(xhr.responseText)[0].response;
-                    console.log(courses);
+                    // console.log(courses);
                     var StuCor = courses.学生[0].所选课程;//是一个学生课程数组
                     var Cor = courses.课程;
-                    console.log(StuCor);
-                    console.log(Cor);
+                    // console.log(StuCor);
+                    // console.log(Cor);
 
                     // 清空表格内容（如果有的话）  
                     while (table.rows.length > 1) {

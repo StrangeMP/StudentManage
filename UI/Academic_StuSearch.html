@@ -88,12 +88,14 @@
     </form>
     <table id="enroll">
         <tr>
+            <th>排名</th>
             <th>姓名</th>
             <th>学号</th>
             <th>学院</th>
             <th>专业</th>
             <th>年级</th>
             <th>综合成绩</th>
+            <th>详细成绩展示</th>
         </tr>
     </table>
 
@@ -396,7 +398,6 @@
             var val = document.getElementById("content").value;
             var select = document.getElementById("method");
             // console.log(val);
-
             switch (select.value) {
                 case "id": IdGet(val); break;
                 case "name": NaGet(val); break;
@@ -411,7 +412,7 @@
 
         //通过id查找学生
         function IdGet(val) {
-            event.preventDefault(); // 阻止表单提交导致的页面刷新  
+            // event.preventDefault(); // 阻止表单提交导致的页面刷新  
             var Stu_ = document.getElementById("content").value;
             var Stu_int = parseInt(Stu_, 10);
             var data = [{
@@ -425,32 +426,39 @@
             xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
             xhr.onload = function () {
                 if (xhr.status === 200) {
-                    if (xhr.status === 200) {
-                        var response = xhr.responseText;
-                        // console.log(response);
-                        var Stu_ = JSON.parse(response)[0];
-                        var Stu_info = Stu_.response.学生[0];
-                        console.log(Stu_info);
-                        // 清除上一次剩余的学生表格
-                        var table = document.getElementById("enroll");
-                        while (table.rows.length > 1) {
-                            table.deleteRow(1);
-                        }
-
-                        var Cor_info = Stu_info.所选课程;
-                        // 创建新的表格行并插入数据  
-                        // var keys = Object.keys(Stu_info);
-                        // console.log(keys);
-                        var row = table.insertRow(-1);
-                        row.innerHTML = `  
-                            <td>${Stu_info.姓名}</td>  
-                            <td>${Stu_info.学号}</td>  
-                            <td>${Stu_info.学院}</td>  
-                            <td>${Stu_info.专业}</td>
-                            <td>${Stu_info.年级}</td>  
-                        `;
-                        table.appendChild(row);
+                    var response = xhr.responseText;
+                    // console.log(response);
+                    var Stu_ = JSON.parse(response)[0];
+                    var Stu_info = Stu_.response.学生[0];
+                    // console.log(Stu_info);
+                    // 清除上一次剩余的学生表格
+                    var table = document.getElementById("enroll");
+                    while (table.rows.length > 1) {
+                        table.deleteRow(1);
                     }
+
+                    var Cor_info = Stu_info.所选课程;
+                    // 创建新的表格行并插入数据  
+                    // var keys = Object.keys(Stu_info);
+                    // console.log(keys);
+                    var row = table.insertRow(-1);
+                    row.innerHTML = `
+                        <td>${Stu_info.排名}</td>  
+                        <td>${Stu_info.姓名}</td>  
+                        <td>${Stu_info.学号}</td>  
+                        <td>${Stu_info.学院}</td>  
+                        <td>${Stu_info.专业}</td>
+                        <td>${Stu_info.年级}</td>
+                        <td>${Stu_info.综合成绩}</td> 
+                        <td><button onclick="More(this)">详情</button></td>
+                    `;
+                    table.appendChild(row);
+
+                    // //保存学生id
+                    // localStorage.setItem('Stu_id', Stu_info.学号);
+                    // //保存学生姓名
+                    // localStorage.setItem('Stu_name', Stu_info.姓名);
+
                 };
             }
             xhr.send(JSON.stringify(data));
@@ -471,35 +479,41 @@
             xhr.onload = function () {
                 // console.log("dsda");
                 if (xhr.status === 200) {
-                    if (xhr.status === 200) {
-                        var response = xhr.responseText;
-                        // console.log(response);
-                        var Stu_ = JSON.parse(response)[0];
-                        var Stu_info = Stu_.response.学生;
-                        console.log(Stu_info);
-                        // 清除上一次剩余的学生表格
-                        var table = document.getElementById("enroll");
-                        while (table.rows.length > 1) {
-                            table.deleteRow(1);
-                        }
 
-                        // var Cor_info = Stu_info.所选课程;
-                        // 创建新的表格行并插入数据  
-                        // var keys = Object.keys(Stu_info);
-                        // console.log(keys);
-                        Stu_info.forEach(Stu => {
-                            var row = table.insertRow(-1);
-                            row.innerHTML = `  
+                    var response = xhr.responseText;
+                    // console.log(response);
+                    var Stu_ = JSON.parse(response)[0];
+                    var Stu_info = Stu_.response.学生;
+                    console.log(Stu_info);
+                    // 清除上一次剩余的学生表格
+                    var table = document.getElementById("enroll");
+                    while (table.rows.length > 1) {
+                        table.deleteRow(1);
+                    }
+
+                    // var Cor_info = Stu_info.所选课程;
+                    // 创建新的表格行并插入数据  
+                    // var keys = Object.keys(Stu_info);
+                    // console.log(keys);
+                    Stu_info.forEach(Stu => {
+                        var row = table.insertRow(-1);
+                        row.innerHTML = `  
+                            <td>${Stu.排名}</td>  
                             <td>${Stu.姓名}</td>  
                             <td>${Stu.学号}</td>  
                             <td>${Stu.学院}</td>  
                             <td>${Stu.专业}</td>
-                            <td>${Stu.年级}</td>  
+                            <td>${Stu.年级}</td>
+                            <td>${Stu.综合成绩}</td> 
+                            <td><button onclick="More(this)">详情</button></td>
                         `;
-                            table.appendChild(row);
-                        })
+                        table.appendChild(row);
+                        //保存学生id
+                        // localStorage.setItem('Stu_id', Stu_info.学号);
+                        // localStorage.setItem('Stu_name', Stu_info.姓名);
+                    });
 
-                    }
+
                 };
             }
             xhr.send(JSON.stringify(data));
@@ -522,37 +536,54 @@
             xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
             xhr.onload = function () {
                 if (xhr.status === 200) {
-                        var response = xhr.responseText;
-                        // console.log(response);
-                        var Stu_ = JSON.parse(response)[0];
-                        var Stu_info = Stu_.response.学生;
-                        console.log(Stu_info);
-                        // 清除上一次剩余的学生表格
-                        var table = document.getElementById("enroll");
-                        while (table.rows.length > 1) {
-                            table.deleteRow(1);
-                        }
+                    var response = xhr.responseText;
+                    // console.log(response);
+                    var Stu_ = JSON.parse(response)[0];
+                    var Stu_info = Stu_.response.学生;
+                    console.log(Stu_info);
+                    // 清除上一次剩余的学生表格
+                    var table = document.getElementById("enroll");
+                    while (table.rows.length > 1) {
+                        table.deleteRow(1);
+                    }
 
-                        // var Cor_info = Stu_info.所选课程;
-                        // 创建新的表格行并插入数据  
-                        // var keys = Object.keys(Stu_info);
-                        // console.log(keys);
-                        Stu_info.forEach(Stu => {
-                            var row = table.insertRow(-1);
-                            row.innerHTML = `  
+                    // var Cor_info = Stu_info.所选课程;
+                    // 创建新的表格行并插入数据  
+                    // var keys = Object.keys(Stu_info);
+                    // console.log(keys);
+                    Stu_info.forEach(Stu => {
+                        var row = table.insertRow(-1);
+                        row.innerHTML = `  
+                            <td>${Stu.排名}</td>  
                             <td>${Stu.姓名}</td>  
                             <td>${Stu.学号}</td>  
                             <td>${Stu.学院}</td>  
                             <td>${Stu.专业}</td>
-                            <td>${Stu.年级}</td>  
+                            <td>${Stu.年级}</td>
+                            <td>${Stu.综合成绩}</td> 
+                            <td><button onclick="More(this)">详情</button></td>
                         `;
-                            table.appendChild(row);
-                        })
+                        table.appendChild(row);
+                        // //保存学生id
+                        // localStorage.setItem('Stu_id', Stu_info.学号);
+                        // localStorage.setItem('Stu_name', Stu_info.姓名);
+                    });
 
-                    }
+                }
             }
             xhr.send(JSON.stringify(data));
+        }
 
+        //跳转页面
+        function More(btn){
+            var row = btn.parentNode.parentNode;
+            var name = row.cells[1].textContent;
+            var id = row.cells[2].textContent;
+
+            localStorage.setItem('Stu_id', id);
+            localStorage.setItem('Stu_name', name);
+
+            window.location = "./Academic_StuShow.html";
         }
     </script>
 </body>
