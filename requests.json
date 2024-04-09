@@ -62,5 +62,10 @@
     {
         "Number": 11,
         "request": "get_pending_list"
+    },
+    {
+        "Number": 12,
+        "request": "del_courses",
+        "course_ids": []
     }
 ]
