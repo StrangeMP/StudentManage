@@ -1,7 +1,7 @@
 CC = gcc
 INCLUDE_PATH = ./Include $(shell powershell -Command "Get-ChildItem -Path Libraries -Directory -Recurse | ForEach-Object { Resolve-Path -Path $$_.FullName -Relative } | %{$$_ -replace '\\','/'}")
 CC_INCLUDE_FLAGS = $(addprefix -I,$(INCLUDE_PATH))
-CC_FLAGS = -O2 $(CC_INCLUDE_FLAGS)
+CC_FLAGS = -O3 $(CC_INCLUDE_FLAGS)
 DEBUG_FLAGS = $(CC_INCLUDE_FLAGS) -DDEBUG -g
 C_SRC_FILES = StuMan_Benefit.c StuMan_Binary.c StuMan_BuildIndex.c StuMan_Log.o\
  StuMan_Delete.c StuMan_Export.c StuMan_Handler.c StuMan_Import.c StuMan_Memory.c\
