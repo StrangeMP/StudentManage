@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher_Course</title>
+    <link rel="stylesheet" type="text/css" href="Guide.css" /> <!-- 调用css -->
+    <style>
+        #table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            flex: 1;
+            height: 50%;
+        }
+
+        #CourseTable {
+            width: auto;
+            border-collapse: collapse;
+        }
+
+        #CourseTable th,
+        #CourseTable td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        #CourseTable th {
+            background-color: #a1a1a1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="menu">
+        <div class="nav">
+            <ul>
+                <img src="./jd-xhh.jpg" class="symbol">
+                <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
+                <li><a href="Teacher.html">返回上一级</a></li>
+                <div class="drop">
+                    <li><a href="#">我的课程</a></li>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <h2 id="welcome-message">欢迎，老师！</h2>
+    <p>您的课程如下：</p>
+    <div id="table-wrapper">
+        <table id="CourseTable">
+            <tr>
+                <th>教师</th>
+                <th>课程名</th>
+                <th>课程号</th>
+                <th>校公选课级别</th>
+                <th>课程类别</th>
+                <th>课程性质</th>
+                <th>显示等级成绩类型</th>
+                <th>开课单位</th>
+                <th>考试日期</th>
+                <th>成绩方式</th>
+                <th>学时</th>
+                <th>学分</th>
+                <th>学生</th>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        var name = localStorage.getItem('name'); 
+        // var name = "李明"
+        if (name !== null) {
+            document.getElementById('welcome-message').innerHTML = '欢迎，' + name + '老师！';
+        } else {
+            document.getElementById('welcome-message').innerHTML = '欢迎，老师！';
+        }
+
+        var data = [{
+            "Number": 2,
+            "request": "get_courses_by_teacher",
+            "teacher": name
+        }];
+        window.onload = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:8080', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            // 处理请求完成后的响应  
+            //响应体应为JSON文件，包含老师所有的课程
+            // {
+            //     {
+            //         "name":
+            //         "id":
+            //         "num":
+            //         "teacher":
+            //         "pub_category":
+            //         "type": 
+            //         "nature":
+            //         "credit":
+            //         "hours": 
+            //         "exam_date":
+            //         "grade_type": 
+            //         "exam_type": 
+            //         "institute":
+            //         "ExcellentRate": 
+            //         "PassRate":
+            //         "Student_List":
+            //     }
+            // }
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText);
+                    const CoursData = JSON.parse(xhr.responseText)[0].response.课程;
+                    // console.log(CoursData);
+                    const table = document.getElementById('CourseTable');
+
+                    // 遍历 CoursData 数组  对每一个课程遍历
+                    CoursData.forEach(course => {
+                        // 创建一个新的行元素  
+                        const row = document.createElement('tr');
+
+                        // 遍历课程的每个属性，并创建单元格元素来显示数据  
+                        for (const key in course) {
+                            if (course.hasOwnProperty(key)) { // 确保属性是课程对象自身的，而不是从原型链上继承的  
+                                // 创建一个新的单元格元素，并设置其文本内容为课程属性的值  
+                                const cell = document.createElement('td');
+                                cell.textContent = course[key];
+                                // 将单元格添加到行中  
+                                row.appendChild(cell);
+                            }
+                        }
+                        // 将行添加到表格中  
+                        table.appendChild(row);
+                    });
+
+                } else {
+                    // 请求失败，处理错误  
+                    console.error('Request failed.  Returned status of ' + xhr.status);
+                }
+            };
+
+            // 处理网络错误  
+            xhr.onerror = function () {
+                console.error('Network Error');
+            };
+
+            // // 发送请求  
+            xhr.send(JSON.stringify(data));
+        };
+
+
+    </script>
+
+
+</body>
+
+</html>

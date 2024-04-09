@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student</title>  
+    <link rel="stylesheet" type="text/css" href="Guide.css"/> <!-- 调用css -->
+    <style>
+    </style>
+</head>
+<body >
+    <div class="menu"> 
+        <div class="nav">
+            <ul>    
+                <img src="./jd-xhh.jpg" class="symbol">
+                <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
+                <li><a href="login.html">返回登录</a></li>  
+                <div class="drop">
+                    <li ><a href="#">课程信息</a></li>
+                    <div class="drop-content">
+                        <a  href="Student_Scores.html">成绩查询</a>
+                    </div>                    
+                </div>
+                <div class="drop">
+                    <li ><a href="#" class="drop">成绩认定</a></li>
+                    <div class="drop-content">
+                        <a href="Student_Benefit.html">素质加分</a>
+                        <a href="Student_MyBenefit.html">我的素质加分</a>
+                    </div>
+                </div>
+            </ul>
+        </div>
+      </div>
+      <h2 id="welcome-message">欢迎，同学！</h2>  
+      <script>  
+          var name = localStorage.getItem('name');  
+          if (name !== null) {  
+              document.getElementById('welcome-message').innerHTML = '欢迎，' + name + '同学！';  
+          } else {  
+              document.getElementById('welcome-message').innerHTML = '欢迎，同学！';  
+          }  
+      </script>
+</body>
+</html>

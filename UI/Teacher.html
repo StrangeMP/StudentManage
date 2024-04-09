@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher</title>  
+    <link rel="stylesheet" type="text/css" href="Guide.css"/> <!-- 调用css -->
+    <style>
+
+    </style>
+</head>
+<body >
+    <div class="menu"> 
+        <div class="nav">
+            <ul>    
+                <img src="./jd-xhh.jpg" class="symbol">
+                <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
+                <li><a href="login.html">返回登录</a></li>  
+                <div class="drop">
+                    <li ><a href="Teacher_Course.html">我的课程</a></li>
+                </div>
+                <div class="drop">
+                    <li ><a href="Teacher_ScoresInput.html">成绩录入</a></li>
+                </div>
+            </ul>
+        </div>
+      </div>
+      <h2 id="welcome-message">欢迎，老师！</h2>  
+
+
+
+      
+      <script>  
+          var name = localStorage.getItem('name');  
+          if (name !== null) {  
+              document.getElementById('welcome-message').innerHTML = '欢迎，' + name + '老师！';  
+          } else {  
+              document.getElementById('welcome-message').innerHTML = '欢迎，老师！';  
+          }  
+      </script>
+</body>
+</html>

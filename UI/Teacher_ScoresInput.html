@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScoresInput</title>
+    <link rel="stylesheet" type="text/css" href="Guide.css" /> <!-- 调用css -->
+    <style>
+        #course {
+            width: 200px;
+            /* 设置宽度 */
+            padding: 5px;
+            /* 设置内边距 */
+            font-size: 16px;
+            /* 设置字体大小 */
+        }
+
+        /* 尝试样式化滚动条（仅在支持的浏览器中有效） */
+        /* Firefox */
+        #course {
+            scrollbar-width: thin;
+            /* 滚动条宽度 */
+            scrollbar-color: #666 transparent;
+            /* 滚动条颜色 */
+        }
+
+        /* Chrome, Safari and Edge */
+        #course::-webkit-scrollbar {
+            width: 10px;
+            /* 滚动条宽度 */
+        }
+
+        #course::-webkit-scrollbar-track {
+            background: transparent;
+            /* 滚动条轨道背景 */
+        }
+
+        #course::-webkit-scrollbar-thumb {
+            background-color: #666;
+            /* 滚动条滑块颜色 */
+            border-radius: 10px;
+            /* 圆角 */
+        }
+
+        /* 样式化选项 */
+        #course option {
+            padding: 5px;
+            /* 设置选项内边距 */
+        }
+
+        #CourseTable {
+            width: 100%;
+            border-collapse: collapse;
+            /* 合并边框 */
+            margin-top: 20px;
+            /* 与页面顶部保持距离 */
+        }
+
+        /* 设置表头样式 */
+        #CourseTable th {
+            background-color: #f2f2f2;
+            /* 灰色背景 */
+            color: #333;
+            /* 文字颜色 */
+            padding: 10px;
+            /* 内边距 */
+            text-align: left;
+            /* 文本左对齐 */
+        }
+
+        /* 设置单元格样式 */
+        #CourseTable td {
+            border: 1px solid #ddd;
+            /* 边框 */
+            padding: 8px;
+            /* 内边距 */
+        }
+
+        /* 设置表格的交替行背景色，以改善可读性 */
+        #CourseTable tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="menu">
+        <div class="nav">
+            <ul>
+                <img src="./jd-xhh.jpg" class="symbol">
+                <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
+                <li><a href="Teacher.html">返回上一级</a></li>
+                <div class="drop">
+                    <li><a href="#">学生成绩录入</a></li>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <h2 id="welcome-message">欢迎，老师！</h2>
+
+
+    <div>
+        <label for="course">请选择您的课程：</label>
+        <select id="course">
+            <option value="">请选择</option>
+        </select>
+    </div>
+
+    <table id="CourseTable">
+        <tr>
+            <th style="width: 20%;">学生姓名</th>
+            <th style="width: 20%;">学生学号</th>
+            <th>学生成绩</th>
+            <th>操作按钮</th>
+        </tr>
+
+    </table>
+
+
+
+
+    <script>
+        //欢迎
+        var name = localStorage.getItem('name');
+        if (name !== null) {
+            document.getElementById('welcome-message').innerHTML = '欢迎，' + name + '老师！';
+        } else {
+            document.getElementById('welcome-message').innerHTML = '欢迎，老师！';
+        }
+        var data = [{
+            "Number": 2,
+            "request": "get_courses_by_teacher",
+            "teacher": name
+        }];
+
+        //接口
+        window.onload = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:8080', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // console.log(xhr.responseText);      
+                    // 请求成功，处理返回的数据    
+                    const CoursData = JSON.parse(xhr.responseText);
+                    console.log(CoursData);
+                    // 获取表格元素  
+                    const select = document.getElementById('course');
+
+                    CoursData[0].response.课程.forEach(course => {
+                        const option = document.createElement('option');
+                        const content = course.课程名;
+                        var select = document.getElementById("course");
+                        option.value = course.课程号;
+                        option.textContent = content;
+                        select.appendChild(option);
+                    });
+
+
+                    //构建学生表格
+                    CoursData[0].response.学生.forEach(followed => {
+                        const row = document.createElement('tr');
+                        var table = document.getElementById("CourseTable")
+                        row.innerHTML = `  
+                        <td>${followed.姓名}</td>  
+                        <td id=${followed.学号}>${followed.学号}</td>  
+                        <td><input type="text"></td>  
+                        <td><button class="submit" onclick="submit(this)">确定</button></td>`;
+                        // 将行添加到表格中  
+                        table.appendChild(row);
+
+                    });
+
+                } else {
+                    // 请求失败，处理错误  
+                    console.error('Request failed.  Returned status of ' + xhr.status);
+                }
+            };
+            // 处理网络错误  
+            xhr.onerror = function () {
+                console.error('Network Error');
+            };
+            // 发送请求  
+            xhr.send(JSON.stringify(data));
+        };
+
+
+
+        function submit(button){
+            // 找到父级 TR 元素  
+            var row = button.closest('tr');
+            // 在同一行内找到 input 元素  
+            var input = row.querySelector('input[type="text"]');
+            var name = row.querySelector('td').textContent;//第一个td
+            var select = document.getElementById("course").value;
+            // 获取 input 的值  
+            var inputValue = input.value;
+            var data = [{
+                "Number": 4,
+                "request": "add",
+                "data": {
+                    "学生": [{
+                        "姓名": name,
+                        "所选课程":[{
+                            "课程号":select,
+                            "总成绩":input
+                        }]
+                    }]
+                }
+            }];
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:8080', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            xhr.onload = function () {
+                if(xhr.status === 200){
+                    alert("成功录入");
+                    var res = xhr.responseText;
+                    console.log(res);
+                }
+            };
+            xhr.send(JSON.stringify(data));
+        }
+
+        // // 监听select的change事件  
+        // select.addEventListener('change', function () {
+        //     // 隐藏所有内容容器  
+        //     var contentContainers = document.getElementsByClassName('content-container');
+        //     for (var i = 0; i < contentContainers.length; i++) {
+        //         contentContainers[i].style.display = 'none';
+        //     }
+
+        //     // 显示对应的内容容器  
+        //     var selectedValue = this.value; // 获取选中的值  
+        //     var contentId = 'content-' + selectedValue; // 构建对应内容容器的ID  
+        //     var contentContainer = document.getElementById(contentId);
+        //     if (contentContainer) {
+        //         contentContainer.style.display = 'block'; // 显示内容容器  
+        //     }
+        // });
+
+
+        // function GetStudent(followed) {
+        //     var data2 = {
+        //         "Number": 7,
+        //         "request": "get_students_by_id",
+        //         "student_ids": [followed]
+        //     }
+        //     var xhr2 = new XMLHttpRequest();
+        //     xhr2.open('POST', 'http://127.0.0.1:8080', true);
+        //     var data3 = {
+        //         "name": xhr2.response.name,
+        //         "id": xhr2.response.id
+        //     }
+        //     send(data2);
+        //     return data3;
+        // }
+    </script>
+</body>
+
+</html>
