@@ -311,7 +311,7 @@ chat = model.start_chat(history=[])
 
 
 # Define the base file name
-base_file_name = "__TestData"
+base_file_name = "./GenerateTestData/__TestData"
 extension = ".json"
 
 # Initialize index
