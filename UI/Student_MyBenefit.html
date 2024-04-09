@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student_Benefit</title>
+    <link rel="stylesheet" href="Guide.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* 标题样式 */
+        div>p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="menu">
+        <div class="nav">
+            <ul>
+                <img src="./jd-xhh.jpg" class="symbol">
+                <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
+                <li><a href="Student.html">返回上级界面</a></li>
+                <div class="drop">
+                    <li><a href="Student_Benefit.html">我的素质加分</a></li>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <h2 id="welcome-message">欢迎，xxx同学！</h2>
+    <h3>我的素质加分成绩：</h3>
+    <div id="Artical">
+        <p>论文：</p>
+        <table id="table_Artical">
+            <tr>
+                <th>论文名</th>
+                <th>作者</th>
+                <th>期刊或会议名</th>
+                <th>发表日期</th>
+                <th>级别</th>
+                <th>加分</th>
+                <th>审核状态</th>
+            </tr>
+        </table>
+    </div>
+    <div id="Project">
+        <p>项目：</p>
+        <table id="table_Project">
+            <tr>
+                <th>项目名称</th>
+                <th>项目编号</th>
+                <th>立项时间</th>
+                <th>结项时间</th>
+                <th>指导老师</th>
+                <th>成员</th>
+                <th>加分</th>
+                <th>审核状态</th>
+            </tr>
+
+        </table>
+    </div>
+    <div id="Competition">
+        <p>竞赛：</p>
+        <table id="table_Competition">
+            <tr>
+                <th>竞赛名称</th>
+                <th>获奖日期</th>
+                <th>获奖等级</th>
+                <th>主办单位</th>
+                <th>加分</th>
+                <th>审核状态</th>
+            </tr>
+
+        </table>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            //欢迎界面
+            var name = localStorage.getItem('name');
+            var id = localStorage.getItem('username');
+            var Int_id = parseInt(id);
+            if (name !== undefined) {
+                document.getElementById('welcome-message').innerHTML = '欢迎，' + name + '同学！';
+            } else {
+                document.getElementById('welcome-message').innerHTML = '欢迎，同学！';
+            }
+
+            //内容界面
+            var data = [{
+                "Number": 7,
+                "request": "get_students_by_id",
+                "student_ids": [Int_id]
+            }];
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            // 设置请求完成后的回调函数  
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // console.log(xhr.responseText);
+                    var benefit = JSON.parse(xhr.responseText)[0].response.学生[0].素质加分;//获取学生数据
+                    // console.log(benefit);
+                    var table_Artical = document.getElementById("table_Artical");
+                    var table_Competition = document.getElementById("table_Competition");
+                    var table_Project = document.getElementById("table_Project");
+                    console.log(benefit);
+                    
+                    var row = document.createElement('tr');//添加新行
+                    var cell = document.createElement('td');//添加新的子项
+                    cell.textContent = "暂无";
+                    row.appendChild(cell);
+
+                    if (benefit === undefined) {
+                        var rowA = document.createElement('tr');//添加新行
+                        var cellA = document.createElement('td');//添加新的子项
+                        cellA.textContent = "暂无";
+                        rowA.appendChild(cellA);
+
+                        var rowC = document.createElement('tr');//添加新行
+                        var cell = document.createElement('td');//添加新的子项
+                        cell.textContent = "暂无";
+                        rowC.appendChild(cell);
+
+                        var rowP = document.createElement('tr');//添加新行
+                        var cell = document.createElement('td');//添加新的子项
+                        cell.textContent = "暂无";
+                        rowP.appendChild(cell);
+
+                        table_Artical.appendChild(rowA);
+                        table_Competition.appendChild(rowC);
+                        table_Project.appendChild(rowP);
+                    
+                        console.log(benefit);
+
+                        return;
+                    } else {
+
+                        if (benefit.项目 !== undefined) {
+                            benefit.项目.forEach(element => {
+                                var row1 = document.createElement('tr');//创建行元素
+                                ['项目名称', '项目编号', '立项时间', '结项时间', '指导老师', '成员', '加分', '审核状态'].forEach(function (header, index) {
+                                    var cell = row1.insertCell(index);
+                                    cell.textContent = element[header];
+                                })
+                                console.log(row1);
+                                table_Project.appendChild(row1);
+                            });
+                        } else
+                            {table_Project.appendChild(row);}
+
+
+                        if (benefit.竞赛获奖 !== undefined) {
+                            benefit.竞赛获奖.forEach(element => {
+                                var row2 = document.createElement('tr');//创建行元素
+                                ['竞赛名称', '获奖日期', '获奖等级', '主办单位', '加分', '审核状态'].forEach(function (header, index) {
+                                    var cell = row2.insertCell(index);
+                                    cell.textContent = element[header];
+                                })
+                                table_Competition.appendChild(row2);
+                            });
+                        } else
+                            {table_Competition.appendChild(row);}
+
+
+                        if (benefit.论文 !== undefined) {
+                            benefit.论文.forEach(element => {
+                                var row3 = document.createElement('tr');//创建行元素
+                                ['论文名', '作者', '期刊或会议名', '发表日期', '级别', '加分', '审核状态'].forEach(function (header, index) {
+                                    var cell = row3.insertCell(index);
+                                    cell.textContent = element[header];
+                                })
+                                table_Artical.appendChild(row3);
+                            });
+                        } else
+                            {table_Artical.appendChild(row);}
+                    }
+                }
+            };
+            // 设置网络错误时的回调函数  
+            xhr.onerror = function () {
+                console.error("网络错误");
+            };
+            // 发送请求  
+            xhr.send(JSON.stringify(data));
+        });  
+
+    </script>
+</body>
+
+</html>

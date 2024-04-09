@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="Guide.css" />
+    <script src="./JS/GetNameById.js"></script>
+    <title>Search</title>
+    <style>
+        #table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            flex: 1;
+            height: 50%;
+        }
+
+        #enroll {
+            width: auto;
+            border-collapse: collapse;
+        }
+
+        #enroll th,
+        #enroll td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        #enroll th {
+            background-color: #a1a1a1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="menu"><!--导航栏-->
+        <div class="nav">
+            <ul>
+                <img src="./jd-xhh.jpg" class="symbol">
+                <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
+                <li><a href="Academic.html">返回上一级</a></li>
+                <div class="drop">
+                    <li><a href="#">课程查询</a></li>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <h2>你好，教务老师</h2>
+    <form id="course-form">
+        <label for="method_cor">请选择查询的方式</label>
+        <select name="method" id="method_cor">
+            <option value="">请选择</option>
+            <option value="cor_id">课程号</option>
+            <option value="cor_tch">教师姓名</option>
+        </select>
+        <div id="cor-id" style="display: none;">
+            <label for="course_id">请输入需要查询的课程号：</label>
+            <input type="text" id="course_id">
+            <button type="submit" id="check_id" onclick=search_id()>查询</button>
+        </div>
+        <div id="cor-tch" style="display: none;">
+            <label for="course_teacher_name">请输入需要查询的老师姓名：</label>
+            <input type="text" id="course_teacher_name">
+            <button type="submit" id="check_name" onclick=search_name()>查询</button>
+        </div>
+        <br>
+    </form>
+
+    <div id="table-wrapper">
+        <table id="enroll">
+            <tr>
+                <th>任课老师</th>
+                <th>课程名</th>
+                <th>课程号</th>
+                <th>任课班</th>
+                <th>校公选课类别</th>
+                <th>课程类别</th>
+                <th>显示等级成绩类型</th>
+                <th>开课单位</th>
+                <th>考试日期</th>
+                <th>考试类型</th>
+                <th>学时</th>
+                <th>学分</th>
+                <th>选课学生</th>
+
+            </tr>
+        </table>
+    </div>
+    <script>
+
+        //选择方式
+        document.getElementById("method_cor").addEventListener('change', function () {
+            var SelectMethod = this.value;
+            var IdControl = document.getElementById("cor-id");
+            var TchControl = document.getElementById("cor-tch");
+            //innitial
+            IdControl.style.display = "none";
+            TchControl.style.display = "none";
+
+            switch (SelectMethod) {
+                case "cor_id": IdControl.style.display = "flex";
+                    break;
+                case "cor_tch": TchControl.style.display = "flex";
+            }
+        });
+
+        //id查询课程
+        function search_id() {
+            event.preventDefault(); // 阻止表单提交导致的页面刷新  
+            var course_id = document.getElementById("course_id").value;
+            var data = [{
+                "Number": 3,
+                "request": "get_courses_by_course_id",
+                "course_ids": [course_id]
+            }];
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:8080', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // 请求成功，处理返回的数据  
+                    var response = xhr.responseText;
+                    console.log(response);
+                    var course_ = JSON.parse(response)[0];//因为用的是[]，所以是第0个元素
+                    var course_info = course_.response.课程[0];//返回的课程只有一个，所以也是第0个数据
+                    // console.log(course_info);
+                    var table = document.getElementById("enroll");
+
+
+                    // console.log(table.rows.length);
+                    // // 判断是否重复
+                    // for (var i = 1; i < table.rows.length; i++) {
+                    //     var tableText = table.row[i].cell[2].textContent;
+                    //     if (tableText === course_info.课程号) {
+                    //         return ;
+                    //     } 
+                    // }
+                    
+                    // 创建新的表格行并插入数据  
+                    var keys = Object.keys(course_info);
+                    var row = table.insertRow(-1);
+                    for (var i = 0; i < keys.length; i++) {
+                        var cell = row.insertCell(-1);
+                        cell.textContent = course_info[keys[i]];
+                    }
+                    console.log(table.rows.length); 
+                };
+                //添加名字
+
+
+
+                
+            }
+            xhr.send(JSON.stringify(data));
+        }
+
+
+        //name查询课程
+        function search_name(){
+            event.preventDefault(); // 阻止表单提交导致的页面刷新  
+            var course_name = document.getElementById("course_teacher_name").value;
+            var data = [{
+                "Number": 2,
+                "request": "get_courses_by_teacher",
+                "teacher": course_name
+            }];
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:8080', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // 请求成功，处理返回的数据  
+                    var response = xhr.responseText;
+                    var course_ = JSON.parse(response)[0];//因为用的是[]，所以是第0个元素
+                    var course_info = course_.response.课程[0];//返回的课程只有一个，所以也是第0个数据
+                    // console.log(course_info);
+                    var table = document.getElementById("enroll");
+
+                    // console.log(table.rows.length);
+                    // // 判断是否重复
+                    // for (var i = 1; i < table.rows.length; i++) {
+                    //     var tableText = table.row[i].cell[2].textContent;
+                    //     if (tableText === course_info.课程号) {
+                    //         return ;
+                    //     } 
+                    // }
+                    
+                    // 创建新的表格行并插入数据  
+                    var keys = Object.keys(course_info);
+                    var row = table.insertRow(-1);
+                    for (var i = 0; i < keys.length; i++) {
+                        var cell = row.insertCell(-1);
+                        cell.textContent = course_info[keys[i]];
+                    }
+                    console.log(table.rows.length); 
+                };
+            }
+            xhr.send(JSON.stringify(data));
+        }
+
+    </script>
+</body>
+
+</html>

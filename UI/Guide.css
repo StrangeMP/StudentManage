@@ -1,0 +1,56 @@
+ul {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0;
+    overflow:visible;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
+}
+
+.symbol{
+    width: 30px;
+    display: inline;
+    float:left;
+    margin: 10px;
+}
+
+body{
+    background-color: rgb(217, 220, 222);
+}
+.drop{
+    position: relative;
+    display: inline-block;
+}
+.drop-content{
+    display: none;
+    position: absolute;
+    background-color: #c1bebe;
+    min-width: 100x;
+    box-shadow: 10px 8px 15px 10px rgba(35, 164, 127, 0.2);
+    padding: 1px;
+}
+
+.drop-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+.drop:hover .drop-content{
+    display: block;
+}

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student_Benefit</title>
+    <link rel="stylesheet" href="Guide.css">
+    <style>
+        .nav2 {
+            height: 500px;
+            width: 100px;
+            background-color: rgb(82, 82, 93);
+            display: flex;
+            flex-direction: column;
+
+        }
+
+        .name {
+            color: aliceblue;
+            background-color: rgb(82, 82, 93);
+            border: 0;
+            text-align: left;
+            padding: 10px;
+            font-size: 15px;
+            width: 100px;
+        }
+
+        .name:hover {
+            background-color: #2f2e2e;
+        }
+
+        #compete {
+            margin: 5px;
+            background-color: #d3c9c4;
+            display: none;
+            padding: 20px;
+            flex: 1;
+        }
+
+        #artical {
+            margin: 5px;
+            background-color: #d8bdaf;
+            display: none;
+            padding: 20px;
+            flex: 1;
+        }
+
+        #Auther {
+            width: 50px;
+            margin: 5px;
+        }
+
+        #project {
+            margin: 5px;
+            background-color: #ae8f80;
+            display: none;
+            padding: 20px;
+            flex: 1;
+        }
+
+        #Member {
+            width: 50px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="menu">
+        <div class="nav">
+            <ul>
+                <img src="./jd-xhh.jpg" class="symbol">
+                <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
+                <li><a href="Student.html">返回上级界面</a></li>
+                <div class="drop">
+                    <li><a href="Student_Benefit.html">素质加分</a></li>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <h2 id="welcome-message">欢迎，xxx同学！</h2>
+    <h3>请选择素质加分对象：</h3>
+    <div style="display: flex;" id="main">
+        <div class="nav2">
+            <div>
+                <button class=name onclick="document.getElementById('compete').style.display='flex'">竞赛获奖</button>
+                <button class=name onclick="document.getElementById('artical').style.display='flex'">论文</button>
+                <button class=name onclick="document.getElementById('project').style.display='flex'">项目</button>
+            </div>
+        </div>
+
+        <div id="compete">
+            <form name="Compete">
+                <h1>竞赛获奖申请</h1>
+                <div>
+                    <label for="name">奖项名称：</label>
+                    <input type="text" id="name">
+                </div>
+                <div>
+                    <label for="host">主办方&emsp;：</label>
+                    <input type="text" id="host">
+                </div>
+                <div>
+                    <label for="AwardLevel">竞赛级别:</label>
+                    <input type="text" id="AwardLevel">
+                </div>
+                <div>
+                    <label for="date">获奖日期：</label>
+                    <input type="date" id="date">
+                </div>
+                <input type="button" value="提交申请" id="Compete_Submit">
+            </form>
+        </div>
+
+        <div id="artical">
+            <form>
+                <div>
+                    <h1>论文提交申请</h1>
+                    <div>
+                        <label for="Auther">论文作者：</label>
+                        <input type="text" id="Auther1">
+                        <input type="text" id="Auther2">
+                        <input type="text" id="Auther3">
+                        <input type="text" id="Auther4">
+                        <input type="text" id="Auther5">
+                    </div>
+                    <div>
+                        <label for="Art-name">论文名：</label>
+                        <input type="text" id="Art-name">
+                    </div>
+                    <div>
+                        <label for="JC-name">会议名或者期刊名：</label>
+                        <input type="text" id="JC-name">
+                    </div>
+                    <div>
+                        <label for="Art-date">发表日期：</label>
+                        <input type="date" id="Art-date">
+                    </div>
+                    <div>
+                        <label for="ClassFic">论文等级:</label>
+                        <input type="text" id="ClassFic">
+                    </div>
+                    <input type="button" value="提交申请" id="Artical_Submit">
+                </div>
+            </form>
+        </div>
+
+        <div id="project">
+            <form>
+                <h1>项目加分申请</h1>
+                <div>
+                    <label for="Member">项目成员:</label>
+                    <input type="text" id="Member1">
+                    <input type="text" id="Member2">
+                    <input type="text" id="Member3">
+                    <input type="text" id="Member4">
+                    <input type="text" id="Member5">
+                </div>
+                <div>
+                    <label for="Teacher">指导教师：</label>
+                    <input type="text" id="Teacher">
+                </div>
+                <div>
+                    <label for="Code">项目编码：</label>
+                    <input type="text" id="Code">
+                </div>
+                <div>
+                    <label for="Pro-name">项目名：</label>
+                    <input type="text" id="Pro-name">
+                </div>
+                <div>
+                    <label for="Str-date">开始日期：</label>
+                    <input type="date" id="Str-date">
+                </div>
+                <div>
+                    <label for="Enddate">结束日期：</label>
+                    <input type="date" id="Enddate">
+                </div>
+                <input type="button" value="提交申请" id="Project_Submit">
+            </form>
+        </div>
+    </div>
+    <script>
+        //欢迎界面
+        var name = localStorage.getItem('name');
+        var id = localStorage.getItem('username');
+        var Int_id = parseInt(id);
+        if (name !== undefined) {
+            document.getElementById('welcome-message').innerHTML = '欢迎，' + name + '同学！';
+        } else {
+            document.getElementById('welcome-message').innerHTML = '欢迎，同学！';
+        }
+
+        //竞赛申请
+        var btn_C = document.getElementById("Compete_Submit");
+        btn_C.onclick = function () {
+            //获取数据
+            var name = document.getElementById("name").value;
+            var host = document.getElementById("host").value;
+            var AwardLevel = document.getElementById("AwardLevel").value;
+            var date = document.getElementById("date").value;
+            //写入传输
+            var data = [{
+                "Number": 4,
+                "request": "add",
+                "data": {
+                    "学生": [{
+                        "学号": Int_id,
+                        "素质加分": {
+                            "竞赛获奖": [{
+                                "竞赛名称": name,
+                                "主办单位": host,
+                                "获奖等级": AwardLevel,
+                                "获奖时间": date,
+                                "加分": 0,
+                                "审核状态": "审核中"
+                            }]
+                        }
+                    }]
+                }
+            }];
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            // 设置请求完成后的回调函数  
+            xhr.onload = function () {
+                if (xhr.status === 200){
+                    alert("提交成功");
+                }
+            };
+            xhr.send(JSON.stringify(data));
+
+        }
+
+        //项目申请
+        var btn_P = document.getElementById("Project_Submit");
+        btn_P.onclick = function () {
+            //获取数据
+            var men1 = document.getElementById("Menber1").value;
+            var men2 = document.getElementById("Menber2").value;
+            var men3 = document.getElementById("Menber3").value;
+            var men4 = document.getElementById("Menber4").value;
+            var men5 = document.getElementById("Menber5").value;
+            var Teacher = document.getElementById("Teacher").value;
+            var Code = document.getElementById("Code").value;
+            var Pro_name = document.getElementById("Pro-name").value;
+            var Str_date = document.getElementById("Str-date").value;
+            var Enddate = document.getElementById("Enddate").value;
+            //写入传输
+            var data = [{
+                "Number": 4,
+                "request": "add",
+                "data": {
+                    "学生": [{
+                        "学号": Int_id,
+                        "素质加分": {
+                            "项目": [{
+                                "项目名称": Pro_name,
+                                "项目编号": Code,
+                                "成员": [men1,men2,men3,men4,men5],
+                                "指导老师": Teacher,
+                                "立项时间":Str_date,
+                                "结项时间":Enddate,
+                                "加分": 0,
+                                "审核状态": "审核中"
+                            }]
+                        }
+                    }]
+                }
+            }];
+
+            //接口
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            // 设置请求完成后的回调函数  
+            xhr.onload = function () {
+                if (xhr.status === 200){
+                    alert("提交成功");
+                }
+            };
+            xhr.send(JSON.stringify(data));
+
+        }
+
+        //论文申请
+        var btn_A = document.getElementById("Artical_Submit");
+        btn_A.onclick = function () {
+            //获取数据
+            var aut1 = document.getElementById("Auther1").value;
+            var aut2 = document.getElementById("Auther2").value;
+            var aut3 = document.getElementById("Auther3").value;
+            var aut4 = document.getElementById("Auther4").value;
+            var aut5 = document.getElementById("Auther5").value;
+            var Art_name = document.getElementById("Art-name").value;
+            var JC_name = document.getElementById("JC-name").value;
+            var Art_date = document.getElementById("Art-date").value;
+            var ClassFic = document.getElementById("ClassFic").value;
+
+            //获取数据
+            var data = [{
+                "Number": 4,
+                "request": "add",
+                "data": {
+                    "学生": [{
+                        "学号": Int_id,
+                        "素质加分": {
+                            "论文": [{
+                                "论文名": Art_date,
+                                "作者": [aut1,aut2,aut3,aut4,aut5],
+                                "期刊或会议名": JC_name,
+                                "发表日期": Art_date,
+                                "级别":ClassFic,
+                                "加分": 0,
+                                "审核状态": "审核中"
+                            }]
+                        }
+                    }]
+                }
+            }];
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            // 设置请求完成后的回调函数  
+            xhr.onload = function () {
+                if (xhr.status === 200){
+                    alert("提交成功");
+                }
+            };
+            xhr.send(JSON.stringify(data));
+        }
+    </script>
+</body>
+
+</html>

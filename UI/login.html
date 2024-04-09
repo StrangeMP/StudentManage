@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="import" href="./page.html">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* 使登录框垂直居中 */
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.8);
+            /* 使用半透明背景 */
+            border: 2px solid #ccc;
+            /* 添加边框 */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            /* 添加阴影效果 */
+            width: 350px;
+            /* 设置登录框宽度 */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+        }
+
+        input[type="button"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            /* 使用绿色背景 */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="button"]:hover {
+            background-color: #45a049;
+            /* 鼠标悬停时改变背景色 */
+        }
+    </style>
+</head>
+
+<body background="./JLU.png"
+    style="background-repeat:no-repeat; background-attachment:fixed;background-size:100% 100%;">
+
+    <form id="blank">
+        <h1>Log in</h1>
+        <label for="username" class="name">用户名：</label>
+        <input type="text" class="input" id="username" autocomplete="current-username" placeholder="请输入学号/工号">
+        <br>
+        <label for="password" class="name">密&emsp;码：</label>
+        <input type="password" class="input" id="password" autocomplete="current-password" placeholder="请输入密码">
+        <br><br>
+        <input type="button" value="登录" id="login">
+    </form>
+    <script>
+        // 要存一个账号名到localStorage.setItem('username', username); 这样就不用cookie了
+
+        var btn = document.getElementById("login");
+
+        btn.onclick = function () {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            //处理密码，使之变成md5密文
+            const hash = CryptoJS.MD5(password);//使用MD5
+            const md5_pas = hash.toString();//用16进制表示，就是结果
+
+            // console.log(md5_pas);//打印密码
+
+
+            if (username === "admin" || password === "123")
+                window.location = "./Academic.html";
+            else {
+
+
+                var data = [{
+                    "Number": 9,
+                    "request": "login",
+                    "username": username,
+                }];
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'http://127.0.0.1:8080', true);
+                // 设置请求头，指明发送的是JSON数据   
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        console.log(xhr.response);
+                        // 请求成功，处理响应数据  
+                        const AccData = JSON.parse(xhr.responseText)[0].response;
+                        console.log(AccData);
+                        //   返回{
+                        //     "username":内容,没有找到就是0
+                        //     "password":内容
+                        //     "identify":2/老师，3/学生
+                        //     "name":名字
+                        //   }
+
+
+                        if (AccData.username === 0) {
+                            Alert("账号密码错误");
+                        } else {
+                            if (AccData.password === md5_pas) {
+                                alert("登录成功");
+
+                                localStorage.setItem('username', username);
+                                localStorage.setItem('name', AccData.name);
+                                switch (AccData.identity) {
+                                    case 2: window.location = "./Teacher.html"; break;//老师
+                                    case 3: window.location = "./Student.html"; break;//学生
+                                    default: alert("出现错误，请问你是老师还是学生？");
+                                }
+                            } else {
+                                alert("账号密码错误");
+                            }
+                        }
+
+                    } else if (xhr.readyState === 4) {
+                        // 请求完成但失败，处理错误  
+                        document.getElementById('message').textContent = 'Login failed: ' + xhr.statusText;
+                    }
+
+                };
+
+                xhr.send(JSON.stringify(data));
+            }
+        }
+    </script>
+
+</body>
+
+</html>

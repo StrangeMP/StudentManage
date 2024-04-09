@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student_Scores</title>
+    <link rel="stylesheet" type="text/css" href="Guide.css" /> <!-- 调用css -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1em;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* 响应式设计（可选） */
+        @media (max-width: 600px) {
+            table {
+                border: 0;
+            }
+
+            table caption {
+                font-size: 1.3em;
+            }
+
+            table thead {
+                border: none;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: absolute;
+                width: 1px;
+            }
+
+            table tr {
+                border-bottom: 3px solid #ddd;
+                display: block;
+                margin-bottom: 0.625em;
+            }
+
+            table td {
+                border-bottom: 1px solid #ddd;
+                display: block;
+                font-size: 0.8em;
+                text-align: right;
+            }
+
+            table td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            table td:last-child {
+                border-bottom: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="menu">
+        <div class="nav">
+            <ul>
+                <img src="./jd-xhh.jpg" class="symbol">
+                <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
+                <li><a href="Student.html">返回上级界面</a></li>
+                <div class="drop">
+                    <li><a href="Student_Scores.html">成绩查询</a></li>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <h2 id="welcome-message">欢迎，同学！</h2>
+    <h3>下面是你的课程成绩</h3>
+    <table id="class">
+        <tr>
+            <th>课程名</th>
+            <th>课程号</th>
+            <th>成绩</th>
+            <th>重修重考</th><!--初修/重修/重考-->
+            <th>学年学期</th>
+            <th>是否主修</th>
+            <th>绩点</th>
+            <th>是否及格</th>
+            <th>是否有效</th>
+            <!-- <th>学时</th> -->
+        </tr>
+
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var name = localStorage.getItem('name');
+            var id = localStorage.getItem('username');
+            var Int_id = parseInt(id);
+            if (name !== null) {
+                document.getElementById('welcome-message').innerHTML = '欢迎，' + name + '同学！';
+            } else {
+                document.getElementById('welcome-message').innerHTML = '欢迎，同学！';
+            }
+            var data = [{
+                "Number": 7,
+                "request": "get_students_by_id",
+                "student_ids": [Int_id]
+            }];
+            var table = document.getElementById('class');
+
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            // 设置请求完成后的回调函数  
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // console.log(xhr.responseText);
+                    var courses = JSON.parse(xhr.responseText)[0].response;
+                    console.log(courses);
+                    var StuCor = courses.学生[0].所选课程;//是一个学生课程数组
+                    var Cor = courses.课程;
+                    console.log(StuCor);
+                    console.log(Cor);
+
+                    // 清空表格内容（如果有的话）  
+                    while (table.rows.length > 1) {
+                        table.deleteRow(1);
+                    }
+
+                    // 遍历课程信息并插入到表格中  
+                    StuCor.forEach(function (course) {
+                        var row = table.insertRow(-1);
+                        row.id = course.课程号;
+                        ['课程名', '课程号', '总成绩', '重修重考', '学年学期', '是否主修', '绩点', '是否及格', '是否有效'].forEach(function (header, index) {
+                            var cell = row.insertCell(index);
+                            cell.textContent = course[header];
+                        });
+                    });
+
+                    Cor.forEach(function (course) {
+                        var row = document.getElementById(course.课程号);
+                        row.cells[0].textContent = course.课程名;
+                        // row.cells[9].textContent = course.学时;
+                
+                    });
+
+
+                } else {
+                    // 请求失败，处理错误  
+                    console.error("请求失败，状态码：" + xhr.status);
+                }
+            };
+
+            // 设置网络错误时的回调函数  
+            xhr.onerror = function () {
+                console.error("网络错误");
+            };
+
+            // 发送请求  
+            xhr.send(JSON.stringify(data));
+        });  
+    </script>
+</body>
+
+</html>
