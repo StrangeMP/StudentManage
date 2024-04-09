@@ -28,6 +28,13 @@ void Build_Grade_Index(Student *pStu) {
         Student_List_AddStudentID(stu_list, pStu->id);
 }
 
+void Remove_Grade_Index(Student *pStu) {
+    int institute = pStu->institute_grade / 100;
+    int grade = STU_MAN_YEAR - pStu->institute_grade % 100 - 1;
+    Student_List *stu_list = gradeIndex[institute][grade];
+    Student_List_Erase(stu_list, pStu->id);
+}
+
 void Build_Student_Index(Student_Node *pStuNode) {
     if (Get_Student_by_id(pStuNode->stu.id) == NULL) {
         Build_ID_Index(pStuNode);
