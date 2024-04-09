@@ -1,10 +1,10 @@
-#include "StuMan_Memory.h"
 #include "StuMan_Node.h"
+#include "StuMan_Memory.h"
 #include <stdlib.h>
 
 // Searches a given id in a Student_IdNode Linked-List starting at Head.
 // If found, returns the node. Otherwise returns NULL.
-Student_IdNode *Student_IdNode_Find(Student_IdNode *Head, int id) {
+static Student_IdNode *Student_IdNode_Find(Student_IdNode *Head, int id) {
     if (Head == NULL)
         return NULL;
     Student_IdNode *idNode = Head;
@@ -100,3 +100,25 @@ Student_List *Student_List_AddStudentID(Student_List *stu_list, int id) {
         return NULL;
 }
 
+Student_IdNode *Student_List_Find(Student_List *stu_list, int id) {
+    return Student_IdNode_Find(stu_list->first, id);
+}
+
+Student_List *Student_List_Erase(Student_List *stu_list, int id) {
+    Student_IdNode *get = Student_IdNode_Find(stu_list->first, id);
+    if (get) {
+        if (get == stu_list->first) {
+            if (get->next)
+                get->next->prev = NULL;
+            stu_list->first = get->next;
+        } else if (get == stu_list->end)
+            get->prev->next = NULL;
+        else {
+            get->prev->next = get->next;
+            get->next->prev = get->prev;
+        }
+        FREE(get);
+        return stu_list;
+    } else
+        return NULL;
+}

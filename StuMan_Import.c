@@ -216,7 +216,8 @@ static Student *Student_Insert(const cJSON *cjson_student) {
         Build_Student_Index(data_address.pStudentFoot);
     } else {
         int newCode = parse_Institute_grade(cjson_student);
-        if (newCode) {
+        if (newCode && newCode != currStudent->institute_grade) {
+            Remove_Grade_Index(currStudent);
             currStudent->institute_grade = newCode;
             int inst = currStudent->institute_grade / 100;
             currStudent->major =
