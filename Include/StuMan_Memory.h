@@ -12,7 +12,7 @@
 #define FREE my_free
 typedef struct {
     int cnt;
-    void *table[2048];
+    void *table[32768];
 } MemoryRecord;
 extern MemoryRecord memRec;
 void *my_alloc(size_t _Size);
