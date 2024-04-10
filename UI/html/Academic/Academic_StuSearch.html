@@ -469,7 +469,7 @@
                     // console.log(response);
                     var Stu_ = JSON.parse(response)[0];
                     var Stu_info = Stu_.response.学生[0];
-                    // console.log(Stu_info);
+                    console.log(Stu_info);
                     // 清除上一次剩余的学生表格
                     var table = document.getElementById("enroll");
                     while (table.rows.length > 1) {
@@ -488,7 +488,7 @@
                         <td>${Stu_info.学院}</td>  
                         <td>${Stu_info.专业}</td>
                         <td>${Stu_info.年级}</td>
-                        <td>${Stu_info.综合成绩}</td> 
+                        <td>${Stu_info.GPA}</td> 
                         <td><button onclick="More(this)">详情</button></td>
                         <td><button onclick="deleteStu(this)">删除</button></td>
                     `;
@@ -544,7 +544,7 @@
                             <td>${Stu.学院}</td>  
                             <td>${Stu.专业}</td>
                             <td>${Stu.年级}</td>
-                            <td>${Stu.综合成绩}</td> 
+                            <td>${Stu.GPA}</td> 
                             <td><button onclick="More(this)">详情</button></td>
                             <td><button onclick="deleteStu(this)">删除</button></td>
                         `;
@@ -601,7 +601,7 @@
                             <td>${Stu.学院}</td>  
                             <td>${Stu.专业}</td>
                             <td>${Stu.年级}</td>
-                            <td>${Stu.综合成绩}</td> 
+                            <td>${Stu.GPA}</td> 
                             <td><button onclick="More(this)">详情</button></td>
                             <td><button onclick="deleteStu(this)">删除</button></td>
                         `;
@@ -645,6 +645,8 @@
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     alert("删除成功");
+                    location.reload();
+
                 }
             }
             xhr.send(JSON.stringify(data));

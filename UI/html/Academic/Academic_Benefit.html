@@ -44,6 +44,7 @@
     <div>
         <table id="Stu_Table">
             <tr>
+                <th>序号</th>
                 <th>学生姓名</th>
                 <th>学号</th>
                 <th>素质加分项目</th>
@@ -71,7 +72,8 @@
                     // console.log(CoursData);
 
                     var Stu = CoursData.response.学生;
-                    console.log(Stu);
+                    var num = 1;
+                    // console.log(Stu);
                     Stu.forEach(element => {
                         var bene = element.素质加分;
                         if (bene.项目) {
@@ -104,13 +106,16 @@
 
                         var table = document.getElementById("Stu_Table");
                         var row = table.insertRow(-1);
+                        var str_id = padStudentNumber(element.学号, 8);
                         row.innerHTML = `  
+                            <td>${num}</td>
                             <td>${element.姓名}</td>  
-                            <td>${element.学号}</td>  
+                            <td>${str_id}</td>  
                             <td>${chose}</td>  
                             <td>${Bene}</td>
                             <td><button class = "pass" onclick="pass(this)">通过</button><button class="refuse" onclick="refuse(this)">否决</button></td>  
                         `;
+                        num = num + 1;
                         table.appendChild(row);
                     });
 
@@ -131,10 +136,13 @@
             //获取父对象，找到是哪一类素质加分
             var tr = btn_pass.parentNode.parentNode;
             var StuName = tr.cells[0].textContent;
-            var StuId = tr.cells[1].textContent;
-            var bene_name = tr.cells[2].textContent;
-            var Content = JSON.parse(tr.cells[3].textContent);
-            Content.审核状态="通过";
+            var StuId = parseInt(tr.cells[1].textContent, 10);
+            var bene_name = tr.cells[3].textContent;//素质加分名称
+            // console.log(bene_name);
+            var Content = JSON.parse(tr.cells[4].textContent);
+            // console.log(Content);
+
+            Content.审核状态 = "通过";
             //确定数据类型
             switch (bene_name) {
                 case "竞赛获奖":
@@ -202,10 +210,12 @@
             //获取父对象，找到是哪一类素质加分
             var tr = btn_pass.parentNode.parentNode;
             var StuName = tr.cells[0].textContent;
-            var StuId = tr.cells[1].textContent;
-            var bene_name = tr.cells[2].textContent;
-            var Content = JSON.parse(tr.cells[3].textContent);
-            Content.审核状态="否决";
+            var StuId = parseInt(tr.cells[1].textContent, 10);
+            var bene_name = tr.cells[3].textContent;//素质加分名称
+            // console.log(bene_name);
+            var Content = JSON.parse(tr.cells[4].textContent);
+            // console.log(Content);
+            Content.审核状态 = "否决";
             //确定数据类型
             switch (bene_name) {
                 case "竞赛获奖":
@@ -217,7 +227,7 @@
                                 "姓名": StuName,
                                 "学号": StuId,
                                 "素质加分": {
-                                    "竞赛获奖": [Content]
+                                    "竞赛获奖": Content
                                 }
                             }],
                         }
@@ -262,11 +272,18 @@
             xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
             xhr.onload = function () {
                 if (xhr.status === 200) {
+                    console.log(xhr.responseText);
                     alert("请求成功");
+                    location.reload();
                 }
             };
             xhr.send(JSON.stringify(data));
         };
+
+        //学号补0
+        function padStudentNumber(studentNumber, targetLength) {
+            return studentNumber.toString().padStart(targetLength, '0');
+        }
 
     </script>
 </body>

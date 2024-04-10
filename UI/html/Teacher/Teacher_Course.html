@@ -111,10 +111,19 @@
             // }
             xhr.onload = function () {
                 if (xhr.status === 200) {
-                    console.log(xhr.responseText);
+                    // console.log(xhr.responseText);
                     const CoursData = JSON.parse(xhr.responseText)[0].response.课程;
                     // console.log(CoursData);
                     const table = document.getElementById('CourseTable');
+
+                    if(Object.keys(CoursData).length === 0) {
+                        const row = document.createElement('tr');
+                        const cell = document.createElement('td');
+                        cell.textContent ="暂无课程";
+                        row.appendChild(cell);
+                        table.appendChild(row);
+                        return ;
+                    }
 
                     // 遍历 CoursData 数组  对每一个课程遍历
                     CoursData.forEach(course => {

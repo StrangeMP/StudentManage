@@ -120,7 +120,7 @@
                 xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4 && xhr.status === 200) {
-                        console.log(xhr.response);
+                        // console.log(xhr.response);
                         // 请求成功，处理响应数据  
                         const AccData = JSON.parse(xhr.responseText)[0].response;
                         console.log(AccData);

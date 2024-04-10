@@ -33,7 +33,7 @@
         }
 
         .course {
-            width: 200px;
+            width: 250px;
             padding: 5px;
             font-size: 16px;
             margin: 10px
@@ -83,14 +83,15 @@
             <option value="">请选择</option>
             <option value="cor_id">课程号</option>
             <option value="cor_tch">教师姓名</option>
+            <option value="cor_name">课程名</option>
         </select>
         <div id="cor-id" style="display: none;">
-            <label for="course_id">请输入需要查询的课程号：</label>
+            <label for="course_id" style="padding-top: 15px;padding-bottom: 15px;">请输入需要查询的课程号：</label>
             <input type="text" id="course_id" class="course">
             <button type="submit" id="check_id" onclick=search_id()>查询</button>
         </div>
         <div id="cor-tch" style="display: none;">
-            <label for="course_teacher_name">请输入需要查询的老师姓名：</label>
+            <label for="course_teacher_name"  style="padding-top: 15px;padding-bottom: 15px;">请输入需要查询的老师姓名：</label>
             <input type="text" id="course_teacher_name" class="course">
             <button type="submit" id="check_name" onclick=search_name()>查询</button>
         </div>
@@ -210,7 +211,7 @@
                     // console.log(table.rows.length);
                     // // 判断是否重复
                     for (var i = 1; i < table.rows.length; i++) {
-                        var tableText = table.row[i].cell[2].textContent;
+                        var tableText = table.rows[i].cells[2].textContent;
                         if (tableText === course_info.课程号) {
                             return ;
                         } 
@@ -248,6 +249,7 @@
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     alert("删除成功！");
+                    location.reload();
                 }
             }
             xhr.send(JSON.stringify(data));
