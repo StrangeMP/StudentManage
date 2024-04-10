@@ -298,9 +298,11 @@ static Course *Course_Insert(const cJSON *cjson_course) {
         strcpy(currCourse->name, cJSON_GetObjectItem(cjson_course, "课程名")->valuestring);
         strcpy(currCourse->teacher, cJSON_GetObjectItem(cjson_course, "上课老师")->valuestring);
         strcpy(currCourse->exam_date, cJSON_GetObjectItem(cjson_course, "考试日期")->valuestring);
+        cJSON *cjson_pubcat = cJSON_GetObjectItem(cjson_course, "校公选课类别");
         currCourse->pub_category =
-            getNounIndex(pubCourseCategory, Get_NounArrLen(pubCourseCategory),
-                         cJSON_GetObjectItem(cjson_course, "校公选课类别")->valuestring);
+            cjson_pubcat ? getNounIndex(pubCourseCategory, Get_NounArrLen(pubCourseCategory),
+                                        cjson_pubcat->valuestring)
+                         : 0;
         currCourse->type = getNounIndex(Course_type, Get_NounArrLen(Course_type),
                                         cJSON_GetObjectItem(cjson_course, "课程类别")->valuestring);
         currCourse->nature =
@@ -329,6 +331,8 @@ void ImportData_fromString(const char *rawData) {
     cJSON *Student_Collection = cJSON_GetObjectItem(cjson_Data, "学生");
     int student_array_size = cJSON_GetArraySize(Student_Collection);
     for (int i = 0; i < student_array_size; i++) {
+        if (i == 472)
+            printf("472");
         cJSON *cjson_student = cJSON_GetArrayItem(Student_Collection, i);
         Student_Insert(cjson_student);
     }
@@ -337,6 +341,8 @@ void ImportData_fromString(const char *rawData) {
     cJSON *Course_Collection = cJSON_GetObjectItem(cjson_Data, "课程");
     int course_array_size = cJSON_GetArraySize(Course_Collection);
     for (int i = 0; i < course_array_size; i++) {
+        if (i == 80)
+            printf("80");
         cJSON *cjson_course = cJSON_GetArrayItem(Course_Collection, i);
         Course_Insert(cjson_course);
     }
@@ -355,13 +361,15 @@ void ImportData_fromString(const char *rawData) {
         }
     }
     for (int i = 0; i < course_array_size; i++) {
+        if (i == 80)
+            printf("80");
         cJSON *cjson_course = cJSON_GetArrayItem(Course_Collection, i);
         // Process with follower-list
         cJSON *followed_List = cJSON_GetObjectItem(cjson_course, "选课学生学号");
         int followed_array_size = cJSON_GetArraySize(followed_List);
         Course *currCourse = Get_Course(cJSON_GetObjectItem(cjson_course, "课程号")->valuestring);
-        for (int i = 0; i < followed_array_size; i++) {
-            int crt_follower_id = cJSON_GetArrayItem(followed_List, i)->valueint;
+        for (int j = 0; j < followed_array_size; j++) {
+            int crt_follower_id = cJSON_GetArrayItem(followed_List, j)->valueint;
             Student *follower = Get_Student_by_id(crt_follower_id);
             if (follower == NULL)
                 printf("Course_Insert Error: Course %s:%s follower_id %d not found in database.\n",
