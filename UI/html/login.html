@@ -62,12 +62,20 @@
             background-color: #6d8ad0;
             /* 鼠标悬停时改变背景色 */
         }
+
+        #symbol {
+            display: flex;
+            position: static;
+            margin: 75px;
+            transform: scale(1.25);
+        }
     </style>
 </head>
 
 <body background="../img/login_container_bg_01b.jpeg"
     style="background-repeat:no-repeat; background-attachment:fixed;background-size:100% 100%;">
 
+    <img src="../img/logo-pc.png" id="symbol">
     <form id="blank">
         <h1>账号登录</h1>
         <label for="username" class="name">用户名：</label>
@@ -78,6 +86,7 @@
         <br><br>
         <input type="button" value="登录" id="login">
     </form>
+
     <script>
         // 要存一个账号名到localStorage.setItem('username', username); 这样就不用cookie了
 

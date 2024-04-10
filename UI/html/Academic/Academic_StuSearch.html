@@ -32,6 +32,53 @@
             background-color: #f2f2f2;
             font-weight: bold;
         }
+
+
+
+        .course {
+            width: 200px;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .course {
+            scrollbar-width: thin;
+            scrollbar-color: #666 transparent;
+        }
+
+        .course::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .course::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .course::-webkit-scrollbar-thumb {
+            background-color: #666;
+            border-radius: 10px;
+        }
+
+        .course option {
+            padding: 5px;
+        }
+
+
+        #check {
+            background-color: rgb(42, 42, 48);
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        #check:hover {
+            background-color: rgb(77, 77, 88);
+        }
+
+
     </style>
 </head>
 
@@ -51,30 +98,30 @@
     <h2>你好，教务老师</h2>
     <form method="POST">
         <label for="method">请选择查询方式：</label>
-        <select name="method" id="method">
+        <select name="method" id="method" class="course">
             <option value="id">学号</option>
             <option value="name">姓名</option>
             <option value="grade" id="institude">学院</option>
         </select>
 
-        <select name="grades" id="grades" style="display: none;">
+        <select name="grades" id="grades" style="display: none;" class="course">
             <option value="23">大一</option>
             <option value="22">大二</option>
             <option value="21">大三</option>
             <option value="20">大四</option>
         </select>
-        <select name="institute" id="institute" style="display: none;" onchange="showPrograms()">
+        <select name="institute" id="institute" style="display: none;" onchange="showPrograms()" class="course">
 
         </select>
 
 
-        <select name="major" id="programSelect" style="display: none;">
+        <select name="major" id="programSelect" style="display: none;" class="course">
             <!-- 这里可以预先放入一些专业选项，或者动态添加 -->
         </select>
 
 
 
-        <input type="text" id="content">
+        <input type="text" id="content" class="course">
         <button type="submit" id="check">查询</button>
     </form>
     <table id="enroll">
@@ -596,8 +643,7 @@
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
             xhr.onload = function () {
-                if(xhr.status === 200)
-                {
+                if (xhr.status === 200) {
                     alert("删除成功");
                 }
             }
