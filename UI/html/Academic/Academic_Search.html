@@ -95,6 +95,11 @@
             <input type="text" id="course_teacher_name" class="course">
             <button type="submit" id="check_name" onclick=search_name()>查询</button>
         </div>
+        <div id="cor-name" style="display: none;">
+            <label for="course_name" style="padding-top: 15px;padding-bottom: 15px;">请输入需要查询的课程名：</label>
+            <input type="text" id="course_name" class="course">
+            <button type="submit" id="check_cor_name" onclick=search_cor_id()>查询</button>
+        </div>
         <br>
     </form>
 
@@ -124,14 +129,20 @@
             var SelectMethod = this.value;
             var IdControl = document.getElementById("cor-id");
             var TchControl = document.getElementById("cor-tch");
+            var NameControl = document.getElementById("cor-name");
             //innitial
             IdControl.style.display = "none";
             TchControl.style.display = "none";
+            NameControl.style.display = "none";
+
 
             switch (SelectMethod) {
                 case "cor_id": IdControl.style.display = "flex";
                     break;
                 case "cor_tch": TchControl.style.display = "flex";
+                    break;
+                case "cor_name": NameControl.style.display = "flex";
+                    break;
             }
         });
 
@@ -150,6 +161,7 @@
             xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
             xhr.onload = function () {
                 if (xhr.status === 200) {
+
                     // 请求成功，处理返回的数据  
                     var response = xhr.responseText;
                     // console.log(response);
@@ -157,7 +169,10 @@
                     var course_info = course_.response.课程[0];//返回的课程只有一个，所以也是第0个数据
                     // console.log(course_info);
                     var table = document.getElementById("enroll");
-
+                    
+                    if(Object.keys(course_.response.课程).length === 0){
+                        alert("您查询的课程不存在！");
+                    }
 
                     // console.log(table.rows.length);
                     // 判断是否重复
@@ -208,6 +223,10 @@
                     // console.log(course_info);
                     var table = document.getElementById("enroll");
 
+                    if(Object.keys(course_.response.课程).length === 0){
+                        alert("您查询的课程不存在！");
+                    }
+
                     // console.log(table.rows.length);
                     // // 判断是否重复
                     for (var i = 1; i < table.rows.length; i++) {
@@ -239,7 +258,7 @@
             var course_id = btn.parentNode.parentNode.cells[2].textContent;
             var data = [{
                 "Number": 6,
-                "request": "delete_student_enrolls",
+                "request": "del_courses",
                 "course_ids": [course_id]
             }];
             var xhr = new XMLHttpRequest();
@@ -254,6 +273,58 @@
             }
             xhr.send(JSON.stringify(data));
         }
+
+        function search_cor_id(){
+            event.preventDefault(); // 阻止表单提交导致的页面刷新  
+            var course_name = document.getElementById("course_name").value;
+            var data = [{
+                "Number": 13,
+                "request": "get_courses_by_course_names",
+                "course_names": [course_name]
+            }];
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:8080', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // 请求成功，处理返回的数据  
+                    var response = xhr.responseText;
+                    // console.log(response);
+                    var course_ = JSON.parse(response)[0];//因为用的是[]，所以是第0个元素
+                    if(Object.keys(JSON.parse(response)).length === 0){
+                        alert("您查询的课程不存在！");
+                        return ;
+                    }
+                    var course_info = course_.response.课程[0];//返回的课程只有一个，所以也是第0个数据
+                    // console.log(course_info);
+                    var table = document.getElementById("enroll");
+                    
+                    // console.log(table.rows.length);
+                    // // 判断是否重复
+                    for (var i = 1; i < table.rows.length; i++) {
+                        var tableText = table.rows[i].cells[2].textContent;
+                        if (tableText === course_info.课程号) {
+                            return ;
+                        } 
+                    }
+                    
+                    // 创建新的表格行并插入数据  
+                    var keys = Object.keys(course_info);
+                    var row = table.insertRow(-1);
+                    for (var i = 0; i < keys.length; i++) {
+                        var cell = row.insertCell(-1);
+                        cell.textContent = course_info[keys[i]];
+                    }
+                    var cellbtn = document.createElement('td');
+                    cellbtn.innerHTML=`<button class="delete" onclick="deleteCor(this)">删除</button>`;
+                    row.appendChild(cellbtn);
+                    console.log(table.rows.length); 
+                };
+            }
+            xhr.send(JSON.stringify(data));
+        }
+        
     </script>
 </body>
 
