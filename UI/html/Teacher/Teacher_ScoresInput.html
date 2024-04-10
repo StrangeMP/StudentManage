@@ -192,7 +192,7 @@
             var name = row.querySelector('td').textContent;//第一个td
             var select = document.getElementById("course").value;
             // 获取 input 的值  
-            var inputValue = input.value;
+            var inputValue = parseFloat(input.value);
             var data = [{
                 "Number": 4,
                 "request": "add",
@@ -201,7 +201,7 @@
                         "姓名": name,
                         "所选课程":[{
                             "课程号":select,
-                            "总成绩":input
+                            "总成绩":inputValue
                         }]
                     }]
                 }
