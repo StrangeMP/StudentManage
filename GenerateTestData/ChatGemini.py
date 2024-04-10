@@ -1,6 +1,6 @@
 # Prerequisites:
 # Gemini API
-# pip install -U google-generativeai ipython
+# pip install -U google-generativeai
 
 import json
 import os
