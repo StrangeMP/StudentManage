@@ -111,6 +111,7 @@ void Student_AddEssay(int stu_id, Essay *essay) {
         Essay *e = Essay_Find(student->Benefits.essays, essay);
         if (e) {
             e->status = essay->status;
+            e->AddGPA = essay->AddGPA;
             FREE(essay);
         } else {
             essay->next = student->Benefits.essays;
@@ -134,6 +135,7 @@ void Student_AddAward(int stu_id, Award *award) {
         Award *a = Award_Find(student->Benefits.awards, award);
         if (a) {
             a->status = award->status;
+            a->AddGPA = award->AddGPA;
             FREE(award);
         } else {
             award->next = student->Benefits.awards;
@@ -157,6 +159,7 @@ void Student_AddProject(int stu_id, Project *project) {
         Project *e = Project_Find(student->Benefits.projects, project);
         if (e) {
             e->status = project->status;
+            e->AddGPA = project->AddGPA;
             FREE(project);
         } else {
             project->next = student->Benefits.projects;

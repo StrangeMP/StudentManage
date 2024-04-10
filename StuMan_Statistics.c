@@ -46,15 +46,18 @@ static double Student_CalcGPAoverall(Student *stu) {
     Project *crt_proj = stu->Benefits.projects;
     Award *crt_awards = stu->Benefits.awards;
     while (crt_essay) {
-        extra_gpa += crt_essay->AddGPA;
+        if (crt_essay->status == APPROVED)
+            extra_gpa += crt_essay->AddGPA;
         crt_essay = crt_essay->next;
     }
     while (crt_proj) {
-        extra_gpa += crt_proj->AddGPA;
+        if (crt_proj->status == APPROVED)
+            extra_gpa += crt_proj->AddGPA;
         crt_proj = crt_proj->next;
     }
     while (crt_awards) {
-        extra_gpa += crt_awards->AddGPA;
+        if (crt_awards->status == APPROVED)
+            extra_gpa += crt_awards->AddGPA;
         crt_awards = crt_awards->next;
     }
     return stu->GPA_overall = Student_CalcGPAbasic(stu) + (extra_gpa > 0.4 ? 0.4 : extra_gpa);
@@ -63,6 +66,8 @@ static double Student_CalcGPAoverall(Student *stu) {
 // 不及格课程数、学业成绩、学科素质加分分数
 void Student_Update(int stu_id) {
     Student *stu = Get_Student_by_id(stu_id);
+    if (stu_id == 2200709)
+        printf("h");
     Student_Failed_Cnt(stu);
     Student_CalcGPAbasic(stu);
     Student_CalcGPAoverall(stu);
