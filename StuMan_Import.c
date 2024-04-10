@@ -6,6 +6,7 @@
 #include "StuMan_Nouns.h"
 #include "StuMan_Search.h"
 #include "StuMan_Statistics.h"
+#include "StuMan_Student.h"
 #include "cJSON.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -202,6 +203,7 @@ static Student *Student_Insert(const cJSON *cjson_student) {
             data_address.pStudentFoot = Student_Node_Add(data_address.pStudentFoot, id);
             currStudent = &data_address.pStudentFoot->stu;
         }
+        ++data_address.student_total;
         // initialize the new Node of Student
         strcpy(currStudent->name, cJSON_GetObjectItem(cjson_student, "姓名")->valuestring);
         currStudent->id = id;
@@ -295,6 +297,7 @@ static Course *Course_Insert(const cJSON *cjson_course) {
             data_address.pCourseFoot = Course_Node_Add(data_address.pCourseFoot, course_id);
             currCourse = &data_address.pCourseFoot->crs;
         }
+        ++data_address.course_total;
         strcpy(currCourse->name, cJSON_GetObjectItem(cjson_course, "课程名")->valuestring);
         strcpy(currCourse->teacher, cJSON_GetObjectItem(cjson_course, "上课老师")->valuestring);
         strcpy(currCourse->exam_date, cJSON_GetObjectItem(cjson_course, "考试日期")->valuestring);
@@ -331,8 +334,6 @@ void ImportData_fromString(const char *rawData) {
     cJSON *Student_Collection = cJSON_GetObjectItem(cjson_Data, "学生");
     int student_array_size = cJSON_GetArraySize(Student_Collection);
     for (int i = 0; i < student_array_size; i++) {
-        if (i == 472)
-            printf("472");
         cJSON *cjson_student = cJSON_GetArrayItem(Student_Collection, i);
         Student_Insert(cjson_student);
     }
@@ -341,8 +342,6 @@ void ImportData_fromString(const char *rawData) {
     cJSON *Course_Collection = cJSON_GetObjectItem(cjson_Data, "课程");
     int course_array_size = cJSON_GetArraySize(Course_Collection);
     for (int i = 0; i < course_array_size; i++) {
-        if (i == 80)
-            printf("80");
         cJSON *cjson_course = cJSON_GetArrayItem(Course_Collection, i);
         Course_Insert(cjson_course);
     }
@@ -361,8 +360,6 @@ void ImportData_fromString(const char *rawData) {
         }
     }
     for (int i = 0; i < course_array_size; i++) {
-        if (i == 80)
-            printf("80");
         cJSON *cjson_course = cJSON_GetArrayItem(Course_Collection, i);
         // Process with follower-list
         cJSON *followed_List = cJSON_GetObjectItem(cjson_course, "选课学生学号");

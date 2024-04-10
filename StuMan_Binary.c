@@ -110,15 +110,14 @@ static void LoadStudents(const char *StuBinDir) {
     while (crt_sym == stu_sym) {
         p0 = (Student_Node *)MALLOC(sizeof(Student_Node));
         fread(&p0->stu, sizeof(Student), 1, p);
+        // 建立索引
         Build_Student_Index(p0);
         // 连接新学生节点
         p0->next = NULL;
         p0->prev = pf;
         pf->next = p0;
         pf = pf->next;
-
-        // 建立索引
-
+        ++data_address.student_total;
         // 本次录入结束，读取下一个标识
         crt_sym = get_symbol(p);
         if (crt_sym == stu_sym)
@@ -262,6 +261,7 @@ static void LoadCourses(const char *CrsBinDir) {
         pC0->prev = pCf;
         pCf->next = pC0;
         pCf = pCf->next;
+        ++data_address.course_total;
         crt_sym = get_symbol(f);
     }
 

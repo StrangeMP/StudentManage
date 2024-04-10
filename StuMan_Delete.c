@@ -90,6 +90,7 @@ flag del_Stu(int id) {
     // 删除学生本身
     Student_Node *stu = Get_Student_Node_by_id(id);
     DELETE(stu, data_address.pStudentHead);
+    --data_address.student_total;
     return f;
 }
 
@@ -115,6 +116,7 @@ int del_course(char *course_id) {
         return 1;
     Course_Node *pc = Get_Course_Node(course_id);
     DELETE(pc, data_address.pCourseHead);
+    --data_address.course_total;
     return f;
 }
 
