@@ -143,7 +143,11 @@
             // console.log(bene_name);
             var Content = JSON.parse(tr.cells[4].textContent);
             // console.log(Content);
-            var point = document.getElementById("point").value;
+            var point_ = document.getElementById("point").value;
+            var point = parseInt(point_, 10)
+            if(point === null){
+                point = 0;
+            }
 
             Content.审核状态 = "通过";
             Content.加分 = point;
@@ -219,8 +223,12 @@
             // console.log(bene_name);
             var Content = JSON.parse(tr.cells[4].textContent);
             // console.log(Content);
-            var point = document.getElementById("point").value;
-
+            var point_ = document.getElementById("point").value;
+            var point = parseInt(point_, 10)
+            if(point === null){
+                point = 0;
+            }
+            
             Content.审核状态 = "否决";
             Content.加分 = point;
             //确定数据类型
