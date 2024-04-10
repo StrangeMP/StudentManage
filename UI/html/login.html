@@ -93,7 +93,7 @@
         var btn = document.getElementById("login");
 
         btn.onclick = function () {
-            var username = document.getElementById('username').value;
+            var username = praseInt(document.getElementById('username').value);
             var password = document.getElementById('password').value;
 
             //处理密码，使之变成md5密文
