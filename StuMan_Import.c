@@ -38,14 +38,27 @@ static Enroll *Enroll_Construct(const cJSON *item) {
         newEnr->level = getNounIndex(Enroll_level, Get_NounArrLen(Enroll_level),
                                      cJSON_GetObjectItem(item, "总成绩")->valuestring);
     int tmp1, tmp2;
-    sscanf(cJSON_GetObjectItem(item, "学年学期")->valuestring, "%*c%*c%d-%*d-%d", &tmp1, &tmp2);
-    newEnr->semester = tmp1 * 100 + tmp2;
-    newEnr->retake = getNounIndex(Enroll_retake, Get_NounArrLen(Enroll_retake),
-                                  cJSON_GetObjectItem(item, "重修重考")->valuestring);
-    newEnr->major = strcmp(cJSON_GetObjectItem(item, "是否主修")->valuestring, "否");
-    newEnr->gpa = cJSON_GetObjectItem(item, "绩点")->valuedouble;
-    newEnr->passed = strcmp(cJSON_GetObjectItem(item, "是否及格")->valuestring, "否");
-    newEnr->effective = strcmp(cJSON_GetObjectItem(item, "是否有效")->valuestring, "否");
+    cJSON *cjson_sem = cJSON_GetObjectItem(item, "学年学期");
+    if (cjson_sem) {
+        sscanf(cjson_sem->valuestring, "%*c%*c%d-%*d-%d", &tmp1, &tmp2);
+        newEnr->semester = tmp1 * 100 + tmp2;
+    }
+    cJSON *cjson_retake = cJSON_GetObjectItem(item, "重修重考");
+    if (cjson_retake)
+        newEnr->retake =
+            getNounIndex(Enroll_retake, Get_NounArrLen(Enroll_retake), cjson_retake->valuestring);
+    cJSON *cjson_major = cJSON_GetObjectItem(item, "是否主修");
+    if (cjson_major)
+        newEnr->major = strcmp(cjson_major->valuestring, "否");
+    cJSON *cjson_gpa = cJSON_GetObjectItem(item, "绩点");
+    if (cjson_gpa)
+        newEnr->gpa = cjson_gpa->valuedouble;
+    cJSON *cjson_passed = cJSON_GetObjectItem(item, "是否及格");
+    if (cjson_passed)
+        newEnr->passed = strcmp(cjson_passed->valuestring, "否");
+    cJSON *cjson_effect = cJSON_GetObjectItem(item, "是否有效");
+    if (cjson_effect)
+        newEnr->effective = strcmp(cjson_effect->valuestring, "否");
     newEnr->prev = NULL;
     newEnr->next = NULL;
     return newEnr;
