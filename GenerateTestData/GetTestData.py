@@ -1,4 +1,5 @@
 # coding: utf-8
+import NewFile
 import random
 import hashlib
 import json
@@ -532,21 +533,6 @@ def newStudent():
 
 TestData = {"学生": [], "课程": []}
 
-# Define the base file name
-base_file_name = "./GetTestData/__TestData"
-extension = ".json"
-# Initialize index
-index = 0
-# Define the file path
-file_path = os.path.join(os.getcwd(), base_file_name + extension)
-# Check if the file exists
-# while os.path.isfile(file_path):
-#     # If it exists, increment the index and update the file path
-#     index += 1
-#     file_path = os.path.join(os.getcwd(),
-#                              f"{base_file_name}_{index}{extension}")
-
-
 def generate_semester(stu: dict):
     grade = stu["年级"]
     sem = random.randint(grade, 2024)
@@ -691,5 +677,6 @@ for _ in range(1000):
             claimProject(student, random.choice(projects))
     TestData["学生"].append(student)
 
+file_path = NewFile.NewFile("TestData.json")
 with open(file_path, "w", encoding='utf-8') as f:
     f.write(json.dumps(TestData, ensure_ascii=False))

@@ -1,11 +1,11 @@
 # Prerequisites:
 # Gemini API
-# pip install -U google-generativeai
+# pip install -U google-generativeai ipython
 
 import json
 import os
 import google.generativeai as genai
-
+import NewFile
 
 class model:
 
@@ -36,11 +36,7 @@ class model:
     def beginChat(self, prompt: str, logFilePath: str = None):
         if logFilePath:
             try:
-                file = open(logFilePath, "w")  # Attempt to open the file
-            except FileNotFoundError:
-                print(
-                    f"Error: File '{logFilePath}' not found. Printing to stdout only."
-                )
+                file = open(NewFile.NewFile(logFilePath), "w")  # Attempt to open the file
             except OSError as err:
                 print(f"Error opening file: {err}. Printing to stdout only.")
         else:
@@ -67,18 +63,3 @@ class model:
         if file:
             file.close()
 
-
-def NewFile(filepath: str):
-    base_file_name, extension = os.path.splitext(filepath)
-
-    # Initialize index
-    index = 0
-
-    # Check if the file exists
-    while os.path.isfile(filepath):
-        # If it exists, increment the index and update the file path
-        index += 1
-        filepath = os.path.join(os.getcwd(),
-                                f"{base_file_name}_{index}{extension}")
-
-    return filepath

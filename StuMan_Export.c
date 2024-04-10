@@ -129,6 +129,7 @@ static cJSON *Student_Export(cJSON *_dest, int stu_id) {
     char rankNbase[10] = {0};
     sprintf(rankNbase, "%d/%d", stu->rank.rk, stu->rank.basis);
     cJSON_AddStringToObject(cjson_Stu, "排名", rankNbase);
+    cJSON_AddNumberToObject(cjson_Stu, "GPA", stu->GPA_overall);
     cJSON_AddStringToObject(cjson_Stu, "MD5", stu->pw_MD5);
     Export_Enroll_To_Student(cjson_Stu, stu);
     Export_Benefits(cjson_Stu, stu);
