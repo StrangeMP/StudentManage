@@ -18,7 +18,7 @@ typedef struct {
 
 // 课程信息
 typedef struct Course {
-    char name[50];          // 课程名 e.g.大学物理B
+    char name[64];          // 课程名 e.g.大学物理B
     char id[13];            // 课程号 e.g. ae22931102
     char num;               // 同一课程不同老师用此区分
     char teacher[32];       // 任课教师
