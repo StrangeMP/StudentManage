@@ -49,6 +49,7 @@
                 <th>学号</th>
                 <th>素质加分项目</th>
                 <th>详细信息</th>
+                <th>确定加分</th>
                 <th>审核状态</th>
             </tr>
         </table>
@@ -113,6 +114,7 @@
                             <td>${str_id}</td>  
                             <td>${chose}</td>  
                             <td>${Bene}</td>
+                            <td><input id="point" placeholder="请输入加分分数"></input></td>
                             <td><button class = "pass" onclick="pass(this)">通过</button><button class="refuse" onclick="refuse(this)">否决</button></td>  
                         `;
                         num = num + 1;
@@ -136,13 +138,15 @@
             //获取父对象，找到是哪一类素质加分
             var tr = btn_pass.parentNode.parentNode;
             var StuName = tr.cells[0].textContent;
-            var StuId = parseInt(tr.cells[1].textContent, 10);
+            var StuId = parseInt(tr.cells[2].textContent, 10);
             var bene_name = tr.cells[3].textContent;//素质加分名称
             // console.log(bene_name);
             var Content = JSON.parse(tr.cells[4].textContent);
             // console.log(Content);
+            var point = document.getElementById("point").value;
 
             Content.审核状态 = "通过";
+            Content.加分 = point;
             //确定数据类型
             switch (bene_name) {
                 case "竞赛获奖":
@@ -210,12 +214,15 @@
             //获取父对象，找到是哪一类素质加分
             var tr = btn_pass.parentNode.parentNode;
             var StuName = tr.cells[0].textContent;
-            var StuId = parseInt(tr.cells[1].textContent, 10);
+            var StuId = parseInt(tr.cells[2].textContent, 10);
             var bene_name = tr.cells[3].textContent;//素质加分名称
             // console.log(bene_name);
             var Content = JSON.parse(tr.cells[4].textContent);
             // console.log(Content);
+            var point = document.getElementById("point").value;
+
             Content.审核状态 = "否决";
+            Content.加分 = point;
             //确定数据类型
             switch (bene_name) {
                 case "竞赛获奖":
