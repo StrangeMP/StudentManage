@@ -12,7 +12,8 @@ TeacherVector *t_vec = NULL;
 const char *Get_Student_PWMD5(int stu_id) { return Get_Student_by_id(stu_id)->pw_MD5; }
 
 static struct Teacher *Add_Teacher(cJSON *info) {
-    t_vec = TeacherVector_create();
+    if (t_vec == NULL)
+        t_vec = TeacherVector_create();
     struct Teacher crt_teacher = {{'\0'}, {'\0'}, {'\0'}, NULL};
     strcpy(crt_teacher.name, cJSON_GetObjectItem(info, "name")->valuestring);
     strcpy(crt_teacher.id, cJSON_GetObjectItem(info, "id")->valuestring);
