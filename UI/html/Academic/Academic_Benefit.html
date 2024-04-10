@@ -136,7 +136,7 @@
             //获取父对象，找到是哪一类素质加分
             var tr = btn_pass.parentNode.parentNode;
             var StuName = tr.cells[0].textContent;
-            var StuId = parseInt(tr.cells[1].textContent, 10);
+            var StuId = parseInt(tr.cells[2].textContent, 10);
             var bene_name = tr.cells[3].textContent;//素质加分名称
             // console.log(bene_name);
             var Content = JSON.parse(tr.cells[4].textContent);
@@ -210,7 +210,7 @@
             //获取父对象，找到是哪一类素质加分
             var tr = btn_pass.parentNode.parentNode;
             var StuName = tr.cells[0].textContent;
-            var StuId = parseInt(tr.cells[1].textContent, 10);
+            var StuId = parseInt(tr.cells[2].textContent, 10);
             var bene_name = tr.cells[3].textContent;//素质加分名称
             // console.log(bene_name);
             var Content = JSON.parse(tr.cells[4].textContent);
