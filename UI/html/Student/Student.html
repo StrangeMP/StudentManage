@@ -6,6 +6,9 @@
     <title>Student</title>  
     <link rel="stylesheet" type="text/css" href="../../css/Guide.css"/> <!-- 调用css -->
     <style>
+        .content{
+            display: inline-block;
+        }
     </style>
 </head>
 <body >
@@ -32,13 +35,58 @@
         </div>
       </div>
       <h2 id="welcome-message">欢迎，同学！</h2>  
+      <hr>
+      <div id="info">
+        <p class="content"><b>姓名</b>：</p><p id="name" class="content"></p><br>
+        <p class="content"><b>学号</b>：</p><p id="id" class="content"></p><br>
+        <p class="content"><b>学院</b>：</p><p id="inst" class="content"></p><br>
+        <p class="content"><b>年级</b>：</p><p id="gra" class="content"></p><br>
+        <p class="content"><b>专业</b>：</p><p id="maj" class="content"></p><br>
+      </div>          
+
       <script>  
           var name = localStorage.getItem('name');  
+          var id = localStorage.getItem('username');
+          var Int_id = parseInt(id);
           if (name !== null) {  
               document.getElementById('welcome-message').innerHTML = '欢迎，' + name + '同学！';  
           } else {  
               document.getElementById('welcome-message').innerHTML = '欢迎，同学！';  
           }  
+
+          window.onload = function(){
+            var data = [{
+                "Number": 7,
+                "request": "get_students_by_id",
+                "student_ids": [Int_id]
+            }];
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            // 设置请求完成后的回调函数  
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    //学生信息
+                    var stu = JSON.parse(xhr.responseText)[0].response.学生[0];
+                    console.log(stu);
+                    var name = document.getElementById("name");
+                    var id = document.getElementById("id");
+                    var inst = document.getElementById("inst");
+                    var maj = document.getElementById("maj");
+                    var gra = document.getElementById("gra");
+                    // //信息导入
+                    name.textContent = stu.姓名;
+                    id.textContent = stu.学号;
+                    inst.textContent = stu.学院;
+                    maj.textContent = stu.专业;
+                    gra.textContent = stu.年级;
+                }
+            }
+            xhr.send(JSON.stringify(data));
+          }
+
       </script>
 </body>
 </html>
