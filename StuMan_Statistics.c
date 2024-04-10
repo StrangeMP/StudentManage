@@ -66,8 +66,6 @@ static double Student_CalcGPAoverall(Student *stu) {
 // 不及格课程数、学业成绩、学科素质加分分数
 void Student_Update(int stu_id) {
     Student *stu = Get_Student_by_id(stu_id);
-    if (stu_id == 2200709)
-        printf("h");
     Student_Failed_Cnt(stu);
     Student_CalcGPAbasic(stu);
     Student_CalcGPAoverall(stu);
