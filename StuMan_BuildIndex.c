@@ -6,7 +6,7 @@
 #define STU_MAN_YEAR 24
 static void Build_ID_Index(Student_Node *pStuNode) {
     int id = pStuNode->stu.id;
-    idIndex[id / 1000000][id / 10000 % 100][id / 100 % 100][id % 100] = pStuNode;
+    idIndex[id / 1000000][STU_MAN_YEAR - id / 10000 % 100 - 1][id / 100 % 100][id % 100] = pStuNode;
 }
 
 static void Build_Name_Index(Student *pStu) {

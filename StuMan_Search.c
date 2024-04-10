@@ -1,6 +1,6 @@
 #include "StuMan_Search.h"
 #include <string.h>
-
+#define STU_MAN_YEAR 24
 size_t Get_16bit_Hash(const char str[]) {
     int hash = 0;
     int len = 0;
@@ -14,7 +14,7 @@ size_t Get_16bit_Hash(const char str[]) {
 }
 
 Student *Get_Student_by_id(const int id) {
-    return &(idIndex[id / 1000000][id / 10000 % 100][id / 100 % 100][id % 100]->stu);
+    return &(idIndex[id / 1000000][STU_MAN_YEAR - id / 10000 % 100 - 1][id / 100 % 100][id % 100]->stu);
 }
 
 Student_List *Get_StudentList_by_name(const char name[]) {
