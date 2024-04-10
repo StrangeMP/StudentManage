@@ -67,5 +67,10 @@
         "Number": 12,
         "request": "del_courses",
         "course_ids": []
+    },
+    {
+        "Number": 13,
+        "request": "get_courses_by_course_names",
+        "course_names": []
     }
 ]

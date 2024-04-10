@@ -26,7 +26,8 @@ enum REQ_T {
     GET_ENR_BY_CRSID,
     LOGIN,
     GET_PENDING,
-    DEL_CRS
+    DEL_CRS,
+    GET_CRS_NAME
 };
 static const char *REQ_STR[] = {"get_students_by_profession",
                                 "get_courses_by_teacher",
@@ -39,7 +40,8 @@ static const char *REQ_STR[] = {"get_students_by_profession",
                                 "get_student_enrolls_by_course_id",
                                 "login",
                                 "get_pending_list",
-                                "del_courses"};
+                                "del_courses",
+                                "get_courses_by_course_names"};
 
 static void AddResponse(cJSON *_dest, cJSON *_item, int num) {
     cJSON *response = cJSON_CreateObject();
@@ -251,6 +253,26 @@ static void Handle_DEL_CRS(cJSON *response, cJSON *req) {
     AddResponse(response, cJSON_CreateBool(true), cJSON_GetObjectItem(req, "Number")->valueint);
 }
 
+static void Handle_GET_CRS_NAME(cJSON *response, cJSON *req) {
+    cJSON *crs_name_collect = cJSON_GetObjectItem(req, "course_names");
+    size_t crs_cnt = cJSON_GetArraySize(crs_name_collect);
+    if (crs_cnt == 0)
+        return;
+    const char **crs_arr = (const char **)MALLOC(sizeof(const char *) * crs_cnt);
+    for (size_t i = 0; i < crs_cnt; i++) {
+        char *crs_name = cJSON_GetArrayItem(crs_name_collect, i)->valuestring;
+        for (Course_Node *crt_crs = data_address.pCourseHead; crt_crs; crt_crs = crt_crs->next) {
+            if (!strcmp(crt_crs->crs.name, crs_name)) {
+                crs_arr[i] = crt_crs->crs.id;
+                break;
+            }
+        }
+    }
+    AddResponse(response, ExportData(CreateExportList(NULL, 0, crs_arr, crs_cnt), NULL),
+                cJSON_GetObjectItem(req, "Number")->valueint);
+    FREE(crs_arr);
+}
+
 char *Handler(const char *reqs) {
     if (!reqs)
         return NULL;
@@ -305,6 +327,9 @@ char *Handler(const char *reqs) {
             break;
         case DEL_CRS:
             Handle_DEL_CRS(response, crt_req);
+            break;
+        case GET_CRS_NAME:
+            Handle_GET_CRS_NAME(response, crt_req);
             break;
         default:
             break;
