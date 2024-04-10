@@ -35,6 +35,7 @@
         #course option {
             padding: 5px;
         }
+
         /* 学生 */
         #CourseTable {
             width: 100%;
@@ -143,15 +144,15 @@
                         CoursData[0].response.学生.forEach(followed => {
                             var cor;
                             //找到学生所在的JSON
-                            followed.所选课程.forEach(element =>{
-                                if(element.课程号 === course.课程号 ){
+                            followed.所选课程.forEach(element => {
+                                if (element.课程号 === course.课程号) {
                                     cor = element;
                                 }
                             });
                             //确定这个学生是否选择了这个课
-                            if(cor === undefined){
-                                return ;
-                            }else{
+                            if (cor === undefined) {
+                                return;
+                            } else {
                                 const row = document.createElement('tr');
                                 row.classList.add(course.课程号);
                                 // console.log(course.课程号);
@@ -184,12 +185,12 @@
 
 
 
-        function submit(button){
+        function submit(button) {
             // 找到父级 TR 元素  
             var row = button.closest('tr');
             // 在同一行内找到 input 元素  
             var input = row.querySelector('input[type="text"]');
-            var id = parseInt(row.cells[1].value);
+            var id = parseInt(row.cells[1].textContent);
             var name = row.querySelector('td').textContent;//第一个td
             var select = document.getElementById("course").value;
             // 获取 input 的值  
@@ -201,9 +202,9 @@
                     "学生": [{
                         "姓名": name,
                         "学号": id,
-                        "所选课程":[{
-                            "课程号":select,
-                            "总成绩":inputValue
+                        "所选课程": [{
+                            "课程号": select,
+                            "总成绩": inputValue
                         }]
                     }]
                 }
@@ -213,7 +214,7 @@
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
             xhr.onload = function () {
-                if(xhr.status === 200){
+                if (xhr.status === 200) {
                     alert("成功录入");
                     var res = xhr.responseText;
                     console.log(res);
@@ -231,7 +232,7 @@
             // trs.forEach(ele =>{
             //     ele.style.display = "none";
             // })
-            for(var i=1;i<course_table.rows.length;i++){
+            for (var i = 1; i < course_table.rows.length; i++) {
                 course_table.rows[i].style.display = "none";
             }
 
@@ -240,7 +241,7 @@
             var names = document.getElementsByClassName(selectedValue);
             var namesArray = Array.from(names);
             console.log(namesArray);
-            namesArray.forEach(ele =>{
+            namesArray.forEach(ele => {
                 ele.style.display = "table-row";
             })
         });
