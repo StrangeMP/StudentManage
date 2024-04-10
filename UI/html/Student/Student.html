@@ -42,6 +42,7 @@
         <p class="content"><b>学院</b>：</p><p id="inst" class="content"></p><br>
         <p class="content"><b>年级</b>：</p><p id="gra" class="content"></p><br>
         <p class="content"><b>专业</b>：</p><p id="maj" class="content"></p><br>
+        <p class="content"><b>GPA</b>：</p><p id="gpa" class="content"></p><br>
       </div>          
 
       <script>  
@@ -76,12 +77,14 @@
                     var inst = document.getElementById("inst");
                     var maj = document.getElementById("maj");
                     var gra = document.getElementById("gra");
+                    var gpa = document.getElementById("gpa");
                     // //信息导入
                     name.textContent = stu.姓名;
                     id.textContent = stu.学号;
                     inst.textContent = stu.学院;
                     maj.textContent = stu.专业;
                     gra.textContent = stu.年级;
+                    gpa.textContent = stu.GPA.toFixed(2);
                 }
             }
             xhr.send(JSON.stringify(data));
