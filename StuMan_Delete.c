@@ -35,20 +35,12 @@
     }
 
 // Student_List*,id :删除List中的指定id
-// int del_stulist(Student_List *pl, int aim_id) {
-//     Student_IdNode *p = pl->first;
-//     if (p == NULL)
-//         return -1;
-//     while (p != NULL) {
-//         if (p->id == aim_id) {
-//             DELETE(p, pl->first);
-//             pl->student_count--;
-//             return 0;
-//         }
-//         p = p->next;
-//     }
-//     return 1; // 未找到该学生
-// }
+int del_stulist(Student_List *pl, int aim_id) {
+    Student_IdNode *p = pl->first;
+    if (p == NULL)
+        return -1;
+    return Student_List_Erase(pl, aim_id) ? 0 : 1;
+}
 
 // 删除一个学生
 typedef struct {
@@ -75,7 +67,7 @@ flag del_Stu(int id) {
             Student_List *p3 = Get_StudentList_by_CourseID(pe->course_id);
             if (p3->first == NULL)
                 printf("课程%s没有学生选择\n", pe->course_id);
-            else if (Student_List_Erase(p3, id) == 1) // 删除课程中的学生;
+            else if (del_stulist(p3, id) == 1) // 删除课程中的学生;
                 printf("在课程%s中未找到学号为%d的学生\n", pe->course_id, id);
             Enroll *p4 = pe;
             pe = pe->next;
@@ -89,12 +81,12 @@ flag del_Stu(int id) {
     CLEAR_BEN(p->Benefits.essays);
     p->Benefits.essays = NULL;
     // 删除pd_list里面的学生
-    f.pd = Student_List_Erase(Benefits_PendingVerified, id);
+    f.pd = del_stulist(Benefits_PendingVerified, id);
     // 删除nameindex里面的学生
     Student_List *pn = Get_StudentList_by_name(p->name);
-    f.flagname = Student_List_Erase(pn, id);
+    f.flagname = del_stulist(pn, id);
     // 删除gradeindex学生
-    f.flaggrade = Student_List_Erase(Get_StudentList_by_grade(p->institute_grade), id);
+    f.flaggrade = del_stulist(Get_StudentList_by_grade(p->institute_grade), id);
     // 删除学生本身
     Student_Node *stu = Get_Student_Node_by_id(id);
     DELETE(stu, data_address.pStudentHead);
@@ -209,7 +201,7 @@ void del(int which, int num, ...) {
                 Student_List *pl = Get_StudentList_by_CourseID(e->course_id);
                 if (pl->first == NULL)
                     printf("课程%s没有学生选择\n", e->course_id);
-                else if (Student_List_Erase(pl, stu_id) == 1)
+                else if (del_stulist(pl, stu_id) == 1)
                     printf("在课程%s中未找到学号为%d的学生\n", e->course_id, stu_id);
                 // 删除课程中的学生
                 DELETE(e, p->enrolled);
