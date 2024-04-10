@@ -127,39 +127,45 @@
                     // console.log(CoursData);
                     // 获取表格元素  
                     const select = document.getElementById('course');
-
+                    // console.log(CoursData[0].response.课程);
                     CoursData[0].response.课程.forEach(course => {
+
+                        //创建select选项
                         const option = document.createElement('option');
                         const content = course.课程名;
                         var select = document.getElementById("course");
                         option.value = course.课程号;
                         option.textContent = content;
                         select.appendChild(option);
-                    
+                        // console.log(content);
 
-
-                    //构建学生表格
+                        //构建学生表格
                         CoursData[0].response.学生.forEach(followed => {
+                            var cor;
+                            //找到学生所在的JSON
                             followed.所选课程.forEach(element =>{
                                 if(element.课程号 === course.课程号 ){
                                     cor = element;
                                 }
-                            })
-                            const row = document.createElement('tr');
-                            row.classList.add(course.课程号);
-                            // console.log(course.课程号);
-                            row.style.display = "none";
-                            var table = document.getElementById("CourseTable");
-                            var cor;
-                            row.innerHTML = `  
-                            <td>${followed.姓名}</td>  
-                            <td id=${followed.学号}>${followed.学号}</td>
-                            <td >${cor.总成绩}</td>
-                            <td><input type="text"></td>  
-                            <td><button class="submit" onclick="submit(this)">确定</button></td>`;
-                            // 将行添加到表格中  
-                            table.appendChild(row);
-
+                            });
+                            //确定这个学生是否选择了这个课
+                            if(cor === undefined){
+                                return ;
+                            }else{
+                                const row = document.createElement('tr');
+                                row.classList.add(course.课程号);
+                                // console.log(course.课程号);
+                                row.style.display = "none";
+                                var table = document.getElementById("CourseTable");
+                                row.innerHTML = `  
+                                <td>${followed.姓名}</td>  
+                                <td id=${followed.学号}>${followed.学号}</td>
+                                <td >${cor.总成绩}</td>
+                                <td><input type="text"></td>  
+                                <td><button class="submit" onclick="submit(this)">确定</button></td>`;
+                                // 将行添加到表格中  
+                                table.appendChild(row);
+                            }
                         });
                     });
 
