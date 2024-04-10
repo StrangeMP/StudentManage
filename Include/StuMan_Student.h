@@ -63,7 +63,7 @@ typedef struct Enroll {
     struct Enroll *next;
 } Enroll;
 
-extern Student_List * Benefits_PendingVerified;
+extern Student_List *Benefits_PendingVerified;
 
 typedef enum { // 设置枚举变量显示状态
     PENDING,   // 受理
@@ -140,6 +140,8 @@ typedef struct Student_Node {
 } Student_Node;
 
 struct STUMAN_DataAddress {
+    int course_total;
+    int student_total;
     Student_Node *pStudentHead;
     Student_Node *pStudentFoot;
     Course_Node *pCourseHead;
