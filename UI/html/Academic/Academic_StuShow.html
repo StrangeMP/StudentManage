@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="Guide.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/Guide.css" />
     <title>StuShow</title>
     <style>
         #insti {
@@ -13,30 +13,21 @@
 
         table {
             width: 100%;
-            /* 表格宽度占满容器 */
             border-collapse: collapse;
-            /* 移除单元格之间的空白 */
             margin-bottom: 1em;
-            /* 表格下方添加一些间距 */
         }
 
         th,
         td {
             border: 1px solid #ccc;
-            /* 为单元格添加边框 */
             padding: 8px;
-            /* 为单元格内容添加内边距 */
             word-wrap: break-word;
-            /* 允许单词在边界处断开以换行 */
             max-width: 200px;
-            /* 设置单元格内容的最大宽度 */
             overflow: auto;
-            /* 当内容超出单元格时显示滚动条 */
             white-space: normal;
-            /* 允许文本自动换行和折叠连续的空白字符 */
         }
 
-        /* 可选：为表头添加背景色和加粗字体 */
+        /* 为表头添加背景色和加粗字体 */
         th {
             background-color: #f2f2f2;
             font-weight: bold;
@@ -48,9 +39,9 @@
     <div class="menu">
         <div class="nav">
             <ul>
-                <img src="./jd-xhh.jpg" class="symbol">
+                <img src="../../img/jd-xhh.jpg" class="symbol">
                 <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
-                <li><a href="Academic_StuSearch.html">返回上一页</a></li>
+                <li><a href="./Academic_StuSearch.html">返回上一页</a></li>
                 <div class="drop">
                     <li><a href="#" class="drop">查找学生</a></li>
                 </div>
@@ -70,7 +61,7 @@
             <th>绩点</th>
             <th>是否及格</th>
             <th>是否有效</th>
-            <!-- <th>学时</th> -->
+            <th>删除操作</th>
         </tr>
     </table>
     </div>
@@ -150,7 +141,7 @@
                         var Stu_info = Stu_.response.学生[0];
                         var StuCor = Stu_info.所选课程;//是一个学生课程数组
                         var Cor = Stu_.response.课程;//是一个学生对应的课程数组
-                        // console.log(Stu_info);
+                        console.log(Stu_info);
 
                         // // 清除上一次剩余的学生表格
                         var table = document.getElementById("class");
@@ -166,6 +157,8 @@
                                 var cell = row.insertCell(index);
                                 cell.textContent = course[header];
                             });
+                            var cell = row.insertCell(-1);
+                            cell.innerHTML = `<button onclick="deleteCor(this)">删除</button>`;
                         });
 
                         Cor.forEach(function (course) {
@@ -182,7 +175,7 @@
                         var table_Artical = document.getElementById("table_Artical");
                         var table_Competition = document.getElementById("table_Competition");
                         var table_Project = document.getElementById("table_Project");
-                        console.log(benefit);
+                        // console.log(benefit);
 
                         var row = document.createElement('tr');//添加新行
                         var cell = document.createElement('td');//添加新的子项
@@ -276,6 +269,38 @@
         }
 
 
+        //删除学生课程
+        function deleteCor(btn){
+            alert("Warning! 确定要删除学生的这门课么？");
+            //获取数据
+            var row = btn.parentNode.parentNode;//行
+            var Cor_id = row.cells[1].textContent;
+            console.log(Cor_id);
+            var id_int = parseInt(id);
+            //构造数据
+            var data = [{
+                "Number": 6,
+                "request": "delete_student_enrolls",
+                "info": [
+                    {
+                        "student_id": id_int,
+                        "course_ids": [Cor_id]
+                    }
+                ]
+            }]
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:8080', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            xhr.onload = function () {
+                if(xhr.status === 200)
+                {
+                    alert("删除成功");
+                    location.reload();
+                }
+            }
+            xhr.send(JSON.stringify(data));
+        }
     </script>
 </body>
 

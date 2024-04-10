@@ -21,15 +21,11 @@
 
         form {
             background-color: rgba(255, 255, 255, 0.8);
-            /* 使用半透明背景 */
             border: 2px solid #ccc;
-            /* 添加边框 */
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            /* 添加阴影效果 */
             width: 350px;
-            /* 设置登录框宽度 */
         }
 
         h1 {
@@ -55,8 +51,7 @@
         input[type="button"] {
             width: 100%;
             padding: 10px;
-            background-color: #4CAF50;
-            /* 使用绿色背景 */
+            background-color: #376ab7;
             color: white;
             border: none;
             border-radius: 5px;
@@ -64,17 +59,25 @@
         }
 
         input[type="button"]:hover {
-            background-color: #45a049;
+            background-color: #6d8ad0;
             /* 鼠标悬停时改变背景色 */
+        }
+
+        #symbol {
+            display: flex;
+            position: static;
+            margin: 75px;
+            transform: scale(1.25);
         }
     </style>
 </head>
 
-<body background="./JLU.png"
+<body background="../img/login_container_bg_01b.jpeg"
     style="background-repeat:no-repeat; background-attachment:fixed;background-size:100% 100%;">
 
+    <img src="../img/logo-pc.png" id="symbol">
     <form id="blank">
-        <h1>Log in</h1>
+        <h1>账号登录</h1>
         <label for="username" class="name">用户名：</label>
         <input type="text" class="input" id="username" autocomplete="current-username" placeholder="请输入学号/工号">
         <br>
@@ -83,6 +86,7 @@
         <br><br>
         <input type="button" value="登录" id="login">
     </form>
+
     <script>
         // 要存一个账号名到localStorage.setItem('username', username); 这样就不用cookie了
 
@@ -137,8 +141,8 @@
                                 localStorage.setItem('username', username);
                                 localStorage.setItem('name', AccData.name);
                                 switch (AccData.identity) {
-                                    case 2: window.location = "./Teacher.html"; break;//老师
-                                    case 3: window.location = "./Student.html"; break;//学生
+                                    case 2: window.location = "./Teacher/Teacher.html"; break;//老师
+                                    case 3: window.location = "./Student/Student.html"; break;//学生
                                     default: alert("出现错误，请问你是老师还是学生？");
                                 }
                             } else {

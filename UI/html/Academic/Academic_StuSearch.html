@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="Guide.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/Guide.css" />
     <title>StuSearch</title>
     <style>
         #insti {
@@ -13,27 +13,18 @@
 
         table {
             width: 100%;
-            /* 表格宽度占满容器 */
             border-collapse: collapse;
-            /* 移除单元格之间的空白 */
             margin-bottom: 1em;
-            /* 表格下方添加一些间距 */
         }
 
         th,
         td {
             border: 1px solid #ccc;
-            /* 为单元格添加边框 */
             padding: 8px;
-            /* 为单元格内容添加内边距 */
             word-wrap: break-word;
-            /* 允许单词在边界处断开以换行 */
             max-width: 200px;
-            /* 设置单元格内容的最大宽度 */
             overflow: auto;
-            /* 当内容超出单元格时显示滚动条 */
             white-space: normal;
-            /* 允许文本自动换行和折叠连续的空白字符 */
         }
 
         /* 可选：为表头添加背景色和加粗字体 */
@@ -41,6 +32,53 @@
             background-color: #f2f2f2;
             font-weight: bold;
         }
+
+
+
+        .course {
+            width: 200px;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .course {
+            scrollbar-width: thin;
+            scrollbar-color: #666 transparent;
+        }
+
+        .course::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .course::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .course::-webkit-scrollbar-thumb {
+            background-color: #666;
+            border-radius: 10px;
+        }
+
+        .course option {
+            padding: 5px;
+        }
+
+
+        #check {
+            background-color: rgb(42, 42, 48);
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        #check:hover {
+            background-color: rgb(77, 77, 88);
+        }
+
+
     </style>
 </head>
 
@@ -48,9 +86,9 @@
     <div class="menu">
         <div class="nav">
             <ul>
-                <img src="./jd-xhh.jpg" class="symbol">
+                <img src="../../img/jd-xhh.jpg" class="symbol">
                 <p style="color:rgb(95, 129, 185) ;display: inline;float: left;">吉林大学教务系统</p>
-                <li><a href="Academic.html">返回上一页</a></li>
+                <li><a href="./Academic.html">返回上一页</a></li>
                 <div class="drop">
                     <li><a href="#" class="drop">查找学生</a></li>
                 </div>
@@ -60,30 +98,30 @@
     <h2>你好，教务老师</h2>
     <form method="POST">
         <label for="method">请选择查询方式：</label>
-        <select name="method" id="method">
+        <select name="method" id="method" class="course">
             <option value="id">学号</option>
             <option value="name">姓名</option>
             <option value="grade" id="institude">学院</option>
         </select>
 
-        <select name="grades" id="grades" style="display: none;">
+        <select name="grades" id="grades" style="display: none;" class="course">
             <option value="23">大一</option>
             <option value="22">大二</option>
             <option value="21">大三</option>
             <option value="20">大四</option>
         </select>
-        <select name="institute" id="institute" style="display: none;" onchange="showPrograms()">
+        <select name="institute" id="institute" style="display: none;" onchange="showPrograms()" class="course">
 
         </select>
 
 
-        <select name="major" id="programSelect" style="display: none;">
+        <select name="major" id="programSelect" style="display: none;" class="course">
             <!-- 这里可以预先放入一些专业选项，或者动态添加 -->
         </select>
 
 
 
-        <input type="text" id="content">
+        <input type="text" id="content" class="course">
         <button type="submit" id="check">查询</button>
     </form>
     <table id="enroll">
@@ -96,6 +134,7 @@
             <th>年级</th>
             <th>综合成绩</th>
             <th>详细成绩展示</th>
+            <th>删除</th>
         </tr>
     </table>
 
@@ -451,6 +490,7 @@
                         <td>${Stu_info.年级}</td>
                         <td>${Stu_info.综合成绩}</td> 
                         <td><button onclick="More(this)">详情</button></td>
+                        <td><button onclick="deleteStu(this)">删除</button></td>
                     `;
                     table.appendChild(row);
 
@@ -506,6 +546,7 @@
                             <td>${Stu.年级}</td>
                             <td>${Stu.综合成绩}</td> 
                             <td><button onclick="More(this)">详情</button></td>
+                            <td><button onclick="deleteStu(this)">删除</button></td>
                         `;
                         table.appendChild(row);
                         //保存学生id
@@ -562,11 +603,9 @@
                             <td>${Stu.年级}</td>
                             <td>${Stu.综合成绩}</td> 
                             <td><button onclick="More(this)">详情</button></td>
+                            <td><button onclick="deleteStu(this)">删除</button></td>
                         `;
                         table.appendChild(row);
-                        // //保存学生id
-                        // localStorage.setItem('Stu_id', Stu_info.学号);
-                        // localStorage.setItem('Stu_name', Stu_info.姓名);
                     });
 
                 }
@@ -575,7 +614,7 @@
         }
 
         //跳转页面
-        function More(btn){
+        function More(btn) {
             var row = btn.parentNode.parentNode;
             var name = row.cells[1].textContent;
             var id = row.cells[2].textContent;
@@ -584,6 +623,31 @@
             localStorage.setItem('Stu_name', name);
 
             window.location = "./Academic_StuShow.html";
+        }
+
+        //删除学生
+        function deleteStu(btn) {
+            alert("Warning! 确定要删除学生么？");
+            //获取数据
+            var row = btn.parentNode.parentNode;
+            var id = row.cells[2].textContent;
+            var id_int = parseInt(id);
+            //构造数据
+            var data = [{
+                "Number": 5,
+                "request": "delete_students",
+                "student_ids": [id_int]
+            }]
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:8080', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    alert("删除成功");
+                }
+            }
+            xhr.send(JSON.stringify(data));
         }
     </script>
 </body>
