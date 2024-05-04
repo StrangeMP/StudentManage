@@ -1,6 +1,7 @@
 ﻿#include "StuMan_Account.h"
 #include "StuMan_Binary.h"
 #include "StuMan_Server.h"
+#include "StuMan_Memory.h"
 
 int main(int argc, char **argv) {
     if (argc != 3)

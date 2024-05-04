@@ -13,7 +13,7 @@
 #define MAX_CLIENTS 32
 bool should_terminate = false;
 
-void handle_client(void *client_socket) {
+unsigned int handle_client(void *client_socket) {
     SOCKET client = *(SOCKET *)client_socket;
     // Receive the request
     char buffer[65536];
@@ -58,20 +58,21 @@ void handle_client(void *client_socket) {
     // Close the client socket
     closesocket(client);
     _endthreadex(0);
+    return 0;
 }
 
-void server_thread(void *unused) {
+unsigned int server_thread(void *unused) {
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         fprintf(stderr, "WSAStartup failed.\n");
-        return;
+        return 1;
     }
 
     SOCKET server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == INVALID_SOCKET) {
         fprintf(stderr, "Error creating socket.\n");
         WSACleanup();
-        return;
+        return 1;
     }
 
     struct sockaddr_in server_addr;
@@ -83,14 +84,14 @@ void server_thread(void *unused) {
         fprintf(stderr, "Error binding socket.\n");
         closesocket(server_socket);
         WSACleanup();
-        return;
+        return 1;
     }
 
     if (listen(server_socket, SOMAXCONN) == SOCKET_ERROR) {
         fprintf(stderr, "Error listening.\n");
         closesocket(server_socket);
         WSACleanup();
-        return;
+        return 1;
     }
 
     printf("\n\n\nServer listening on port 8080...\n");
@@ -103,7 +104,7 @@ void server_thread(void *unused) {
         SOCKET client_socket = accept(server_socket, NULL, NULL);
         if (client_socket != INVALID_SOCKET) {
             client_threads[num_client_threads] =
-                _beginthreadex(NULL, 0, handle_client, &client_socket, 0, NULL);
+                (HANDLE)_beginthreadex(NULL, 0, handle_client, &client_socket, 0, NULL);
             num_client_threads++;
         }
     }
@@ -117,6 +118,7 @@ void server_thread(void *unused) {
     closesocket(server_socket);
     WSACleanup();
     _endthreadex(0);
+    return 0;
 }
 
 void RunServer() {

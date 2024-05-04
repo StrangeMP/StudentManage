@@ -76,11 +76,10 @@ static int Student_Compare_By_Property(Student *stu1, Student *stu2, const char 
     typedef enum { NONE, NAME, ID, GPA_BASIC, GPA_OVERALL, RANK } prop_type;
     int tmp = getNounIndex(dict, sizeof(dict) / sizeof(const char *), property);
     prop_type prIndex;
-    if (tmp == 0)
-        return -999;
-    else
-        prIndex = (prop_type)tmp;
+    prIndex = (prop_type)tmp;
     switch (prIndex) {
+    case NONE:
+        return -999;
     case NAME:
         return strcmp(stu1->name, stu2->name);
     case ID:
@@ -150,6 +149,6 @@ void Course_Update(const char *course_id) {
             ++passed;
         idNode = idNode->next;
     }
-    crt_Crs->ExcellentRate = excellent / crt_Crs->followed->student_count;
-    crt_Crs->PassRate = passed / crt_Crs->followed->student_count;
+    crt_Crs->ExcellentRate = (double)excellent / crt_Crs->followed->student_count;
+    crt_Crs->PassRate = (double)passed / crt_Crs->followed->student_count;
 }

@@ -1,10 +1,12 @@
 #include "StuMan_Account.h"
 #include "StuMan_Search.h"
 #include "StuMan_Student.h"
+#include "StuMan_Memory.h"
 #include "VECTOR.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "cJSON.h"
 
 VECTOR(TeacherVector, struct Teacher)
 TeacherVector *t_vec = NULL;

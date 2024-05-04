@@ -3,13 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef MALLOC
-#define MALLOC malloc
-#endif
-#ifndef FREE
-#define FREE free
-#endif
-
 #define VECTOR(className, T)                                                                       \
     typedef T className##_value_type;                                                              \
     typedef T *className##_iterator;                                                               \
@@ -31,7 +24,7 @@
         className *this, className##_iterator pos, className##_value_type *, size_t _size);        \
     static inline void className##_reserve(className *this, size_t new_cap);                       \
     static className *className##_create() {                                                       \
-        className *this = (className *)MALLOC(sizeof(className));                                  \
+        className *this = (className *)malloc(sizeof(className));                                  \
         this->capacity = 0;                                                                        \
         this->_first = this->_last = this->content = NULL;                                         \
         return this;                                                                               \
@@ -42,21 +35,21 @@
         *this->_last++ = val;                                                                      \
     }                                                                                              \
     static void className##_destroy(className *this) {                                             \
-        FREE(this->content);                                                                       \
-        FREE(this);                                                                                \
+        free(this->content);                                                                       \
+        free(this);                                                                                \
     }                                                                                              \
     static inline size_t className##_size(className *this) { return this->_last - this->_first; }  \
     static void className##_shrink_to_fit(className *this) {                                       \
         if (className##_size(this) < this->capacity) {                                             \
-            className##_value_type *newContent = (className##_value_type *)MALLOC(                 \
+            className##_value_type *newContent = (className##_value_type *)malloc(                 \
                 sizeof(className##_value_type) * className##_size(this));                          \
             memcpy(newContent, this->content,                                                      \
                    className##_size(this) * sizeof(className##_value_type));                       \
-            FREE(this->content);                                                                   \
+            free(this->content);                                                                   \
             this->capacity = className##_size(this);                                               \
             this->content = newContent;                                                            \
             this->_first = this->content;                                                          \
-            this->_last = this->_first + this->capacity / 2;                                       \
+            this->_last = this->_first + this->capacity;                                           \
         }                                                                                          \
     }                                                                                              \
     static bool className##_empty(className *this) { return className##_size(this) == 0; }         \
@@ -83,9 +76,9 @@
     static inline void className##_reserve(className *this, size_t new_cap) {                      \
         if (new_cap > this->capacity) {                                                            \
             className##_value_type *newContent =                                                   \
-                (className##_value_type *)MALLOC(sizeof(className##_value_type) * new_cap);        \
+                (className##_value_type *)malloc(sizeof(className##_value_type) * new_cap);        \
             memcpy(newContent, this->content, this->capacity * sizeof(className##_value_type));    \
-            FREE(this->content);                                                                   \
+            free(this->content);                                                                   \
             this->content = newContent;                                                            \
             this->_first = this->content;                                                          \
             this->_last = this->_first + this->capacity;                                           \

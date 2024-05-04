@@ -1,105 +1,49 @@
 CC = gcc
-INCLUDE_PATH = ./Include $(shell powershell -Command "Get-ChildItem -Path Libraries -Directory -Recurse | ForEach-Object { Resolve-Path -Path $$_.FullName -Relative } | %{$$_ -replace '\\','/'}")
+SRC_DIR := Source
+LIB_DIR := Libraries
+OBJ_DIR := Object
+INCLUDE_PATH := ./Include $(shell dir /s /b /ad $(LIB_DIR))
 CC_INCLUDE_FLAGS = $(addprefix -I,$(INCLUDE_PATH))
-CC_FLAGS = -O3 $(CC_INCLUDE_FLAGS)
+CFLAGS = -O3 $(CC_INCLUDE_FLAGS)
 DEBUG_FLAGS = $(CC_INCLUDE_FLAGS) -DDEBUG -g
-C_SRC_FILES = StuMan_Benefit.c StuMan_Binary.c StuMan_BuildIndex.c StuMan_Log.o\
- StuMan_Delete.c StuMan_Export.c StuMan_Handler.c StuMan_Import.c StuMan_Memory.c\
- StuMan_Node.c StuMan_Nouns.c StuMan_Search.c StuMan_Statistics.c StuMan_Student.c\
- Libraries/cJSON/cJSON.c StuMan_Server.c StuMan_Account.c
-C_OBJ_FILES = $(patsubst %.c, %.o, $(C_SRC_FILES))
+SRC_FILE := $(wildcard $(SRC_DIR)/*.c)
+LIB_FILE := $(shell dir /s /b "$(LIB_DIR)\*.c")
 
-#	@echo Project Successfully Built
+.PHONY: all debug reload clean print
 
-# target :
-#	$(info $(CC_INCLUDE_FLAGS))
-#	@echo Project Successfully Built
-.PHONY: all debug reload
 all: StudentManage.exe
-debug: CC_FLAGS = $(DEBUG_FLAGS)
+debug: CFLAGS = $(DEBUG_FLAGS)
 debug: all
 reload: reload.exe
 
-StudentManage.exe: $(C_OBJ_FILES) StudentManage.o
+reload.exe: $(addprefix $(OBJ_DIR)/,$(filter-out StudentManage.o StuMan_Server.o,$(patsubst %.c, %.o,$(notdir $(SRC_FILE))))) $(patsubst %.c, %.o,$(LIB_FILE))
+	$(CC) $^ -o $@
+
+StudentManage.exe: $(addprefix $(OBJ_DIR)/,$(filter-out reload.o,$(patsubst %.c, %.o,$(notdir $(SRC_FILE))))) $(patsubst %.c, %.o,$(LIB_FILE))
 	$(CC) $^ -lws2_32 -o $@
 
-reload.exe: $(C_OBJ_FILES) reload.o
-	$(CC) $^ -lws2_32 -o $@
+DEPDIR := .deps
+DEPFLAGS = -MT $@ -MMD -MF $(DEPDIR)/$(notdir $*).d
 
-Libraries/cJSON/cJSON.o: Libraries/cJSON/cJSON.c Libraries/cJSON/cJSON.h
-	$(CC) $(CC_FLAGS) -c $< -o $@
+COMPILE.c = $(CC) $(DEPFLAGS) $(CFLAGS) -c
 
-StudentManage.o: StudentManage.c Include/StuMan_Import.h Include/StuMan_Server.h
-	$(CC) $(CC_FLAGS) -c $<
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c $(DEPDIR)/%.d | $(DEPDIR) $(OBJ_DIR)
+	$(COMPILE.c) $< -o $@
 
-reload.o: reload.c Include/StuMan_Binary.h Include/StuMan_Memory.h Include/StuMan_Import.h
-	$(CC) $(CC_FLAGS) -c $<
+$(LIB_DIR)/%.o : $(LIB_DIR)/%.c
+	$(COMPILE.c) $< -o $@
 
-StuMan_Log.o: StuMan_Log.c Libraries/cJSON/cJSON.h Include/StuMan_Log.h
-	$(CC) $(CC_FLAGS) -c $<
+$(DEPDIR): ; @mkdir $@ >nul 2>&1
 
-StuMan_Benefit.o: StuMan_Benefit.c Include/StuMan_Benefit.h Include/StuMan_Student.h\
-  Include/StuMan_Search.h Include/StuMan_Node.h Include/StuMan_Import.h
-	$(CC) $(CC_FLAGS) -c $<
+$(OBJ_DIR): ; @mkdir $@ >nul 2>&1
 
-StuMan_Binary.o: StuMan_Binary.c Include/StuMan_Binary.h \
- Include/StuMan_Memory.h Include/StuMan_Student.h Include/StuMan_Benefit.h
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_BuildIndex.o: StuMan_BuildIndex.c Include/StuMan_BuildIndex.h Include/StuMan_Student.h\
- Include/StuMan_Benefit.h Include/StuMan_Node.h Include/StuMan_Search.h
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Delete.o: StuMan_Delete.c Include/StuMan_Delete.h Include/StuMan_Student.h \
- Include/StuMan_Benefit.h Include/StuMan_Search.h
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Export.o: StuMan_Export.c Include/StuMan_Export.h Include/StuMan_Student.h \
- Include/StuMan_Benefit.h Libraries/cJSON/cJSON.o Include/StuMan_Nouns.h Include/StuMan_Search.h
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Handler.o: StuMan_Handler.c Include/StuMan_Delete.h Include/StuMan_Export.h Include/StuMan_Student.h \
- Include/StuMan_Benefit.h Libraries/cJSON/cJSON.o Include/StuMan_Import.h Include/StuMan_Nouns.h Include/StuMan_Memory.h \
- Include/StuMan_Search.h Include/StuMan_Statistics.h Include/VECTOR.h Libraries/cJSON/cJSON.o
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Import.o: StuMan_Import.c Include/StuMan_Import.h Include/StuMan_BuildIndex.h Include/StuMan_Student.h \
- Include/StuMan_Benefit.h Include/StuMan_Memory.h Include/StuMan_Node.h \
- Include/StuMan_Nouns.h Include/StuMan_Search.h Include/StuMan_Statistics.h Libraries/cJSON/cJSON.o
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Memory.o: StuMan_Memory.c Include/StuMan_Memory.h
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Node.o: StuMan_Node.c Include/StuMan_Memory.h Include/StuMan_Node.h\
- Include/StuMan_Student.h Include/StuMan_Benefit.h
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Nouns.o: StuMan_Nouns.c Include/StuMan_Nouns.h
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Search.o: StuMan_Search.c Include/StuMan_Search.h \
- Include/StuMan_Student.h Include/StuMan_Benefit.h
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Statistics.o: StuMan_Statistics.c Include/StuMan_Statistics.h \
- Include/StuMan_Student.h Include/StuMan_Benefit.h Include/StuMan_Nouns.h \
- Include/StuMan_Search.h Include/VECTOR.h
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Student.o: StuMan_Student.c Include/StuMan_Student.h \
- Include/StuMan_Benefit.h Include/StuMan_Search.h
-	$(CC) $(CC_FLAGS) -c $<
-
-StuMan_Server.o: StuMan_Server.c Include/StuMan_Server.h \
- Include/StuMan_Handler.h Include/StuMan_Memory.h
-	$(CC) $(CC_FLAGS) -c $< -o $@
-
-StuMan_Account.o: StuMan_Account.c Include/StuMan_Account.h \
- Include/VECTOR.h Libraries/cJSON/cJSON.h Include/StuMan_Search.h \
- Include/StuMan_Student.h Include/StuMan_Benefit.h
-	$(CC) $(CC_FLAGS) -c $< -o $@
-
+DEPFILES := $(patsubst %.c,$(DEPDIR)/%.d,$(notdir $(SRC_FILE)))
+$(DEPFILES):
+include $(wildcard $(DEPFILES))
 
 clean :
-	@powershell -Command "Get-ChildItem -Path . -Include *.o,*.exe -File -Recurse | Remove-Item -Force"
+	@del /s *.o > nul 2>&1
+
+# only for makefile-debug purpose
+print :
+	$(info $(LIB_FILE))

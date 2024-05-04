@@ -4,20 +4,28 @@
 #include <stdlib.h>
 #ifdef DEBUG
 MemoryRecord memRec = {0, {NULL}};
-void *my_alloc(size_t _Size) {
-    memRec.table[memRec.cnt] = malloc(_Size);
+#endif
+
+void *MALLOC(size_t size) {
+#ifdef DEBUG
+    memRec.table[memRec.cnt] = malloc(size);
     return memRec.table[memRec.cnt++];
+#else
+    return malloc(size);
+#endif
 }
-void my_free(void *_Memory) {
-    free(_Memory);
+
+void FREE(void *ptr) {
+    free(ptr);
+#ifdef DEBUG
     for (int i = 0; i < memRec.cnt; i++) {
-        if (memRec.table[i] == _Memory) {
+        if (memRec.table[i] == ptr) {
             memRec.table[i] = NULL;
             break;
         }
     }
-}
 #endif
+}
 
 static void Student_Node_Free(Student_Node *res) {
     Student_Node *last = NULL, *crt = res;

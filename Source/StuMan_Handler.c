@@ -2,9 +2,9 @@
 #include "StuMan_Delete.h"
 #include "StuMan_Export.h"
 #include "StuMan_Import.h"
-#include "StuMan_Memory.h"
 #include "StuMan_Nouns.h"
 #include "StuMan_Search.h"
+#include "StuMan_Memory.h"
 #include "StuMan_Statistics.h"
 #include "StuMan_Student.h"
 #include "VECTOR.h"
@@ -144,13 +144,13 @@ static void Handle_GET_STU_NAME(cJSON *response, cJSON *req) {
 static char *create_http_response(const char *content) {
     size_t content_length = strlen(content);
     char lenlen[10];
-    sprintf(lenlen, "%d", content_length);
+    sprintf(lenlen, "%zu", content_length);
     size_t buffer_size = HEADER_LEN + strlen(lenlen) + content_length + 1;
     char *response = (char *)MALLOC(sizeof(char) * buffer_size);
     snprintf(response, buffer_size,
              "HTTP/1.1 200 OK\r\n"
              "Content-Type: text/plain\r\n"
-             "Content-Length: %d\r\n"
+             "Content-Length: %zu\r\n"
              "Access-Control-Allow-Origin: *\r\n"
              "Connection: close\r\n\r\n"
              "%s",
