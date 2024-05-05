@@ -25,7 +25,7 @@ typedef SOCKET Socket_T;
 #define MAX_CLIENTS 32
 bool should_terminate = false;
 
-#ifdef __linux
+#ifdef __linux__
 void *handle_client(void *client_socket)
 #else
 unsigned int handle_client(void *client_socket)
@@ -194,7 +194,7 @@ unsigned int server_thread(void *unused) {
 #endif
 
 void RunServer() {
-#ifdef __linux
+#ifdef __linux__
     pthread_t serverThread;
     pthread_create(&serverThread, NULL, server_thread, NULL);
 #else
